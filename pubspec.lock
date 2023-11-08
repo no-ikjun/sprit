@@ -227,6 +227,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  scaler:
+    dependency: "direct main"
+    description:
+      name: scaler
+      sha256: d761b02e08445fa6617338c40903fb6cd2c77660000bafafe928b0287bd5f04a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2+1"
   sky_engine:
     dependency: transitive
     description: flutter
