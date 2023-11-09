@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:sprit/providers/counts.dart';
-import 'package:sprit/widgets/button.dart';
-import 'package:sprit/widgets/counter.dart';
+import 'package:sprit/screens/splash/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+  //await dotenv.load(fileName: ".env");
   runApp(
     MultiProvider(
       providers: [
@@ -20,36 +26,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Home(),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
-  const Home({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Provider'),
-      ),
-      body: ChangeNotifierProvider(
-        create: (BuildContext context) => Counts(),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Counter(),
-              Buttons(),
-            ],
-          ),
-        ),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'SPRIT',
+        home: SplashScreen(),
       ),
     );
   }
