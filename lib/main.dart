@@ -10,7 +10,7 @@ void main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  //await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
   runApp(
     MultiProvider(
       providers: [
