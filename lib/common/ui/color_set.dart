@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ColorSet {
-  static const Color primary = Color(0xFF65C7F0);
+  static const Color primary = Color(0xFF36CED8);
   static const Color background = Color(0xFFF2F8FA);
   static const Color text = Color(0xFF2B2B2B);
+  static const Color lightGrey = Color(0xFFD9D9D9);
+  static const Color grey = Color(0xFFBABABA);
+  static const Color darkGrey = Color(0xFF474747);
+  static const Color semiDarkGrey = Color(0xFF969696);
 }
 
 class GrassColor {
