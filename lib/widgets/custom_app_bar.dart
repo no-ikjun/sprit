@@ -45,7 +45,9 @@ class CustomAppBar extends StatelessWidget {
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.only(left: 20),
               icon: iconData,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
       title: Text(
         label,

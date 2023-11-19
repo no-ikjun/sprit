@@ -5,7 +5,7 @@ class TextStyles {
   static const TextStyle appBarLabel = TextStyle(
     color: ColorSet.text,
     fontSize: 18,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w600,
     fontFamily: "IBMPlexSans",
   );
 
@@ -40,6 +40,21 @@ class TextStyles {
   static const TextStyle loginButtonStyle = TextStyle(
     color: Colors.white,
     fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle signUpLabel = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+    decoration: TextDecoration.underline,
+  );
+
+  static const TextStyle policyStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );

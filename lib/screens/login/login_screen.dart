@@ -1,9 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/text_input.dart';
 
@@ -116,7 +115,9 @@ class LoginScreen extends StatelessWidget {
                           InkWell(
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pushNamed(context, RouteName.signUp);
+                            },
                             child: Column(
                               children: [
                                 Text(
