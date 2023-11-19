@@ -44,6 +44,8 @@ dependencies:
   flutter_dotenv: ^5.1.0
   url_launcher: ^6.2.1
   package_info_plus: ^4.2.0
+  kakao_flutter_sdk_user: ^1.7.0
+  kakao_flutter_sdk_talk: ^1.7.0
 
 dev_dependencies:
   flutter_test:

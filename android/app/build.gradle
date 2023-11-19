@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.sprit"
+    namespace "com.ikjunchoi.sprit"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

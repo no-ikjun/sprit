@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/auth/kakao_login.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
@@ -161,7 +163,13 @@ class LoginScreen extends StatelessWidget {
                         height: 15,
                       ),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          OAuthToken? token =
+                              await KakaoService.handleKaKaoLoginClick(
+                            context,
+                          );
+                          print(token ?? 'null');
+                        },
                         width: Scaler.width(0.85, context),
                         height: 45,
                         color: const Color(0xFFFEE500),
