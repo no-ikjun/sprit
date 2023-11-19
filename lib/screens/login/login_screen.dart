@@ -205,7 +205,7 @@ class LoginScreen extends StatelessWidget {
                               width: 8,
                             ),
                             Text(
-                              'Apple 로그인',
+                              'Apple로 로그인',
                               style: TextStyles.loginButtonStyle.copyWith(
                                 color: Colors.white,
                               ),
