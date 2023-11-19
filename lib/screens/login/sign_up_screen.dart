@@ -71,6 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               width: Scaler.width(0.85, context),
                               height: 50,
                               padding: 15,
+                              obscureText: true,
                             ),
                             const SizedBox(
                               height: 18,
@@ -88,6 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               width: Scaler.width(0.85, context),
                               height: 50,
                               padding: 15,
+                              obscureText: true,
                             ),
                             const SizedBox(
                               height: 33,
