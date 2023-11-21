@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:sprit/apis/auth/apple_login.dart';
 import 'package:sprit/apis/auth/kakao_login.dart';
 import 'package:sprit/apis/auth/local_login.dart';
 import 'package:sprit/common/ui/color_set.dart';
@@ -53,6 +56,51 @@ Future<void> loginWithKaKao(BuildContext context) async {
       const SnackBar(
         content: Text(
           '카카오 로그인에 실패했습니다. 다시 시도해주세요.',
+          style: TextStyle(
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> loginWithApple(
+  BuildContext context,
+  AuthorizationCredentialAppleID appleCredential,
+) async {
+  try {
+    final loginResult = await AppleService.appleLogin(context, appleCredential);
+    if (loginResult != '') {
+      const storage = FlutterSecureStorage();
+      await storage.write(
+        key: "access_token",
+        value: loginResult,
+      );
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteName.home,
+        (route) => false,
+      );
+    } else {
+      debugPrint('애플 로그인 실패');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            '애플 로그인에 실패했습니다. 다시 시도해주세요.',
+            style: TextStyle(
+              fontSize: 13,
+            ),
+          ),
+        ),
+      );
+    }
+  } catch (e) {
+    debugPrint('애플 로그인 실패 $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          '애플 로그인에 실패했습니다. 다시 시도해주세요.',
           style: TextStyle(
             fontSize: 13,
           ),
@@ -293,7 +341,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 10,
                       ),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          try {
+                            final AuthorizationCredentialAppleID credential =
+                                await SignInWithApple.getAppleIDCredential(
+                              scopes: [
+                                AppleIDAuthorizationScopes.email,
+                                AppleIDAuthorizationScopes.fullName,
+                              ],
+                              webAuthenticationOptions:
+                                  WebAuthenticationOptions(
+                                clientId: dotenv.env['APPLE_SERVICE_ID']!,
+                                redirectUri: Uri.parse(
+                                  dotenv.env['APPLE_REDIRECT_URI']!,
+                                ),
+                              ),
+                            );
+                            await loginWithApple(context, credential);
+                          } catch (error) {
+                            debugPrint('Apple login error = $error');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  '애플 로그인에 실패했습니다. 다시 시도해주세요.',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
                         width: Scaler.width(0.85, context),
                         height: 45,
                         color: const Color(0xFF000000),
