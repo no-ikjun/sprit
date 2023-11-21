@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -337,9 +339,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      if (Platform.isIOS)
+                        const SizedBox(
+                          height: 10,
+                        ),
                       CustomButton(
                         onPressed: () async {
                           try {
