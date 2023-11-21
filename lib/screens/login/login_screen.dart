@@ -339,65 +339,65 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       if (Platform.isIOS)
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      CustomButton(
-                        onPressed: () async {
-                          try {
-                            final AuthorizationCredentialAppleID credential =
-                                await SignInWithApple.getAppleIDCredential(
-                              scopes: [
-                                AppleIDAuthorizationScopes.email,
-                                AppleIDAuthorizationScopes.fullName,
-                              ],
-                              webAuthenticationOptions:
-                                  WebAuthenticationOptions(
-                                clientId: dotenv.env['APPLE_SERVICE_ID']!,
-                                redirectUri: Uri.parse(
-                                  dotenv.env['APPLE_REDIRECT_URI']!,
-                                ),
-                              ),
-                            );
-                            await loginWithApple(context, credential);
-                          } catch (error) {
-                            debugPrint('Apple login error = $error');
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  '애플 로그인에 실패했습니다. 다시 시도해주세요.',
-                                  style: TextStyle(
-                                    fontSize: 13,
+                        CustomButton(
+                          onPressed: () async {
+                            try {
+                              final AuthorizationCredentialAppleID credential =
+                                  await SignInWithApple.getAppleIDCredential(
+                                scopes: [
+                                  AppleIDAuthorizationScopes.email,
+                                  AppleIDAuthorizationScopes.fullName,
+                                ],
+                                webAuthenticationOptions:
+                                    WebAuthenticationOptions(
+                                  clientId: dotenv.env['APPLE_SERVICE_ID']!,
+                                  redirectUri: Uri.parse(
+                                    dotenv.env['APPLE_REDIRECT_URI']!,
                                   ),
                                 ),
+                              );
+                              await loginWithApple(context, credential);
+                            } catch (error) {
+                              debugPrint('Apple login error = $error');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    '애플 로그인에 실패했습니다. 다시 시도해주세요.',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          width: Scaler.width(0.85, context),
+                          height: 45,
+                          color: const Color(0xFF000000),
+                          borderColor: const Color(0xFF000000),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/apple_logo.png',
+                                width: 16,
                               ),
-                            );
-                          }
-                        },
-                        width: Scaler.width(0.85, context),
-                        height: 45,
-                        color: const Color(0xFF000000),
-                        borderColor: const Color(0xFF000000),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/apple_logo.png',
-                              width: 16,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              'Apple로 로그인',
-                              style: TextStyles.loginButtonStyle.copyWith(
-                                color: Colors.white,
+                              const SizedBox(
+                                width: 8,
                               ),
-                            ),
-                          ],
+                              Text(
+                                'Apple로 로그인',
+                                style: TextStyles.loginButtonStyle.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
