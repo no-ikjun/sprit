@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sprit/common/ui/color_set.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -8,7 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AnnotatedRegion(
+    return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -17,8 +19,20 @@ class HomeScreen extends StatelessWidget {
           maintainBottomViewPadding: true,
           child: Column(
             children: [
-              CustomAppBar(
+              const CustomAppBar(
                 isHomeScreen: true,
+              ),
+              TextButton(
+                onPressed: () {
+                  const storage = FlutterSecureStorage();
+                  storage.deleteAll();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RouteName.login,
+                    (route) => false,
+                  );
+                },
+                child: const Text('로그아웃'),
               ),
             ],
           ),

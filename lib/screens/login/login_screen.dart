@@ -3,11 +3,19 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/auth/kakao_login.dart';
+import 'package:sprit/apis/auth/local_login.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/text_input.dart';
+
+Future<String> localLogin(
+  BuildContext context,
+  LoginUserInfo loginUserInfo,
+) async {
+  return await LocalAuthService.localLogin(context, loginUserInfo);
+}
 
 Future<void> loginWithKaKao(BuildContext context) async {
   OAuthToken? token = await KakaoService.handleKaKaoLoginClick(
@@ -54,9 +62,17 @@ Future<void> loginWithKaKao(BuildContext context) async {
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String _userId = '';
+  String _userPassword = '';
+  bool validation = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,16 +124,23 @@ class LoginScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '먼저, 로그인이 필요해요',
-                        style: TextStyles.loginLabel,
+                      Text(
+                        validation ? '먼저, 로그인이 필요해요' : '아이디와 비밀번호를 다시 확인하세요',
+                        style: TextStyles.loginLabel.copyWith(
+                          color:
+                              validation ? ColorSet.semiDarkGrey : Colors.red,
+                        ),
                       ),
                       const SizedBox(
                         height: 6,
                       ),
                       CustomTextField(
                         hintText: '아이디',
-                        onChanged: (String value) {},
+                        onChanged: (String value) {
+                          setState(() {
+                            _userId = value;
+                          });
+                        },
                         width: Scaler.width(0.85, context),
                         height: 50,
                         padding: 15,
@@ -128,7 +151,11 @@ class LoginScreen extends StatelessWidget {
                       CustomTextField(
                         hintText: '비밀번호',
                         obscureText: true,
-                        onChanged: (String value) {},
+                        onChanged: (String value) {
+                          setState(() {
+                            _userPassword = value;
+                          });
+                        },
                         width: Scaler.width(0.85, context),
                         height: 50,
                         padding: 15,
@@ -137,7 +164,34 @@ class LoginScreen extends StatelessWidget {
                         height: 10,
                       ),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          setState(() {
+                            validation = true;
+                          });
+                          final loginResult = await localLogin(
+                            context,
+                            LoginUserInfo(
+                              userId: _userId,
+                              userPassword: _userPassword,
+                            ),
+                          );
+                          if (loginResult == '') {
+                            setState(() {
+                              validation = false;
+                            });
+                          } else {
+                            const storage = FlutterSecureStorage();
+                            await storage.write(
+                              key: "access_token",
+                              value: loginResult,
+                            );
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              RouteName.home,
+                              (route) => false,
+                            );
+                          }
+                        },
                         width: Scaler.width(0.85, context),
                         height: 45,
                         child: const Text(
