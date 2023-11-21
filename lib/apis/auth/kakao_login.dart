@@ -1,5 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
+import 'package:sprit/apis/auth_dio.dart';
+
+class KakaoAuthTokenInfo {
+  final String accessToken;
+  final String expiresAt;
+  final String refreshToken;
+  final String refreshTokenExpiresAt;
+  final String scopes;
+  final String idToken;
+  KakaoAuthTokenInfo({
+    required this.accessToken,
+    required this.expiresAt,
+    required this.refreshToken,
+    required this.refreshTokenExpiresAt,
+    required this.scopes,
+    required this.idToken,
+  });
+
+  KakaoAuthTokenInfo.fromJson(Map<String, dynamic> json)
+      : accessToken = json['access_token'],
+        expiresAt = json['expires_at'],
+        refreshToken = json['refresh_token'],
+        refreshTokenExpiresAt = json['refresh_token_expires_at'],
+        scopes = json['scopes'],
+        idToken = json['id_token'];
+
+  Map<String, dynamic> toJson() => {
+        'access_token': accessToken,
+        'expires_at': expiresAt,
+        'refresh_token': refreshToken,
+        'refresh_token_expires_at': refreshTokenExpiresAt,
+        'scopes': scopes,
+        'id_token': idToken,
+      };
+}
 
 class KakaoService {
   static Future<OAuthToken?> handleKaKaoLoginClick(BuildContext context) async {
@@ -24,5 +59,29 @@ class KakaoService {
       }
     }
     return token;
+  }
+
+  static Future<String> kakaoLogin(
+    BuildContext context,
+    OAuthToken authToken,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.post('/auth/login/kakao', data: {
+        'access_token': authToken.accessToken,
+        'refresh_token': authToken.refreshToken,
+        'expires_at': authToken.expiresAt.toString(),
+        'refresh_token_expires_at': authToken.refreshTokenExpiresAt.toString(),
+        'id_token': authToken.idToken,
+      });
+      if (response.statusCode == 201) {
+        return response.data['access_token'];
+      } else {
+        debugPrint('카카오 로그인 요청 실패');
+      }
+    } catch (e) {
+      debugPrint('카카오 로그인 요청 실패 $e');
+    }
+    return '';
   }
 }

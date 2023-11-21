@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/auth/kakao_login.dart';
@@ -7,6 +8,51 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/text_input.dart';
+
+Future<void> loginWithKaKao(BuildContext context) async {
+  OAuthToken? token = await KakaoService.handleKaKaoLoginClick(
+    context,
+  );
+  if (token != null) {
+    final loginResult = await KakaoService.kakaoLogin(context, token);
+    if (loginResult != '') {
+      const storage = FlutterSecureStorage();
+      await storage.write(
+        key: "access_token",
+        value: loginResult,
+      );
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteName.home,
+        (route) => false,
+      );
+    } else {
+      debugPrint('카카오 로그인 실패');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            '카카오 로그인에 실패했습니다. 다시 시도해주세요.',
+            style: TextStyle(
+              fontSize: 13,
+            ),
+          ),
+        ),
+      );
+    }
+  } else {
+    debugPrint('카카오 로그인 실패');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          '카카오 로그인에 실패했습니다. 다시 시도해주세요.',
+          style: TextStyle(
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -164,11 +210,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       CustomButton(
                         onPressed: () async {
-                          OAuthToken? token =
-                              await KakaoService.handleKaKaoLoginClick(
-                            context,
-                          );
-                          print(token ?? 'null');
+                          await loginWithKaKao(context);
                         },
                         width: Scaler.width(0.85, context),
                         height: 45,
