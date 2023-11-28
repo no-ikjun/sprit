@@ -18,6 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(milliseconds: 1500), () async {
       const storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: "access_token");
+      debugPrint(accessToken);
       if (accessToken != null) {
         Navigator.pushReplacementNamed(context, RouteName.home);
         return;
