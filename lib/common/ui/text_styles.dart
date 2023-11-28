@@ -58,4 +58,26 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle homeNameStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle homeButtonTitleStyle = TextStyle(
+    color: Colors.black,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle homeButtonLabelStyle = TextStyle(
+    color: Color(0xFF979797),
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+    letterSpacing: -0.2,
+  );
 }
