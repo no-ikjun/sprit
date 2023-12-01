@@ -35,6 +35,7 @@ class LocalAuthService {
           'user_password': loginUserInfo.userPassword,
         },
       );
+      debugPrint(response.data['access_token']);
       return response.data['access_token'];
     } catch (e) {
       debugPrint('로컬 로그인 실패 $e');

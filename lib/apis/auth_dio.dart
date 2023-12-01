@@ -10,7 +10,7 @@ Future<Dio> authDio(BuildContext context) async {
   final debugMode = prefs.getBool("debugMode") ?? false;
   var dio = Dio();
   dio.options.baseUrl =
-      (kReleaseMode && !debugMode) ? "" : "http://192.168.1.4:3000";
+      (kReleaseMode && !debugMode) ? "" : "http://127.0.0.1:3000";
 
   const storage = FlutterSecureStorage();
   dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
