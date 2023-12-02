@@ -228,7 +228,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         const storage = FlutterSecureStorage();
                         storage.deleteAll();
-                        Navigator.pushNamed(context, '/login');
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/login',
+                          (route) => false,
+                        );
                       },
                       child: const Text('로그아웃'),
                     ),

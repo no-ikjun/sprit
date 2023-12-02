@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:provider/provider.dart';
 import 'package:sprit/common/value/router.dart';
-import 'package:sprit/providers/counts.dart';
+import 'package:sprit/providers/user_info.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Counts()),
+        ChangeNotifierProvider(create: (_) => UserInfoState()),
       ],
       child: const MyApp(),
     ),
