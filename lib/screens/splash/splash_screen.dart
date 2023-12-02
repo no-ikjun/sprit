@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,6 +23,8 @@ class _SplashScreenState extends State<SplashScreen> {
       final accessToken = await storage.read(key: "access_token");
       debugPrint(accessToken);
       if (accessToken != null) {
+        final userInfo = await UserInfoService.getUserInfo(context);
+        context.read<UserInfoState>().updateUserInfo(userInfo!);
         Navigator.pushReplacementNamed(context, RouteName.home);
         return;
       }

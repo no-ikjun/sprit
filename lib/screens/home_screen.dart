@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
@@ -51,11 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(
                       width: Scaler.width(0.85, context),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            'IkJun님이 읽고있는 책이에요 📚',
+                            '${context.watch<UserInfoState>().userInfo.userNickname}님이 읽고있는 책이에요 📚',
                             style: TextStyles.homeNameStyle,
                           ),
                         ],

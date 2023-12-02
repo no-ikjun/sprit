@@ -33,7 +33,6 @@ class UserInfoService {
       );
       if (response.statusCode == 200) {
         userInfo = UserInfo.fromJson(response.data);
-        debugPrint(response.data.toString());
       } else {
         debugPrint('유저 정보 조회 실패');
       }
