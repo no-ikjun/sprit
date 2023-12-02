@@ -56,9 +56,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            '${context.watch<UserInfoState>().userInfo.userNickname}님이 읽고있는 책이에요 📚',
-                            style: TextStyles.homeNameStyle,
+                          Flexible(
+                            child: Row(
+                              children: [
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: Scaler.width(0.3, context)),
+                                  child: Text(
+                                    context
+                                        .watch<UserInfoState>()
+                                        .userInfo
+                                        .userNickname,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyles.homeNameStyle,
+                                  ),
+                                ),
+                                const Text(
+                                  '님이 읽고있는 책이에요 📚',
+                                  style: TextStyles.homeNameStyle,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
