@@ -80,4 +80,11 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
     letterSpacing: -0.2,
   );
+
+  static const TextStyle textFieldStyle = TextStyle(
+    color: ColorSet.black,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

@@ -28,7 +28,7 @@ class CustomAppBar extends StatelessWidget {
       elevation: 0,
       leadingWidth: isHomeScreen
           ? 69 + Scaler.width(0.075, context)
-          : 20 + Scaler.width(0.075, context),
+          : 30 + Scaler.width(0.075, context),
       leading: isHomeScreen
           ? Padding(
               padding: EdgeInsets.only(left: Scaler.width(0.075, context)),

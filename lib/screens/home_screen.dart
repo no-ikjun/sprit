@@ -17,6 +17,11 @@ List<String> bookList = [
   "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6318015%3Ftimestamp%3D20231124172005",
 ];
 
+void updateUserInfo(BuildContext context) async {
+  final userInfo = await UserInfoService.getUserInfo(context);
+  context.read<UserInfoState>().updateUserInfo(userInfo!);
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -28,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    UserInfoService.getUserInfo(context);
+    updateUserInfo(context);
   }
 
   @override
@@ -122,62 +127,71 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            width: Scaler.width(0.41, context),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: List.generate(
-                                1,
-                                (index) => BoxShadow(
-                                  color:
-                                      const Color(0x0D000000).withOpacity(0.05),
-                                  offset: const Offset(0, 0),
-                                  blurRadius: 3,
-                                  spreadRadius: 0,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/search');
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Container(
+                              width: Scaler.width(0.41, context),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 16,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: List.generate(
+                                  1,
+                                  (index) => BoxShadow(
+                                    color: const Color(0x0D000000)
+                                        .withOpacity(0.05),
+                                    offset: const Offset(0, 0),
+                                    blurRadius: 3,
+                                    spreadRadius: 0,
+                                  ),
                                 ),
                               ),
-                            ),
-                            child: Stack(
-                              children: [
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '책 검색하기',
-                                      style: TextStyles.homeButtonTitleStyle,
-                                    ),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Text(
-                                      '읽고있는 책 제목을\n검색해보세요!',
-                                      style: TextStyles.homeButtonLabelStyle,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/3d_magnifier.png',
-                                          width: Scaler.width(0.12, context),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              child: Stack(
+                                children: [
+                                  const Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '책 검색하기',
+                                        style: TextStyles.homeButtonTitleStyle,
+                                      ),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text(
+                                        '읽고있는 책 제목을\n검색해보세요!',
+                                        style: TextStyles.homeButtonLabelStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/3d_magnifier.png',
+                                            width: Scaler.width(0.12, context),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           Container(
