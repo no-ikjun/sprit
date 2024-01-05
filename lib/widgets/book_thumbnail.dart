@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sprit/common/ui/text_styles.dart';
 
 class BookThumbnail extends StatelessWidget {
   final String imgUrl;
@@ -39,6 +40,17 @@ class BookThumbnail extends StatelessWidget {
             imgUrl,
             width: width,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              color: const Color(0xFFEEEEEE),
+              width: width,
+              height: height,
+              child: const Center(
+                child: Text(
+                  '이미지\n준비중',
+                  style: TextStyles.searchResultDetailStyle,
+                ),
+              ),
+            ),
           ),
         ),
       ),
