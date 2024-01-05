@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_search.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
@@ -13,6 +14,37 @@ Future<Map<String, dynamic>> searchBook(
   int page,
 ) async {
   return await BookSearchService.searchBook(context, query, page);
+}
+
+Future<BookInfo> getBookInfoByISBN(
+  BuildContext context,
+  String isbn,
+) async {
+  return await BookInfoService.getBookInfoByISBN(context, isbn);
+}
+
+Future<void> registerBook(
+  BuildContext context,
+  String isbn,
+) async {
+  return await BookInfoService.registerBook(context, isbn);
+}
+
+void showBookInfo(
+  BuildContext context,
+  String isbn,
+  String isbnAll,
+) async {
+  BookInfo bookInfo = await getBookInfoByISBN(context, isbn);
+  if (bookInfo.bookUuid == '') {
+    await registerBook(context, isbn);
+    bookInfo = await getBookInfoByISBN(context, isbnAll);
+  }
+  Navigator.pushNamed(
+    context,
+    '/bookDetail',
+    arguments: bookInfo.bookUuid,
+  );
 }
 
 class SearchScreen extends StatefulWidget {
@@ -147,6 +179,7 @@ class _SearchScreenState extends State<SearchScreen>
                         CupertinoActivityIndicator(
                           color: ColorSet.grey,
                           animating: true,
+                          radius: 15,
                         ),
                       ],
                     ),
@@ -183,6 +216,13 @@ class _SearchScreenState extends State<SearchScreen>
                                 itemBuilder: (context, index) {
                                   return SearchResultWidget(
                                     bookInfo: searchResult[index],
+                                    onTap: () {
+                                      showBookInfo(
+                                        context,
+                                        searchResult[index].isbn.split(' ')[0],
+                                        searchResult[index].isbn,
+                                      );
+                                    },
                                   );
                                 },
                               ),

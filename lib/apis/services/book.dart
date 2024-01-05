@@ -56,11 +56,23 @@ class BookInfo {
 }
 
 class BookInfoService {
-  static Future<BookInfo?> getBookInfoByISBN(
+  static Future<BookInfo> getBookInfoByISBN(
     BuildContext context,
     String isbn,
   ) async {
-    BookInfo? bookInfo;
+    BookInfo bookInfo = const BookInfo(
+      bookUuid: '',
+      isbn: '',
+      title: '',
+      authors: '',
+      publisher: '',
+      translators: '',
+      searchUrl: '',
+      thumbnail: '',
+      content: '',
+      publishedAt: '',
+      updatedAt: '',
+    );
     final dio = await authDio(context);
     try {
       final response = await dio.get(
@@ -80,11 +92,23 @@ class BookInfoService {
     return bookInfo;
   }
 
-  static Future<BookInfo?> getBookInfoByUuid(
+  static Future<BookInfo> getBookInfoByUuid(
     BuildContext context,
     String uuid,
   ) async {
-    BookInfo? bookInfo;
+    BookInfo bookInfo = const BookInfo(
+      bookUuid: '',
+      isbn: '',
+      title: '',
+      authors: '',
+      publisher: '',
+      translators: '',
+      searchUrl: '',
+      thumbnail: '',
+      content: '',
+      publishedAt: '',
+      updatedAt: '',
+    );
     final dio = await authDio(context);
     try {
       final response = await dio.get(
@@ -102,5 +126,28 @@ class BookInfoService {
       debugPrint('도서 정보 조회 실패 $e');
     }
     return bookInfo;
+  }
+
+  static Future<void> registerBook(
+    BuildContext context,
+    String isbn,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.post(
+        '/book/register',
+        queryParameters: {
+          'isbn': isbn,
+        },
+      );
+      debugPrint(isbn);
+      if (response.statusCode == 201) {
+        debugPrint('도서 등록 성공');
+      } else {
+        debugPrint('도서 등록 실패');
+      }
+    } catch (e) {
+      debugPrint('도서 등록 실패 $e');
+    }
   }
 }
