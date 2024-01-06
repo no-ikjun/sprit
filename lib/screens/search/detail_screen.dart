@@ -405,7 +405,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           children: [
                                             SvgPicture.asset(
                                               'assets/images/book_icon.svg',
-                                              width: 28.2,
+                                              width: 28,
                                             ),
                                             const SizedBox(
                                               width: 10,

@@ -1,8 +1,10 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/banner.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
@@ -22,6 +24,10 @@ void updateUserInfo(BuildContext context) async {
   context.read<UserInfoState>().updateUserInfo(userInfo!);
 }
 
+Future<List<BannerInfo>> getBannerInfo(BuildContext context) async {
+  return await BannerInfoService.getBannerInfo(context);
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -30,10 +36,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<BannerInfo> bannerInfo = [];
+
   @override
   void initState() {
     super.initState();
     updateUserInfo(context);
+    getBannerInfo(context).then((value) {
+      setState(() {
+        bannerInfo = value;
+      });
+    });
   }
 
   @override
@@ -254,6 +267,71 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    SizedBox(
+                      width: Scaler.width(1, context),
+                      child: bannerInfo.isNotEmpty
+                          ? CarouselSlider.builder(
+                              itemCount: bannerInfo.length,
+                              options: CarouselOptions(
+                                viewportFraction: 0.87,
+                                aspectRatio: Scaler.width(0.85, context) / 55,
+                                autoPlay: true,
+                                autoPlayInterval: const Duration(seconds: 10),
+                                enlargeCenterPage: false,
+                                enableInfiniteScroll: false,
+                              ),
+                              itemBuilder: (context, index, realIndex) =>
+                                  Container(
+                                width: Scaler.width(0.85, context),
+                                clipBehavior: Clip.hardEdge,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 0,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: const Color(0xFFD7FDFF),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          bannerInfo[index].title,
+                                          style: TextStyles.bannerTitleStyle,
+                                        ),
+                                        const SizedBox(
+                                          height: 2,
+                                        ),
+                                        Text(
+                                          bannerInfo[index].content,
+                                          style: TextStyles.bannerContentStyle,
+                                        ),
+                                        const SizedBox(
+                                          height: 3,
+                                        ),
+                                      ],
+                                    ),
+                                    Image.network(
+                                      bannerInfo[index].iconUrl,
+                                      width: 55,
+                                      height: 55,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ),
                     const SizedBox(
                       height: 10,
