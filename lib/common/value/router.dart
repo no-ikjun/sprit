@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sprit/screens/home_screen.dart';
 import 'package:sprit/screens/login/login_screen.dart';
 import 'package:sprit/screens/login/sign_up_screen.dart';
-import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
@@ -21,7 +20,4 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.login: (context) => const LoginScreen(),
   RouteName.signUp: (context) => const SignUpScreen(),
   RouteName.search: (context) => const SearchScreen(),
-  RouteName.bookDetail: (context) => const BookDetailScreen(
-        bookUuid: '',
-      ),
 };

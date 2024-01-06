@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/auth_dio.dart';
 
@@ -5,9 +7,9 @@ class BookInfo {
   final String bookUuid;
   final String isbn;
   final String title;
-  final String authors;
+  final List<String> authors;
   final String publisher;
-  final String translators;
+  final List<String> translators;
   final String searchUrl;
   final String thumbnail;
   final String content;
@@ -32,9 +34,9 @@ class BookInfo {
       : bookUuid = json['book_uuid'],
         isbn = json['isbn'],
         title = json['title'],
-        authors = json['authors'],
+        authors = jsonDecode(json['authors']).cast<String>(),
         publisher = json['publisher'],
-        translators = json['translators'],
+        translators = jsonDecode(json['translators']).cast<String>(),
         searchUrl = json['search_url'],
         thumbnail = json['thumbnail'],
         content = json['content'],
@@ -64,9 +66,9 @@ class BookInfoService {
       bookUuid: '',
       isbn: '',
       title: '',
-      authors: '',
+      authors: [],
       publisher: '',
-      translators: '',
+      translators: [],
       searchUrl: '',
       thumbnail: '',
       content: '',
@@ -100,9 +102,9 @@ class BookInfoService {
       bookUuid: '',
       isbn: '',
       title: '',
-      authors: '',
+      authors: [],
       publisher: '',
-      translators: '',
+      translators: [],
       searchUrl: '',
       thumbnail: '',
       content: '',
@@ -140,7 +142,6 @@ class BookInfoService {
           'isbn': isbn,
         },
       );
-      debugPrint(isbn);
       if (response.statusCode == 201) {
         debugPrint('도서 등록 성공');
       } else {
