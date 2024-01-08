@@ -265,35 +265,45 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                       Row(
                                         children: [
                                           SvgPicture.asset(
-                                            'assets/images/star_yellow.svg',
+                                            bookInfo.star >= 0.5
+                                                ? 'assets/images/star_yellow.svg'
+                                                : 'assets/images/star_grey.svg',
                                             width: 18,
                                           ),
                                           const SizedBox(
                                             width: 5,
                                           ),
                                           SvgPicture.asset(
-                                            'assets/images/star_yellow.svg',
+                                            bookInfo.star >= 1.5
+                                                ? 'assets/images/star_yellow.svg'
+                                                : 'assets/images/star_grey.svg',
                                             width: 18,
                                           ),
                                           const SizedBox(
                                             width: 5,
                                           ),
                                           SvgPicture.asset(
-                                            'assets/images/star_yellow.svg',
+                                            bookInfo.star >= 2.5
+                                                ? 'assets/images/star_yellow.svg'
+                                                : 'assets/images/star_grey.svg',
                                             width: 18,
                                           ),
                                           const SizedBox(
                                             width: 5,
                                           ),
                                           SvgPicture.asset(
-                                            'assets/images/star_yellow.svg',
+                                            bookInfo.star >= 3.5
+                                                ? 'assets/images/star_yellow.svg'
+                                                : 'assets/images/star_grey.svg',
                                             width: 18,
                                           ),
                                           const SizedBox(
                                             width: 5,
                                           ),
                                           SvgPicture.asset(
-                                            'assets/images/star_grey.svg',
+                                            bookInfo.star >= 4.5
+                                                ? 'assets/images/star_yellow.svg'
+                                                : 'assets/images/star_grey.svg',
                                             width: 18,
                                           ),
                                           const SizedBox(
