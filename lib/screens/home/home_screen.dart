@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   List<BookInfo> popularBookInfo = [];
   bool moreAvailable = false;
   int currentPage = 1;
+  bool moreLoading = false;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -92,11 +93,15 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadMoreData() async {
     if (moreAvailable) {
+      setState(() {
+        moreLoading = true;
+      });
       final newPopularBookInfo = await getPopularBook(context, currentPage + 1);
       setState(() {
         popularBookInfo.addAll(newPopularBookInfo['books']);
         moreAvailable = newPopularBookInfo['more_available'];
         currentPage++;
+        moreLoading = false;
       });
     }
   }
@@ -462,15 +467,31 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: ListView.builder(
-                                itemCount: popularBookInfo.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) =>
-                                    PopularBookWidget(
-                                  bookInfo: popularBookInfo[index],
-                                  onTap: () {},
-                                ),
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                    itemCount: popularBookInfo.length,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) =>
+                                        PopularBookWidget(
+                                      bookInfo: popularBookInfo[index],
+                                      onTap: () {},
+                                    ),
+                                  ),
+                                  moreLoading
+                                      ? const SizedBox(
+                                          height: 30,
+                                          child: Center(
+                                            child: CupertinoActivityIndicator(
+                                              radius: 10,
+                                              animating: true,
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
                               ),
                             )
                           : Container(),

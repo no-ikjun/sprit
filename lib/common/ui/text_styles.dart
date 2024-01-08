@@ -171,4 +171,11 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle popularBookScoreStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

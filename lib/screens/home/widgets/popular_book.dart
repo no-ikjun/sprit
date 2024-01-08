@@ -97,7 +97,9 @@ class PopularBookWidget extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            bookInfo.isbn,
+                            bookInfo.publishedAt.length > 9
+                                ? '${bookInfo.publisher} · ${bookInfo.publishedAt.substring(0, 10)}'
+                                : '${bookInfo.publisher} · ${bookInfo.publishedAt}',
                             style: TextStyles.searchResultDetailStyle.copyWith(
                               color: ColorSet.grey,
                             ),
@@ -109,6 +111,41 @@ class PopularBookWidget extends StatelessWidget {
                           SvgPicture.asset(
                             'assets/images/star_yellow.svg',
                             width: 15,
+                          ),
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          SvgPicture.asset(
+                            'assets/images/star_yellow.svg',
+                            width: 15,
+                          ),
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          SvgPicture.asset(
+                            'assets/images/star_yellow.svg',
+                            width: 15,
+                          ),
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          SvgPicture.asset(
+                            'assets/images/star_yellow.svg',
+                            width: 15,
+                          ),
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          SvgPicture.asset(
+                            'assets/images/star_grey.svg',
+                            width: 15,
+                          ),
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          const Text(
+                            '(4/5)',
+                            style: TextStyles.popularBookScoreStyle,
                           ),
                         ],
                       ),
