@@ -39,6 +39,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     publishedAt: '',
     updatedAt: '',
     score: 0,
+    star: 0,
   );
   bool isLoading = false;
 
@@ -298,8 +299,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           const SizedBox(
                                             width: 7,
                                           ),
-                                          const Text(
-                                            '(4.1/5.0)',
+                                          Text(
+                                            '(${bookInfo.star}/5.0)',
                                             style: TextStyles
                                                 .bookDeatilReviewScoreStyle,
                                           ),
