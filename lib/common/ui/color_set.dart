@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ColorSet {
   static const Color primary = Color(0xFF36CED8);
+  static const Color primaryLight = Color(0xFF83D1D6);
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color background = Color(0xFFF2F8FA);

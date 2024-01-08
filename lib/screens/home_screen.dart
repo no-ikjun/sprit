@@ -16,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Widget _getTabWidget(int index) {
-    // 아래는 예시로, 실제 앱에서는 각 탭에 맞는 페이지를 반환해야 합니다.
     switch (index) {
       case 0:
         return const HomePage();

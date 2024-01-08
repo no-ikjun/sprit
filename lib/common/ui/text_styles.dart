@@ -168,7 +168,7 @@ class TextStyles {
   static const TextStyle bottomAppBarLabelStyle = TextStyle(
     color: ColorSet.grey,
     fontSize: 10,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
 }

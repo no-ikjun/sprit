@@ -43,13 +43,22 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   children: [
                     const SizedBox(height: 10),
                     SvgPicture.asset(
-                      'assets/images/home_icon_grey.svg',
+                      widget.selectedIndex == 0
+                          ? 'assets/images/home_icon_blue.svg'
+                          : 'assets/images/home_icon_grey.svg',
                       height: 26,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       '홈',
-                      style: TextStyles.bottomAppBarLabelStyle,
+                      style: TextStyles.bottomAppBarLabelStyle.copyWith(
+                        color: (widget.selectedIndex == 0)
+                            ? ColorSet.primaryLight
+                            : ColorSet.grey,
+                        fontWeight: (widget.selectedIndex == 0)
+                            ? FontWeight.w800
+                            : FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -65,13 +74,22 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   children: [
                     const SizedBox(height: 10),
                     SvgPicture.asset(
-                      'assets/images/bookmark_icon_grey.svg',
-                      height: 24,
+                      widget.selectedIndex == 1
+                          ? 'assets/images/bookmark_icon_blue.svg'
+                          : 'assets/images/bookmark_icon_grey.svg',
+                      height: 26,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       '책갈피',
-                      style: TextStyles.bottomAppBarLabelStyle,
+                      style: TextStyles.bottomAppBarLabelStyle.copyWith(
+                        color: (widget.selectedIndex == 1)
+                            ? ColorSet.primaryLight
+                            : ColorSet.grey,
+                        fontWeight: (widget.selectedIndex == 1)
+                            ? FontWeight.w800
+                            : FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -88,13 +106,22 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   children: [
                     const SizedBox(height: 10),
                     SvgPicture.asset(
-                      'assets/images/magnifier_icon_grey.svg',
+                      widget.selectedIndex == 2
+                          ? 'assets/images/magnifier_icon_blue.svg'
+                          : 'assets/images/magnifier_icon_grey.svg',
                       height: 24,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       '찾아보기',
-                      style: TextStyles.bottomAppBarLabelStyle,
+                      style: TextStyles.bottomAppBarLabelStyle.copyWith(
+                        color: (widget.selectedIndex == 2)
+                            ? ColorSet.primaryLight
+                            : ColorSet.grey,
+                        fontWeight: (widget.selectedIndex == 2)
+                            ? FontWeight.w800
+                            : FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -110,13 +137,22 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   children: [
                     const SizedBox(height: 10),
                     SvgPicture.asset(
-                      'assets/images/graph_icon_grey.svg',
+                      widget.selectedIndex == 3
+                          ? 'assets/images/graph_icon_blue.svg'
+                          : 'assets/images/graph_icon_grey.svg',
                       height: 24,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       '기록분석',
-                      style: TextStyles.bottomAppBarLabelStyle,
+                      style: TextStyles.bottomAppBarLabelStyle.copyWith(
+                        color: (widget.selectedIndex == 3)
+                            ? ColorSet.primaryLight
+                            : ColorSet.grey,
+                        fontWeight: (widget.selectedIndex == 3)
+                            ? FontWeight.w800
+                            : FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
