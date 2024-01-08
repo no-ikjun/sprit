@@ -94,7 +94,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   ],
                 ),
               ),
-              const SizedBox(width: 25),
+              const SizedBox(width: 23),
               InkWell(
                 onTap: () {
                   widget.onItemTapped(2);

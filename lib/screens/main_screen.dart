@@ -3,18 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
-import 'package:sprit/screens/pages/home.dart';
+import 'package:sprit/screens/home/home_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainScreenState extends State<MainScreen> {
   Widget _getTabWidget(int index) {
     switch (index) {
       case 0:

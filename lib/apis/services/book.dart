@@ -3,6 +3,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/auth_dio.dart';
 
+class PopularbookResponse {
+  final List<dynamic> books;
+  final bool moreAvailable;
+
+  const PopularbookResponse({
+    required this.books,
+    required this.moreAvailable,
+  });
+
+  PopularbookResponse.fromJson(Map<String, dynamic> json)
+      : books = json['books'],
+        moreAvailable = json['more_available'];
+  Map<String, dynamic> toJson() => {
+        'books': books,
+        'moreAvailable': moreAvailable,
+      };
+}
+
 class BookInfo {
   final String bookUuid;
   final String isbn;
@@ -156,5 +174,37 @@ class BookInfoService {
     } catch (e) {
       debugPrint('도서 등록 실패 $e');
     }
+  }
+
+  static Future<Map<String, dynamic>> getPopularBook(
+    BuildContext context,
+    int page,
+  ) async {
+    List<BookInfo> bookInfoList = [];
+    bool moreAvailable = false;
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/book/popular',
+        queryParameters: {
+          'page': page,
+        },
+      );
+      if (response.statusCode == 200) {
+        var result = PopularbookResponse.fromJson(response.data);
+        moreAvailable = result.moreAvailable;
+        for (var book in result.books) {
+          bookInfoList.add(BookInfo.fromJson(book));
+        }
+      } else {
+        debugPrint('도서 검색 실패');
+      }
+    } catch (e) {
+      debugPrint('도서 검색 실패 $e');
+    }
+    return {
+      'books': bookInfoList,
+      'more_available': moreAvailable,
+    };
   }
 }

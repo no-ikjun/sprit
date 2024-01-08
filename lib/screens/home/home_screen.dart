@@ -5,10 +5,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/banner.dart';
+import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/home/widgets/popular_book.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
@@ -28,6 +30,13 @@ Future<List<BannerInfo>> getBannerInfo(BuildContext context) async {
   return await BannerInfoService.getBannerInfo(context);
 }
 
+Future<Map<String, dynamic>> getPopularBook(
+  BuildContext context,
+  int page,
+) async {
+  return await BookInfoService.getPopularBook(context, page);
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -38,6 +47,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int bannerCurrent = 0;
   List<BannerInfo> bannerInfo = [];
+
+  List<BookInfo> popularBookInfo = [];
+  bool moreAvailable = false;
 
   Future<void> _onRefresh() async {
     updateUserInfo(context);
@@ -54,6 +66,12 @@ class _HomePageState extends State<HomePage> {
     getBannerInfo(context).then((value) {
       setState(() {
         bannerInfo = value;
+      });
+    });
+    getPopularBook(context, 1).then((value) {
+      setState(() {
+        popularBookInfo = value['books'];
+        moreAvailable = value['more_available'];
       });
     });
   }
@@ -385,8 +403,46 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 1000,
+                        height: 12,
                       ),
+                      SizedBox(
+                        width: Scaler.width(0.85, context),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              '요즘 인기있는 책이에요 📖',
+                              style: TextStyles.homeNameStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      popularBookInfo.isNotEmpty
+                          ? Container(
+                              width: Scaler.width(0.85, context),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 18,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: ListView.builder(
+                                itemCount: popularBookInfo.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) =>
+                                    PopularBookWidget(
+                                  bookInfo: popularBookInfo[index],
+                                  onTap: () {},
+                                ),
+                              ),
+                            )
+                          : Container(),
                       TextButton(
                         onPressed: () {
                           const storage = FlutterSecureStorage();
