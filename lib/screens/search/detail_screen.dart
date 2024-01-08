@@ -480,48 +480,48 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                         ],
                       ),
                     ),
-                    if (_showButton)
-                      Positioned(
-                        bottom: 10.0,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 23,
-                            vertical: 12,
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 200),
+                      bottom: _showButton ? 10.0 : -60.0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 23,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorSet.primary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(28),
                           ),
-                          decoration: BoxDecoration(
-                            color: ColorSet.primary,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(28),
+                          boxShadow: [
+                            BoxShadow(
+                              color: ColorSet.primary.withOpacity(0.3),
+                              spreadRadius: 0,
+                              blurRadius: 4,
+                              offset: const Offset(
+                                0,
+                                4,
+                              ), // changes position of shadow
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: ColorSet.primary.withOpacity(0.3),
-                                spreadRadius: 0,
-                                blurRadius: 4,
-                                offset: const Offset(
-                                  0,
-                                  4,
-                                ), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              const Text(
-                                '독서 시작하기',
-                                style: TextStyles.bookDetailButtonStyle,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images/white_right_arrow.svg',
-                                width: 6,
-                              ),
-                            ],
-                          ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Text(
+                              '독서 시작하기',
+                              style: TextStyles.bookDetailButtonStyle,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SvgPicture.asset(
+                              'assets/images/white_right_arrow.svg',
+                              width: 6,
+                            ),
+                          ],
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),
