@@ -50,18 +50,25 @@ class _HomePageState extends State<HomePage> {
 
   List<BookInfo> popularBookInfo = [];
   bool moreAvailable = false;
+  int currentPage = 1;
+
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> _onRefresh() async {
     updateUserInfo(context);
     final newBannerInfo = await getBannerInfo(context);
+    final newPopularBookInfo = await getPopularBook(context, 1);
     setState(() {
       bannerInfo = newBannerInfo;
+      popularBookInfo = newPopularBookInfo['books'];
+      moreAvailable = newPopularBookInfo['more_available'];
     });
   }
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     updateUserInfo(context);
     getBannerInfo(context).then((value) {
       setState(() {
@@ -76,6 +83,30 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _loadMoreData();
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (moreAvailable) {
+      final newPopularBookInfo = await getPopularBook(context, currentPage + 1);
+      setState(() {
+        popularBookInfo.addAll(newPopularBookInfo['books']);
+        moreAvailable = newPopularBookInfo['more_available'];
+        currentPage++;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -87,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: CustomScrollView(
-              controller: ScrollController(),
+              controller: _scrollController,
               slivers: <Widget>[
                 CupertinoSliverRefreshControl(
                   onRefresh: _onRefresh,
