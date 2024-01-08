@@ -11,6 +11,7 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
+import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
@@ -477,7 +478,16 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, index) =>
                                         PopularBookWidget(
                                       bookInfo: popularBookInfo[index],
-                                      onTap: () {},
+                                      onTap: () {
+                                        showBookInfo(
+                                          context,
+                                          popularBookInfo[index]
+                                              .isbn
+                                              .trim()
+                                              .split(' ')[0],
+                                          popularBookInfo[index].isbn,
+                                        );
+                                      },
                                     ),
                                   ),
                                   moreLoading
