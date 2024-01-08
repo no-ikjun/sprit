@@ -38,6 +38,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     content: '',
     publishedAt: '',
     updatedAt: '',
+    score: 0,
   );
   bool isLoading = false;
 

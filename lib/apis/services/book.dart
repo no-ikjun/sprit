@@ -15,6 +15,7 @@ class BookInfo {
   final String content;
   final String publishedAt;
   final String updatedAt;
+  final int score;
 
   const BookInfo({
     required this.bookUuid,
@@ -28,6 +29,7 @@ class BookInfo {
     required this.content,
     required this.publishedAt,
     required this.updatedAt,
+    required this.score,
   });
 
   BookInfo.fromJson(Map<String, dynamic> json)
@@ -41,7 +43,8 @@ class BookInfo {
         thumbnail = json['thumbnail'],
         content = json['content'],
         publishedAt = json['published_at'],
-        updatedAt = json['updated_at'];
+        updatedAt = json['updated_at'],
+        score = json['score'];
   Map<String, dynamic> toJson() => {
         'book_uuid': bookUuid,
         'isbn': isbn,
@@ -54,6 +57,7 @@ class BookInfo {
         'content': content,
         'published_at': publishedAt,
         'updated_at': updatedAt,
+        'score': score,
       };
 }
 
@@ -74,6 +78,7 @@ class BookInfoService {
       content: '',
       publishedAt: '',
       updatedAt: '',
+      score: 0,
     );
     final dio = await authDio(context);
     try {
@@ -110,6 +115,7 @@ class BookInfoService {
       content: '',
       publishedAt: '',
       updatedAt: '',
+      score: 0,
     );
     final dio = await authDio(context);
     try {

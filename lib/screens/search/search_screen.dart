@@ -55,7 +55,8 @@ void showBookInfo(
 }
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  final bool isHome;
+  const SearchScreen({Key? key, this.isHome = false}) : super(key: key);
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -118,8 +119,9 @@ class _SearchScreenState extends State<SearchScreen>
         maintainBottomViewPadding: true,
         child: Column(
           children: [
-            const CustomAppBar(
+            CustomAppBar(
               label: '도서 검색',
+              onlyLabel: widget.isHome,
             ),
             Padding(
               padding: EdgeInsets.symmetric(

@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:provider/provider.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
@@ -20,6 +21,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserInfoState()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
       child: const MyApp(),
     ),
