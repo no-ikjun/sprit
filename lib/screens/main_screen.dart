@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/screens/home/home_screen.dart';
-import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -22,9 +21,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const Text('Search Tab');
       case 2:
-        return const SearchScreen(
-          isHome: true,
-        );
+        return const Text('Add Tab');
       case 3:
         return const Text('Profile Tab');
       default:

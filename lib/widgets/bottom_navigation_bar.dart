@@ -111,13 +111,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                     const SizedBox(height: 10),
                     SvgPicture.asset(
                       widget.selectedIndex == 2
-                          ? 'assets/images/magnifier_icon_blue.svg'
-                          : 'assets/images/magnifier_icon_grey.svg',
+                          ? 'assets/images/quest_icon_blue.svg'
+                          : 'assets/images/quest_icon_grey.svg',
                       height: 24,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '찾아보기',
+                      '퀘스트',
                       style: TextStyles.bottomAppBarLabelStyle.copyWith(
                         color: (widget.selectedIndex == 2)
                             ? ColorSet.primaryLight
