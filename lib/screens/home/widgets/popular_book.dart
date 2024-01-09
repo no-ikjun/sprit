@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
+import 'package:sprit/widgets/star_row.dart';
 
 class PopularBookWidget extends StatelessWidget {
   final BookInfo bookInfo;
@@ -108,53 +108,12 @@ class PopularBookWidget extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          SvgPicture.asset(
-                            bookInfo.star >= 0.5
-                                ? 'assets/images/star_yellow.svg'
-                                : 'assets/images/star_grey.svg',
-                            width: 15,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          SvgPicture.asset(
-                            bookInfo.star >= 1.5
-                                ? 'assets/images/star_yellow.svg'
-                                : 'assets/images/star_grey.svg',
-                            width: 15,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          SvgPicture.asset(
-                            bookInfo.star >= 2.5
-                                ? 'assets/images/star_yellow.svg'
-                                : 'assets/images/star_grey.svg',
-                            width: 15,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          SvgPicture.asset(
-                            bookInfo.star >= 3.5
-                                ? 'assets/images/star_yellow.svg'
-                                : 'assets/images/star_grey.svg',
-                            width: 15,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          SvgPicture.asset(
-                            bookInfo.star >= 4.5
-                                ? 'assets/images/star_yellow.svg'
-                                : 'assets/images/star_grey.svg',
-                            width: 15,
-                          ),
+                          StarRowWidget(star: bookInfo.star, size: 15, gap: 3),
                           const SizedBox(
                             width: 3,
                           ),
                           Text(
-                            '${bookInfo.star} (${bookInfo.starCount})',
+                            '${bookInfo.star.toString().substring(0, 3)} (${bookInfo.starCount})',
                             style: TextStyles.popularBookScoreStyle,
                           ),
                         ],

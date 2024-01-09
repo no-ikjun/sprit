@@ -8,6 +8,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/star_row.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<BookInfo> getBookInfoByUuid(
@@ -266,47 +267,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                     children: [
                                       Row(
                                         children: [
-                                          SvgPicture.asset(
-                                            bookInfo.star >= 0.5
-                                                ? 'assets/images/star_yellow.svg'
-                                                : 'assets/images/star_grey.svg',
-                                            width: 18,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          SvgPicture.asset(
-                                            bookInfo.star >= 1.5
-                                                ? 'assets/images/star_yellow.svg'
-                                                : 'assets/images/star_grey.svg',
-                                            width: 18,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          SvgPicture.asset(
-                                            bookInfo.star >= 2.5
-                                                ? 'assets/images/star_yellow.svg'
-                                                : 'assets/images/star_grey.svg',
-                                            width: 18,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          SvgPicture.asset(
-                                            bookInfo.star >= 3.5
-                                                ? 'assets/images/star_yellow.svg'
-                                                : 'assets/images/star_grey.svg',
-                                            width: 18,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          SvgPicture.asset(
-                                            bookInfo.star >= 4.5
-                                                ? 'assets/images/star_yellow.svg'
-                                                : 'assets/images/star_grey.svg',
-                                            width: 18,
+                                          StarRowWidget(
+                                            star: bookInfo.star,
+                                            size: 18,
+                                            gap: 5,
                                           ),
                                           const SizedBox(
                                             width: 7,

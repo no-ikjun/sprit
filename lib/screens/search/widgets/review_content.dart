@@ -60,7 +60,7 @@ class ReviewContent extends StatelessWidget {
               review.content == ''
                   ? Container()
                   : SizedBox(
-                      width: Scaler.width(0.85, context) - 28,
+                      width: Scaler.width(0.85, context) - 20,
                       child: Row(
                         children: [
                           Flexible(
