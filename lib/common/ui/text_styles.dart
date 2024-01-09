@@ -178,4 +178,39 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle bookReviewTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle bookReviewCountStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle bookReviewNameStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle bookReviewContentStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle bookReviewDateStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

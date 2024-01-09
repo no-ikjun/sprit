@@ -154,7 +154,7 @@ class PopularBookWidget extends StatelessWidget {
                             width: 3,
                           ),
                           Text(
-                            '(${bookInfo.star}/5)',
+                            '${bookInfo.star} (${bookInfo.starCount})',
                             style: TextStyles.popularBookScoreStyle,
                           ),
                         ],

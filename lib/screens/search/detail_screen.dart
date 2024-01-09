@@ -5,6 +5,7 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,6 +41,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     updatedAt: '',
     score: 0,
     star: 0,
+    starCount: 0,
   );
   bool isLoading = false;
 
@@ -310,19 +312,30 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                             width: 7,
                                           ),
                                           Text(
-                                            '(${bookInfo.star}/5.0)',
+                                            '(${bookInfo.star.toString().substring(0, 3)}/5.0)',
                                             style: TextStyles
                                                 .bookDeatilReviewScoreStyle,
                                           ),
                                         ],
                                       ),
-                                      Text(
-                                        '모두 보기 (28) >',
-                                        style: TextStyles
-                                            .bookDeatilReviewScoreStyle
-                                            .copyWith(
-                                                color: ColorSet.semiDarkGrey,
-                                                letterSpacing: -0.8),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouteName.review,
+                                            arguments: bookInfo.bookUuid,
+                                          );
+                                        },
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        child: Text(
+                                          '모두 보기 (${bookInfo.starCount}) >',
+                                          style: TextStyles
+                                              .bookDeatilReviewScoreStyle
+                                              .copyWith(
+                                                  color: ColorSet.semiDarkGrey,
+                                                  letterSpacing: -0.8),
+                                        ),
                                       ),
                                     ],
                                   ),

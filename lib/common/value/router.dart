@@ -12,6 +12,7 @@ class RouteName {
   static const signUp = "/signUp";
   static const search = "/search";
   static const bookDetail = "/bookDetail";
+  static const review = "/review";
 }
 
 var namedRoutes = <String, WidgetBuilder>{

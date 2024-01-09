@@ -35,6 +35,7 @@ class BookInfo {
   final String updatedAt;
   final int score;
   final double star;
+  final int starCount;
 
   const BookInfo({
     required this.bookUuid,
@@ -49,7 +50,8 @@ class BookInfo {
     required this.publishedAt,
     required this.updatedAt,
     required this.score,
-    required this.star,
+    this.star = 0,
+    this.starCount = 0,
   });
 
   BookInfo.fromJson(Map<String, dynamic> json)
@@ -65,7 +67,8 @@ class BookInfo {
         publishedAt = json['published_at'],
         updatedAt = json['updated_at'],
         score = json['score'],
-        star = json['star'].toDouble();
+        star = json['star'] == null ? 0.0 : json['star'].toDouble(),
+        starCount = json['star_count'] ?? 0;
   Map<String, dynamic> toJson() => {
         'book_uuid': bookUuid,
         'isbn': isbn,
@@ -80,6 +83,7 @@ class BookInfo {
         'updated_at': updatedAt,
         'score': score,
         'star': star,
+        'star_count': starCount,
       };
 }
 
@@ -102,6 +106,7 @@ class BookInfoService {
       updatedAt: '',
       score: 0,
       star: 0,
+      starCount: 0,
     );
     final dio = await authDio(context);
     try {
@@ -140,6 +145,7 @@ class BookInfoService {
       updatedAt: '',
       score: 0,
       star: 0,
+      starCount: 0,
     );
     final dio = await authDio(context);
     try {

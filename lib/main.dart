@@ -7,6 +7,7 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
+import 'package:sprit/screens/search/review_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
 void main() async {
@@ -47,6 +48,11 @@ class MyApp extends StatelessWidget {
               final String bookUuid = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => BookDetailScreen(bookUuid: bookUuid),
+              );
+            case RouteName.review:
+              final String bookUuid = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => ReviewScreen(bookUuid: bookUuid),
               );
             default:
               return MaterialPageRoute(
