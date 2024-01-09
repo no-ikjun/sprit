@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
@@ -34,6 +35,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             children: <Widget>[
               InkWell(
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   widget.onItemTapped(0);
                 },
                 splashColor: Colors.transparent,
@@ -65,6 +67,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               ),
               InkWell(
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   widget.onItemTapped(1);
                 },
                 splashColor: Colors.transparent,
@@ -97,6 +100,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               const SizedBox(width: 23),
               InkWell(
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   widget.onItemTapped(2);
                 },
                 splashColor: Colors.transparent,
@@ -128,6 +132,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               ),
               InkWell(
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   widget.onItemTapped(3);
                 },
                 splashColor: Colors.transparent,
