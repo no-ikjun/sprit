@@ -5,6 +5,7 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/screens/home/home_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
+import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/nav_drawer.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,11 +21,20 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const HomePage();
       case 1:
-        return const Text('Search Tab');
+        return const CustomAppBar(
+          onlyLabel: true,
+          label: '내 서재',
+        );
       case 2:
-        return const Text('Add Tab');
+        return const CustomAppBar(
+          onlyLabel: true,
+          label: '퀘스트',
+        );
       case 3:
-        return const Text('Profile Tab');
+        return const CustomAppBar(
+          onlyLabel: true,
+          label: '기록분석',
+        );
       default:
         return const Text('Other Tab');
     }
@@ -38,8 +48,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final navigationProvider = Provider.of<NavigationProvider>(context);
-    return AnnotatedRegion(
-      value: SystemUiOverlayStyle.dark,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: ColorSet.background,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorSet.background,
@@ -47,7 +63,9 @@ class _MainScreenState extends State<MainScreen> {
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
             boxShadow: [
               BoxShadow(
                 color: ColorSet.primary.withOpacity(0.1),
@@ -62,11 +80,15 @@ class _MainScreenState extends State<MainScreen> {
             onItemTapped: navigationProvider.selectTab,
           ),
         ),
-        body: Consumer<NavigationProvider>(
-          // `Consumer`를 사용하여 선택된 인덱스에 따라 `body`를 업데이트
-          builder: (context, navigationProvider, child) {
-            return _getTabWidget(navigationProvider.selectedIndex);
-          },
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark.copyWith(
+            statusBarColor: ColorSet.background,
+          ),
+          child: Consumer<NavigationProvider>(
+            builder: (context, navigationProvider, child) {
+              return _getTabWidget(navigationProvider.selectedIndex);
+            },
+          ),
         ),
       ),
     );

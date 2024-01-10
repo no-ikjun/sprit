@@ -125,7 +125,7 @@ class TextStyles {
 
   static const TextStyle bookDeatilLabelStyle = TextStyle(
     color: ColorSet.text,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );

@@ -366,13 +366,13 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                         width:
                                             Scaler.width(0.425, context) - 20,
                                         child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             SvgPicture.asset(
                                               'assets/images/clock_icon.svg',
-                                              width: 28.2,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
+                                              width:
+                                                  Scaler.width(0.08, context),
                                             ),
                                             const Text(
                                               '나중에 읽을 목록에\n추가하기',
@@ -391,16 +391,16 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                         width:
                                             Scaler.width(0.425, context) - 20,
                                         child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             SvgPicture.asset(
                                               'assets/images/book_icon.svg',
-                                              width: 28,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
+                                              width:
+                                                  Scaler.width(0.07, context),
                                             ),
                                             const Text(
-                                              '읽었던 책 목록에\n추가하기',
+                                              '읽었던 도서 목록에\n추가하기',
                                               style: TextStyles
                                                   .bookDeatilLabelStyle,
                                             ),
