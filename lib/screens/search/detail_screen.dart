@@ -8,6 +8,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/remove_glow.dart';
 import 'package:sprit/widgets/star_row.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -108,364 +109,372 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
-                    SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: Scaler.width(0.85, context),
-                            child: Column(
-                              children: [
-                                BookThumbnail(
-                                  imgUrl: bookInfo.thumbnail,
-                                  width: 150,
-                                  height: 216.67,
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  bookInfo.title,
-                                  style: TextStyles.bookDeatilTitleStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '저자 ',
-                                      style: TextStyles.bookDeatilAuthorStyle
-                                          .copyWith(
-                                        color: ColorSet.grey,
+                    ScrollConfiguration(
+                      behavior: RemoveGlow(),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        controller: _scrollController,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: Scaler.width(0.85, context),
+                              child: Column(
+                                children: [
+                                  BookThumbnail(
+                                    imgUrl: bookInfo.thumbnail,
+                                    width: 150,
+                                    height: 216.67,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    bookInfo.title,
+                                    style: TextStyles.bookDeatilTitleStyle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '저자 ',
+                                        style: TextStyles.bookDeatilAuthorStyle
+                                            .copyWith(
+                                          color: ColorSet.grey,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      textAlign: TextAlign.center,
+                                      Text(
+                                        bookInfo.authors.join(', '),
+                                        style: TextStyles.bookDeatilAuthorStyle,
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Container(
+                              width: Scaler.width(1, context),
+                              color: ColorSet.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 0,
+                                vertical: 15,
+                              ),
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                width: Scaler.width(0.85, context),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      '도서 정보',
+                                      style: TextStyles.bookDeatilSubTitleStyle,
                                     ),
-                                    Text(
-                                      bookInfo.authors.join(', '),
-                                      style: TextStyles.bookDeatilAuthorStyle,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          '출판사 ',
+                                          style:
+                                              TextStyles.bookDeatilLabelStyle,
+                                        ),
+                                        Text(
+                                          bookInfo.publisher,
+                                          style: TextStyles.bookDeatilLabelStyle
+                                              .copyWith(
+                                            color: ColorSet.semiDarkGrey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 2,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          '출판일 ',
+                                          style:
+                                              TextStyles.bookDeatilLabelStyle,
+                                        ),
+                                        Text(
+                                          bookInfo.publishedAt.length > 9
+                                              ? bookInfo.publishedAt
+                                                  .substring(0, 10)
+                                              : bookInfo.publishedAt,
+                                          style: TextStyles.bookDeatilLabelStyle
+                                              .copyWith(
+                                            color: ColorSet.semiDarkGrey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 2,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'ISBN ',
+                                          style:
+                                              TextStyles.bookDeatilLabelStyle,
+                                        ),
+                                        Text(
+                                          bookInfo.isbn.trim().split(' ')[0],
+                                          style: TextStyles.bookDeatilLabelStyle
+                                              .copyWith(
+                                            color: ColorSet.semiDarkGrey,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 18,
-                          ),
-                          Container(
-                            width: Scaler.width(1, context),
-                            color: ColorSet.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 0,
-                              vertical: 15,
-                            ),
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: Scaler.width(0.85, context),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    '도서 정보',
-                                    style: TextStyles.bookDeatilSubTitleStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        '출판사 ',
-                                        style: TextStyles.bookDeatilLabelStyle,
-                                      ),
-                                      Text(
-                                        bookInfo.publisher,
-                                        style: TextStyles.bookDeatilLabelStyle
-                                            .copyWith(
-                                          color: ColorSet.semiDarkGrey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        '출판일 ',
-                                        style: TextStyles.bookDeatilLabelStyle,
-                                      ),
-                                      Text(
-                                        bookInfo.publishedAt.length > 9
-                                            ? bookInfo.publishedAt
-                                                .substring(0, 10)
-                                            : bookInfo.publishedAt,
-                                        style: TextStyles.bookDeatilLabelStyle
-                                            .copyWith(
-                                          color: ColorSet.semiDarkGrey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'ISBN ',
-                                        style: TextStyles.bookDeatilLabelStyle,
-                                      ),
-                                      Text(
-                                        bookInfo.isbn.trim().split(' ')[0],
-                                        style: TextStyles.bookDeatilLabelStyle
-                                            .copyWith(
-                                          color: ColorSet.semiDarkGrey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Container(
-                            width: Scaler.width(1, context),
-                            color: ColorSet.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 0,
-                              vertical: 15,
+                            const SizedBox(
+                              height: 8,
                             ),
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: Scaler.width(0.85, context),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    '리뷰',
-                                    style: TextStyles.bookDeatilSubTitleStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          StarRowWidget(
-                                            star: bookInfo.star,
-                                            size: 18,
-                                            gap: 5,
-                                          ),
-                                          const SizedBox(
-                                            width: 7,
-                                          ),
-                                          Text(
-                                            '(${bookInfo.star.toString().substring(0, 3)}/5.0)',
-                                            style: TextStyles
-                                                .bookDeatilReviewScoreStyle,
-                                          ),
-                                        ],
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            RouteName.review,
-                                            arguments: bookInfo.bookUuid,
-                                          );
-                                        },
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        child: Text(
-                                          '모두 보기 (${bookInfo.starCount}) >',
-                                          style: TextStyles
-                                              .bookDeatilReviewScoreStyle
-                                              .copyWith(
-                                                  color: ColorSet.semiDarkGrey,
-                                                  letterSpacing: -0.8),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Container(
-                            width: Scaler.width(1, context),
-                            color: ColorSet.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 0,
-                              vertical: 15,
-                            ),
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: Scaler.width(0.85, context),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    '도서 소개',
-                                    style: TextStyles.bookDeatilSubTitleStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    bookInfo.content.isNotEmpty
-                                        ? '${bookInfo.content} ...'
-                                        : '도서 소개가 없습니다',
-                                    style: TextStyles.bookDeatilContentStyle,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Container(
-                            width: Scaler.width(1, context),
-                            color: ColorSet.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 0,
-                              vertical: 15,
-                            ),
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: Scaler.width(0.85, context),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width:
-                                            Scaler.width(0.425, context) - 20,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/clock_icon.svg',
-                                              width:
-                                                  Scaler.width(0.08, context),
-                                            ),
-                                            const Text(
-                                              '나중에 읽을 목록에\n추가하기',
-                                              style: TextStyles
-                                                  .bookDeatilLabelStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 1,
-                                        height: 50,
-                                        color: ColorSet.lightGrey,
-                                      ),
-                                      SizedBox(
-                                        width:
-                                            Scaler.width(0.425, context) - 20,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/book_icon.svg',
-                                              width:
-                                                  Scaler.width(0.07, context),
-                                            ),
-                                            const Text(
-                                              '읽었던 도서 목록에\n추가하기',
-                                              style: TextStyles
-                                                  .bookDeatilLabelStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              await launchUrl(Uri.parse(bookInfo.searchUrl));
-                            },
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            child: Container(
-                              width: Scaler.width(0.85, context),
+                            Container(
+                              width: Scaler.width(1, context),
+                              color: ColorSet.white,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 21,
-                                vertical: 14,
+                                horizontal: 0,
+                                vertical: 15,
                               ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF3D3D3D),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/daum_logo.png',
-                                        height: 22,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Image.asset(
-                                        'assets/images/kakao_text_logo.png',
-                                        height: 18,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    '상세 정보 검색  >',
-                                    style: TextStyles.bookDeatilLabelStyle
-                                        .copyWith(
-                                      color: ColorSet.white,
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                width: Scaler.width(0.85, context),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      '리뷰',
+                                      style: TextStyles.bookDeatilSubTitleStyle,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            StarRowWidget(
+                                              star: bookInfo.star,
+                                              size: 18,
+                                              gap: 5,
+                                            ),
+                                            const SizedBox(
+                                              width: 7,
+                                            ),
+                                            Text(
+                                              '(${bookInfo.star.toString().substring(0, 3)}/5.0)',
+                                              style: TextStyles
+                                                  .bookDeatilReviewScoreStyle,
+                                            ),
+                                          ],
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              RouteName.review,
+                                              arguments: bookInfo.bookUuid,
+                                            );
+                                          },
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          child: Text(
+                                            '모두 보기 (${bookInfo.starCount}) >',
+                                            style: TextStyles
+                                                .bookDeatilReviewScoreStyle
+                                                .copyWith(
+                                                    color:
+                                                        ColorSet.semiDarkGrey,
+                                                    letterSpacing: -0.8),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 18,
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Container(
+                              width: Scaler.width(1, context),
+                              color: ColorSet.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 0,
+                                vertical: 15,
+                              ),
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                width: Scaler.width(0.85, context),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      '도서 소개',
+                                      style: TextStyles.bookDeatilSubTitleStyle,
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      bookInfo.content.isNotEmpty
+                                          ? '${bookInfo.content} ...'
+                                          : '도서 소개가 없습니다',
+                                      style: TextStyles.bookDeatilContentStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Container(
+                              width: Scaler.width(1, context),
+                              color: ColorSet.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 0,
+                                vertical: 15,
+                              ),
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                width: Scaler.width(0.85, context),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width:
+                                              Scaler.width(0.425, context) - 20,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/images/clock_icon.svg',
+                                                width:
+                                                    Scaler.width(0.08, context),
+                                              ),
+                                              const Text(
+                                                '나중에 읽을 목록에\n추가하기',
+                                                style: TextStyles
+                                                    .bookDeatilLabelStyle,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 1,
+                                          height: 50,
+                                          color: ColorSet.lightGrey,
+                                        ),
+                                        SizedBox(
+                                          width:
+                                              Scaler.width(0.425, context) - 20,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/images/book_icon.svg',
+                                                width:
+                                                    Scaler.width(0.07, context),
+                                              ),
+                                              const Text(
+                                                '읽었던 도서 목록에\n추가하기',
+                                                style: TextStyles
+                                                    .bookDeatilLabelStyle,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                await launchUrl(Uri.parse(bookInfo.searchUrl));
+                              },
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Container(
+                                width: Scaler.width(0.85, context),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 21,
+                                  vertical: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF3D3D3D),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/daum_logo.png',
+                                          height: 22,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Image.asset(
+                                          'assets/images/kakao_text_logo.png',
+                                          height: 18,
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      '상세 정보 검색  >',
+                                      style: TextStyles.bookDeatilLabelStyle
+                                          .copyWith(
+                                        color: ColorSet.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     AnimatedPositioned(

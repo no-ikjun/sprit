@@ -8,6 +8,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/screens/search/widgets/search_result.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/remove_glow.dart';
 
 Future<Map<String, dynamic>> searchBook(
   BuildContext context,
@@ -215,27 +216,30 @@ class _SearchScreenState extends State<SearchScreen>
                             )
                           : Scrollbar(
                               controller: _scrollController,
-                              child: ListView.builder(
-                                key: const PageStorageKey<String>(
-                                    'search-results'),
-                                controller: _scrollController,
-                                shrinkWrap: true,
-                                itemCount: searchResult.length,
-                                itemBuilder: (context, index) {
-                                  return SearchResultWidget(
-                                    bookInfo: searchResult[index],
-                                    onTap: () {
-                                      showBookInfo(
-                                        context,
-                                        searchResult[index]
-                                            .isbn
-                                            .trim()
-                                            .split(' ')[0],
-                                        searchResult[index].isbn,
-                                      );
-                                    },
-                                  );
-                                },
+                              child: ScrollConfiguration(
+                                behavior: RemoveGlow(),
+                                child: ListView.builder(
+                                  key: const PageStorageKey<String>(
+                                      'search-results'),
+                                  controller: _scrollController,
+                                  shrinkWrap: true,
+                                  itemCount: searchResult.length,
+                                  itemBuilder: (context, index) {
+                                    return SearchResultWidget(
+                                      bookInfo: searchResult[index],
+                                      onTap: () {
+                                        showBookInfo(
+                                          context,
+                                          searchResult[index]
+                                              .isbn
+                                              .trim()
+                                              .split(' ')[0],
+                                          searchResult[index].isbn,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                     ),
