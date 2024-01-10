@@ -220,4 +220,11 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle questScreenTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
 }

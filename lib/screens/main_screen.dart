@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/screens/home/home_screen.dart';
+import 'package:sprit/screens/quest/quest_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/nav_drawer.dart';
@@ -26,10 +27,7 @@ class _MainScreenState extends State<MainScreen> {
           label: '내 서재',
         );
       case 2:
-        return const CustomAppBar(
-          onlyLabel: true,
-          label: '퀘스트',
-        );
+        return const QuestScreen();
       case 3:
         return const CustomAppBar(
           onlyLabel: true,

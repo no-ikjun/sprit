@@ -8,19 +8,23 @@ import 'package:sprit/common/ui/text_styles.dart';
 class CustomAppBar extends StatelessWidget {
   final String label;
   final bool isHomeScreen;
-  final Widget iconData;
+  final Widget leftIcon;
+  final List<Widget> rightIcons;
   final bool onlyLabel;
+  final bool logoShown;
 
   const CustomAppBar({
     super.key,
     this.label = '',
     this.isHomeScreen = false,
-    this.iconData = const Icon(
+    this.leftIcon = const Icon(
       Icons.arrow_back_ios,
       color: Color(0xff7c7c7c),
       size: 20,
     ),
+    this.rightIcons = const [],
     this.onlyLabel = false,
+    this.logoShown = true,
   });
 
   @override
@@ -36,21 +40,24 @@ class CustomAppBar extends StatelessWidget {
       leading: onlyLabel
           ? Container()
           : isHomeScreen
-              ? Padding(
-                  padding: EdgeInsets.only(left: Scaler.width(0.075, context)),
-                  child: SvgPicture.asset(
-                    'assets/images/app_bar_icon.svg',
-                    width: 69,
-                    height: 30,
-                  ),
-                )
+              ? logoShown
+                  ? Padding(
+                      padding:
+                          EdgeInsets.only(left: Scaler.width(0.075, context)),
+                      child: SvgPicture.asset(
+                        'assets/images/app_bar_icon.svg',
+                        width: 69,
+                        height: 30,
+                      ),
+                    )
+                  : Container()
               : IconButton(
                   iconSize: 20,
                   splashColor: Colors.transparent,
                   hoverColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   padding: const EdgeInsets.only(left: 20),
-                  icon: iconData,
+                  icon: leftIcon,
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -62,23 +69,7 @@ class CustomAppBar extends StatelessWidget {
       actions: onlyLabel
           ? [Container()]
           : isHomeScreen
-              ? [
-                  IconButton(
-                    iconSize: 30,
-                    splashColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    padding:
-                        EdgeInsets.only(right: Scaler.width(0.075, context)),
-                    icon: SvgPicture.asset(
-                      'assets/images/hamburger_icon.svg',
-                      width: 30,
-                    ),
-                    onPressed: () {
-                      Scaffold.of(context).openEndDrawer();
-                    },
-                  ),
-                ]
+              ? rightIcons
               : [],
     );
   }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/banner.dart';
@@ -442,9 +443,16 @@ class _HomePageState extends State<HomePage> {
                         vertical: 18,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF000000).withOpacity(0.05),
+                              offset: const Offset(0, 0),
+                              blurRadius: 3,
+                              spreadRadius: 0,
+                            ),
+                          ]),
                       child: Column(
                         children: [
                           ListView.builder(
@@ -501,8 +509,24 @@ class _HomePageState extends State<HomePage> {
       maintainBottomViewPadding: true,
       child: Column(
         children: [
-          const CustomAppBar(
+          CustomAppBar(
             isHomeScreen: true,
+            rightIcons: [
+              IconButton(
+                iconSize: 30,
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                padding: EdgeInsets.only(right: Scaler.width(0.075, context)),
+                icon: SvgPicture.asset(
+                  'assets/images/hamburger_icon.svg',
+                  width: 30,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+              ),
+            ],
           ),
           Expanded(
             child: ScrollConfiguration(
