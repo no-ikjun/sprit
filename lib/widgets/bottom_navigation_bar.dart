@@ -176,9 +176,17 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 width: 60,
                 height: 60,
                 padding: const EdgeInsets.all(12),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: ColorSet.primary,
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorSet.primary.withOpacity(0.3),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: SvgPicture.asset(
                   'assets/images/timer_icon.svg',
