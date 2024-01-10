@@ -213,4 +213,11 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle navDrawerLabelStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

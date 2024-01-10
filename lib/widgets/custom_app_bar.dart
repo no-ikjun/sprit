@@ -72,7 +72,9 @@ class CustomAppBar extends StatelessWidget {
                       'assets/images/hamburger_icon.svg',
                       width: 30,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer();
+                    },
                   ),
                 ]
               : [],

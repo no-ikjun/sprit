@@ -5,6 +5,7 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/screens/home/home_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
+import 'package:sprit/widgets/nav_drawer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -42,6 +43,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorSet.background,
+        endDrawer: const NavDrawer(),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             color: Colors.white,

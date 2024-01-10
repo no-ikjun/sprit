@@ -505,17 +505,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                             )
                           : Container(),
-                      TextButton(
-                        onPressed: () {
-                          const storage = FlutterSecureStorage();
-                          storage.deleteAll();
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/login',
-                            (route) => false,
-                          );
-                        },
-                        child: const Text('로그아웃'),
+                      const SizedBox(
+                        height: 25,
                       ),
                     ],
                   ),
