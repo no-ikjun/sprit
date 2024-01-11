@@ -140,7 +140,7 @@ class MyQuestsWidget extends StatelessWidget {
             color: ColorSet.lightGrey,
           ),
           const Padding(
-            padding: EdgeInsets.only(top: 8, bottom: 6),
+            padding: EdgeInsets.only(top: 10, bottom: 6),
             child: Text(
               '🎉 완료한 퀘스트 모두 보기',
               style: TextStyles.questButtonStyle,
