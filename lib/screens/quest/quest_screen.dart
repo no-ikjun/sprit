@@ -42,24 +42,28 @@ class _QuestScreenState extends State<QuestScreen> {
   List<QuestInfo> endedQuests = [];
 
   Future<void> _fetchQuests() async {
-    setState(() {
-      isLoading = true;
-    });
-    getActiveQuests(context).then((value) {
+    await getActiveQuests(context).then((value) {
       setState(() {
         activeQuests = value;
       });
-    });
-    getMyActiveQuests(context).then((value) {
-      setState(() {
-        myActiveQuests = value;
+      getMyActiveQuests(context).then((value) {
+        setState(() {
+          myActiveQuests = value;
+        });
+        getEndedQuest(context).then((value) {
+          setState(() {
+            endedQuests = value;
+          });
+        });
       });
     });
-    getEndedQuest(context).then((value) {
-      setState(() {
-        endedQuests = value;
-      });
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      isLoading = true;
     });
+    await _fetchQuests();
     setState(() {
       isLoading = false;
     });
@@ -68,7 +72,7 @@ class _QuestScreenState extends State<QuestScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchQuests();
+    _loadData();
   }
 
   @override
@@ -84,7 +88,7 @@ class _QuestScreenState extends State<QuestScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         CupertinoSliverRefreshControl(
-          onRefresh: _fetchQuests,
+          onRefresh: _loadData,
         ),
         SliverToBoxAdapter(
           child: Column(
@@ -96,24 +100,40 @@ class _QuestScreenState extends State<QuestScreen> {
                   style: TextStyles.questScreenTitleStyle,
                 ),
               ),
-              ActiveQuestsWidget(
-                activeQuests: activeQuests,
-                isLoading: isLoading,
-              ),
-              MyQuestsWidget(
-                myQuests: myActiveQuests,
-                isLoading: isLoading,
-              ),
-              const SizedBox(
-                height: 11,
-              ),
-              EndedQuestsWidget(
-                endedQuests: endedQuests,
-                isLoading: isLoading,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+              isLoading
+                  ? const Column(
+                      children: [
+                        SizedBox(
+                          height: 50,
+                        ),
+                        CupertinoActivityIndicator(
+                          radius: 15,
+                          animating: true,
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        ActiveQuestsWidget(
+                          activeQuests: activeQuests,
+                          isLoading: isLoading,
+                        ),
+                        MyQuestsWidget(
+                          myQuests: myActiveQuests,
+                          isLoading: isLoading,
+                        ),
+                        const SizedBox(
+                          height: 11,
+                        ),
+                        EndedQuestsWidget(
+                          endedQuests: endedQuests,
+                          isLoading: isLoading,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
             ],
           ),
         ),
