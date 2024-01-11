@@ -10,9 +10,11 @@ class MyQuestsWidget extends StatelessWidget {
   const MyQuestsWidget({
     super.key,
     required this.myQuests,
+    required this.isLoading,
   });
 
   final List<AppliedQuestResponse> myQuests;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -46,74 +48,89 @@ class MyQuestsWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          myQuests.isEmpty
+          isLoading
               ? const Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 10),
-                  child: Text('진행 중인 퀘스트가 없습니다'),
+                  child: CupertinoActivityIndicator(
+                    radius: 15,
+                    animating: true,
+                  ),
                 )
-              : ListView.builder(
-                  itemCount: myQuests.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: (index == myQuests.length - 1)
-                          ? const EdgeInsets.only(bottom: 7)
-                          : const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          Image.network(
-                            myQuests[index].questInfo.iconUrl,
-                            width: 55,
-                            height: 55,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                              height: 55,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  OngoingBadge(
-                                      state:
-                                          myQuests[index].questApplyInfo.state),
-                                  Flexible(
-                                    child: Text(
-                                      myQuests[index].questInfo.title,
-                                      style: TextStyles.questWidgetTitleStyle
-                                          .copyWith(fontSize: 12),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '마감까지  ',
-                                        style: TextStyles
-                                            .questWidgetDescriptionStyle
-                                            .copyWith(
-                                                color: ColorSet.semiDarkGrey),
-                                      ),
-                                      const Text(
-                                        'D-4',
-                                        style: TextStyles
-                                            .questWidgetDescriptionStyle,
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
+              : myQuests.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.only(top: 20, bottom: 10),
+                      child: Text(
+                        '❌ 진행 중인 퀘스트가 없습니다 ❌',
+                        style: TextStyles.questButtonStyle,
                       ),
-                    );
-                  },
-                ),
+                    )
+                  : ListView.builder(
+                      itemCount: myQuests.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: (index == myQuests.length - 1)
+                              ? const EdgeInsets.only(bottom: 7)
+                              : const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            children: [
+                              Image.network(
+                                myQuests[index].questInfo.iconUrl,
+                                width: 55,
+                                height: 55,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 55,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      OngoingBadge(
+                                          state: myQuests[index]
+                                              .questApplyInfo
+                                              .state),
+                                      Flexible(
+                                        child: Text(
+                                          myQuests[index].questInfo.title,
+                                          style: TextStyles
+                                              .questWidgetTitleStyle
+                                              .copyWith(fontSize: 12),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '마감까지  ',
+                                            style: TextStyles
+                                                .questWidgetDescriptionStyle
+                                                .copyWith(
+                                                    color:
+                                                        ColorSet.semiDarkGrey),
+                                          ),
+                                          const Text(
+                                            'D-4',
+                                            style: TextStyles
+                                                .questWidgetDescriptionStyle,
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
           const SizedBox(
             height: 8,
           ),
@@ -123,7 +140,7 @@ class MyQuestsWidget extends StatelessWidget {
             color: ColorSet.lightGrey,
           ),
           const Padding(
-            padding: EdgeInsets.only(top: 10, bottom: 8),
+            padding: EdgeInsets.only(top: 8, bottom: 6),
             child: Text(
               '🎉 완료한 퀘스트 모두 보기',
               style: TextStyles.questButtonStyle,

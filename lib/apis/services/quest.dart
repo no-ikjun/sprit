@@ -116,6 +116,24 @@ class QuestService {
     return quests;
   }
 
+  static Future<List<QuestInfo>> getEndedQuest(BuildContext context) async {
+    List<QuestInfo> quests = [];
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/quest/ended');
+      if (response.statusCode == 200) {
+        for (final json in response.data) {
+          quests.add(QuestInfo.fromJson(json));
+        }
+      } else {
+        debugPrint('퀘스트 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('퀘스트 조회 실패 $e');
+    }
+    return quests;
+  }
+
   static Future<List<AppliedQuestResponse>> getMyActiveQuests(
       BuildContext context) async {
     List<AppliedQuestResponse> quests = [];

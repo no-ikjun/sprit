@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/quest.dart';
+import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/quest/widgets/active_quest.dart';
+import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/remove_glow.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
@@ -17,6 +22,10 @@ Future<List<AppliedQuestResponse>> getMyActiveQuests(
   return await QuestService.getMyActiveQuests(context);
 }
 
+Future<List<QuestInfo>> getEndedQuest(BuildContext context) async {
+  return await QuestService.getEndedQuest(context);
+}
+
 class QuestScreen extends StatefulWidget {
   const QuestScreen({Key? key}) : super(key: key);
 
@@ -25,9 +34,12 @@ class QuestScreen extends StatefulWidget {
 }
 
 class _QuestScreenState extends State<QuestScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   bool isLoading = false;
   List<QuestInfo> activeQuests = [];
   List<AppliedQuestResponse> myActiveQuests = [];
+  List<QuestInfo> endedQuests = [];
 
   Future<void> _fetchQuests() async {
     setState(() {
@@ -43,6 +55,11 @@ class _QuestScreenState extends State<QuestScreen> {
         myActiveQuests = value;
       });
     });
+    getEndedQuest(context).then((value) {
+      setState(() {
+        endedQuests = value;
+      });
+    });
     setState(() {
       isLoading = false;
     });
@@ -55,7 +72,71 @@ class _QuestScreenState extends State<QuestScreen> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Widget scrollView = CustomScrollView(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: <Widget>[
+        CupertinoSliverRefreshControl(
+          onRefresh: _fetchQuests,
+        ),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              SizedBox(
+                width: Scaler.width(0.85, context),
+                child: const Text(
+                  '스프릿 퀘스트',
+                  style: TextStyles.questScreenTitleStyle,
+                ),
+              ),
+              const SizedBox(
+                height: 11,
+              ),
+              ActiveQuestsWidget(
+                activeQuests: activeQuests,
+                isLoading: isLoading,
+              ),
+              const SizedBox(
+                height: 11,
+              ),
+              MyQuestsWidget(
+                myQuests: myActiveQuests,
+                isLoading: isLoading,
+              ),
+              const SizedBox(
+                height: 11,
+              ),
+              EndedQuestsWidget(
+                endedQuests: endedQuests,
+                isLoading: isLoading,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+        ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Container(),
+        ),
+      ],
+    );
+
+    if (Platform.isAndroid) {
+      scrollView = RefreshIndicator(
+        onRefresh: _fetchQuests,
+        color: ColorSet.primary,
+        child: scrollView,
+      );
+    }
     return SafeArea(
       maintainBottomViewPadding: true,
       child: Column(
@@ -81,24 +162,12 @@ class _QuestScreenState extends State<QuestScreen> {
               ),
             ],
           ),
-          SizedBox(
-            width: Scaler.width(0.85, context),
-            child: const Text(
-              '스프릿 퀘스트',
-              style: TextStyles.questScreenTitleStyle,
+          Expanded(
+            child: ScrollConfiguration(
+              behavior: RemoveGlow(),
+              child: scrollView,
             ),
           ),
-          const SizedBox(
-            height: 11,
-          ),
-          ActiveQuestsWidget(
-            activeQuests: activeQuests,
-            isLoading: isLoading,
-          ),
-          const SizedBox(
-            height: 11,
-          ),
-          MyQuestsWidget(myQuests: myActiveQuests),
         ],
       ),
     );
