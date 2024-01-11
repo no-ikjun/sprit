@@ -48,6 +48,7 @@ dependencies:
   kakao_flutter_sdk_talk: ^1.7.0
   sign_in_with_apple: ^5.0.0
   carousel_slider: ^4.2.1
+  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:
