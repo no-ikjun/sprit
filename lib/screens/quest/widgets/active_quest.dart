@@ -152,7 +152,7 @@ class ActiveQuestsWidget extends StatelessWidget {
                                       children: [
                                         activeQuests[index].title.length > 12
                                             ? SizedBox(
-                                                width: 160,
+                                                width: 140,
                                                 height: 20,
                                                 child: Marquee(
                                                   text:
@@ -160,22 +160,25 @@ class ActiveQuestsWidget extends StatelessWidget {
                                                   style: TextStyles
                                                       .questWidgetTitleStyle,
                                                   velocity: 30.0,
-                                                  blankSpace: 160,
+                                                  blankSpace: 120,
                                                   pauseAfterRound:
                                                       const Duration(
-                                                          seconds: 10),
+                                                    seconds: 10,
+                                                  ),
                                                   showFadingOnlyWhenScrolling:
                                                       true,
                                                   fadingEdgeStartFraction: 0.1,
                                                   fadingEdgeEndFraction: 0.1,
                                                   accelerationDuration:
                                                       const Duration(
-                                                          seconds: 1),
+                                                    seconds: 1,
+                                                  ),
                                                   accelerationCurve:
                                                       Curves.linear,
                                                   decelerationDuration:
                                                       const Duration(
-                                                          milliseconds: 500),
+                                                    milliseconds: 500,
+                                                  ),
                                                   decelerationCurve:
                                                       Curves.easeOut,
                                                 ),
