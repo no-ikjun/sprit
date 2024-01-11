@@ -264,61 +264,68 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Container(
-                      width: Scaler.width(0.41, context),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: List.generate(
-                          1,
-                          (index) => BoxShadow(
-                            color: const Color(0x0D000000).withOpacity(0.05),
-                            offset: const Offset(0, 0),
-                            blurRadius: 3,
-                            spreadRadius: 0,
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/notification');
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: Container(
+                        width: Scaler.width(0.41, context),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: List.generate(
+                            1,
+                            (index) => BoxShadow(
+                              color: const Color(0x0D000000).withOpacity(0.05),
+                              offset: const Offset(0, 0),
+                              blurRadius: 3,
+                              spreadRadius: 0,
+                            ),
                           ),
                         ),
-                      ),
-                      child: Stack(
-                        children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '독서 알림설정',
-                                style: TextStyles.homeButtonTitleStyle,
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              Text(
-                                '꾸준한 독서를 위해\n알림을 받으세요!',
-                                style: TextStyles.homeButtonLabelStyle,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/3d_bell.png',
-                                    width: Scaler.width(0.12, context),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                        child: Stack(
+                          children: [
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '독서 알림설정',
+                                  style: TextStyles.homeButtonTitleStyle,
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  '꾸준한 독서를 위해\n알림을 받으세요!',
+                                  style: TextStyles.homeButtonLabelStyle,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/3d_bell.png',
+                                      width: Scaler.width(0.12, context),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
