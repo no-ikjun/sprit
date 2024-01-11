@@ -227,4 +227,39 @@ class TextStyles {
     fontWeight: FontWeight.w600,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle questWidgetTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questWidgetDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questWidgetLabelStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questBadgeStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 9,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questButtonStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }
