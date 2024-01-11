@@ -91,7 +91,7 @@ class ActiveQuestsWidget extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '모집 중🔥',
+                                    '모집 중 🔥',
                                     style: TextStyles.questWidgetLabelStyle,
                                   ),
                                 ],
