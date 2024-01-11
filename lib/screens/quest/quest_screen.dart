@@ -96,15 +96,9 @@ class _QuestScreenState extends State<QuestScreen> {
                   style: TextStyles.questScreenTitleStyle,
                 ),
               ),
-              const SizedBox(
-                height: 11,
-              ),
               ActiveQuestsWidget(
                 activeQuests: activeQuests,
                 isLoading: isLoading,
-              ),
-              const SizedBox(
-                height: 11,
               ),
               MyQuestsWidget(
                 myQuests: myActiveQuests,
