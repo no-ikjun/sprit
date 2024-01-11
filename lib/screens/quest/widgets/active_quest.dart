@@ -75,8 +75,7 @@ class ActiveQuestsWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color:
-                                      const Color(0xFF000000).withOpacity(0.05),
+                                  color: ColorSet.primary.withOpacity(0.2),
                                   blurRadius: 4,
                                   offset: const Offset(0, 0),
                                 ),
