@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857919597146",
+    "project_id": "sprit-a6264",
+    "storage_bucket": "sprit-a6264.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857919597146:android:96d7f832a7b38364ea8663",
+        "android_client_info": {
+          "package_name": "com.ikjunchoi_android.sprit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqBSwXvEQrbMsIG53RvtHkWkBm6pWTRnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
