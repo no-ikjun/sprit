@@ -7,19 +7,19 @@ import 'package:sprit/screens/notification/widgets/control_menu.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
 class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({Key? key}) : super(key: key);
+  const NotificationScreen({super.key});
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  bool isReadingTimeNotificationOn = false;
-  bool isReminderNotificationOn = false;
-  bool isNewQuestNotificationOn = false;
-  bool isQuestEndNotificationOn = false;
-  bool isQuestTimeNotificationOn = false;
-  bool isMarketingNotificationOn = false;
+  bool isReadingTimeNotificationOn = true;
+  bool isReminderNotificationOn = true;
+  bool isNewQuestNotificationOn = true;
+  bool isQuestEndNotificationOn = true;
+  bool isQuestTimeNotificationOn = true;
+  bool isMarketingNotificationOn = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

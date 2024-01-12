@@ -6,12 +6,20 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({Key? key}) : super(key: key);
+  const NavDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: Scaler.width(0.65, context),
+      width: Scaler.width(0.66, context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          bottomLeft: Radius.circular(15),
+        ),
+      ),
+      elevation: 0,
+      backgroundColor: ColorSet.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [

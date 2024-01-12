@@ -33,6 +33,7 @@ class CustomAppBar extends StatelessWidget {
       systemOverlayStyle: SystemUiOverlayStyle.dark,
       centerTitle: true,
       backgroundColor: ColorSet.background,
+      scrolledUnderElevation: 0,
       elevation: 0,
       leadingWidth: isHomeScreen
           ? 69 + Scaler.width(0.075, context)
