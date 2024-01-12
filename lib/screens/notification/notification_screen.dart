@@ -250,6 +250,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             ],
                           ),
                         ),
+                        const SizedBox(
+                          height: 25,
+                        ),
                       ],
                     ),
                   ],
