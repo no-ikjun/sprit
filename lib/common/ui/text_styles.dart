@@ -262,4 +262,25 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle notificationLabelStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle notificationControlTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle notificationControlDescriptionStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }
