@@ -11,46 +11,51 @@ class NotificationControlMenu extends StatelessWidget {
   final Function() onClick;
   final bool isSwitch;
   const NotificationControlMenu({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     this.switchValue = false,
     required this.onClick,
     this.isSwitch = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: Scaler.width(0.85, context),
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyles.notificationControlTitleStyle,
-                ),
-                Text(
-                  description,
-                  style: TextStyles.notificationControlDescriptionStyle,
-                  overflow: TextOverflow.clip,
-                ),
-              ],
+    return InkWell(
+      onTap: isSwitch ? () {} : onClick,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: Container(
+        width: Scaler.width(0.85, context),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyles.notificationControlTitleStyle,
+                  ),
+                  Text(
+                    description,
+                    style: TextStyles.notificationControlDescriptionStyle,
+                    overflow: TextOverflow.clip,
+                  ),
+                ],
+              ),
             ),
-          ),
-          isSwitch
-              ? CustomSwitch(onToggle: onClick, switchValue: switchValue)
-              : const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xff7c7c7c),
-                  size: 20,
-                ),
-        ],
+            isSwitch
+                ? CustomSwitch(onToggle: onClick, switchValue: switchValue)
+                : const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Color(0xff7c7c7c),
+                    size: 20,
+                  ),
+          ],
+        ),
       ),
     );
   }

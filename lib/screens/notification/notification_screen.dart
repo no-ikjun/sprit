@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/screens/notification/widgets/control_menu.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
@@ -80,7 +81,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       title: '시간 설정',
                                       description: '매일 알림받을 시간을 설정하세요',
                                       onClick: () {
-                                        HapticFeedback.lightImpact();
+                                        Navigator.pushNamed(
+                                          context,
+                                          RouteName.timeSetting,
+                                        );
                                       },
                                       isSwitch: false,
                                     )
