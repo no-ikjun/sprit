@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(milliseconds: 2000), () async {
+    Timer(const Duration(milliseconds: 2200), () async {
       const storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: "access_token");
       debugPrint(accessToken);
