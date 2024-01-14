@@ -4,6 +4,7 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/custom_button.dart';
 
 class TimeSettingScreen extends StatefulWidget {
   const TimeSettingScreen({super.key});
@@ -37,17 +38,28 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                 children: [
                   Text(
                     '독서 시간 알림 설정 ⏰',
-                    style: TextStyles.homeNameStyle,
+                    style: TextStyles.notificationTimeSettingTitleStyle,
                   ),
                 ],
               ),
             ),
             const SizedBox(
-              height: 25,
+              height: 20,
             ),
-            SizedBox(
+            Container(
               width: Scaler.width(0.85, context),
-              height: 150,
+              height: 170,
+              decoration: BoxDecoration(
+                color: ColorSet.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    offset: const Offset(0, 4),
+                    blurRadius: 30,
+                  ),
+                ],
+              ),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -62,55 +74,6 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: Scaler.width(0.25, context),
-                        height: 150,
-                        child: CupertinoPicker(
-                          backgroundColor: Colors.transparent,
-                          selectionOverlay: null,
-                          itemExtent: 32.0,
-                          onSelectedItemChanged: (int index) {},
-                          children: List<Widget>.generate(
-                            7,
-                            (int index) {
-                              String day;
-                              switch (index) {
-                                case 0:
-                                  day = '월요일';
-                                  break;
-                                case 1:
-                                  day = '화요일';
-                                  break;
-                                case 2:
-                                  day = '수요일';
-                                  break;
-                                case 3:
-                                  day = '목요일';
-                                  break;
-                                case 4:
-                                  day = '금요일';
-                                  break;
-                                case 5:
-                                  day = '토요일';
-                                  break;
-                                case 6:
-                                  day = '일요일';
-                                  break;
-                                default:
-                                  day = '';
-                              }
-                              return Center(
-                                child: Text(
-                                  day,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         width: Scaler.width(0.2, context),
                         height: 150,
@@ -144,6 +107,35 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                       ),
                     ],
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            SizedBox(
+              width: Scaler.width(0.85, context),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomButton(
+                    onPressed: () {},
+                    width: Scaler.width(0.85 * 0.4, context) - 5,
+                    color: ColorSet.lightGrey,
+                    borderColor: ColorSet.lightGrey,
+                    child: const Text(
+                      '초기화',
+                      style: TextStyles.loginButtonStyle,
+                    ),
+                  ),
+                  CustomButton(
+                    onPressed: () {},
+                    width: Scaler.width(0.85 * 0.6, context) - 5,
+                    child: const Text(
+                      '적용하기',
+                      style: TextStyles.loginButtonStyle,
+                    ),
+                  )
                 ],
               ),
             ),
