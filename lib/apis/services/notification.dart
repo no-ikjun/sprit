@@ -79,7 +79,6 @@ class NotificationService {
         },
       );
       if (response.statusCode == 201) {
-        debugPrint('FCM 토큰 등록 성공');
       } else {
         debugPrint('FCM 토큰 등록 실패');
       }
@@ -106,7 +105,6 @@ class NotificationService {
         },
       );
       if (response.statusCode == 200) {
-        debugPrint('시간 알림 동의 정보 조회 성공');
         timeAgreeInfo = TimeAgreeInfo.fromJson(response.data);
       } else {
         debugPrint('시간 알림 동의 정보 조회 실패');
@@ -135,7 +133,6 @@ class NotificationService {
         },
       );
       if (response.statusCode == 200) {
-        debugPrint('리마인드 알림 동의 정보 조회 성공');
         remindAgreeInfo = RemindAgreeInfo.fromJson(response.data);
       } else {
         debugPrint('리마인드 알림 동의 정보 조회 실패');
@@ -166,7 +163,6 @@ class NotificationService {
       );
 
       if (response.statusCode == 200) {
-        debugPrint('퀘스트 알림 동의 정보 조회 성공');
         questAgreeInfo = QuestAgreeInfo.fromJson(response.data);
       } else {
         debugPrint('퀘스트 알림 동의 정보 조회 실패');
@@ -185,7 +181,7 @@ class NotificationService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.put(
+      final response = await dio.patch(
         '/notification/agree/time',
         queryParameters: {
           'fcm_token': fcmToken,
@@ -193,9 +189,7 @@ class NotificationService {
           'time_01': time01,
         },
       );
-      debugPrint(response.data.toString());
       if (response.statusCode == 200) {
-        debugPrint('시간 알림 동의 정보 수정 성공');
         return true;
       } else {
         debugPrint('시간 알림 동의 정보 수정 실패');
@@ -215,7 +209,7 @@ class NotificationService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.put(
+      final response = await dio.patch(
         '/notification/agree/remind',
         queryParameters: {
           'fcm_token': fcmToken,
@@ -224,7 +218,6 @@ class NotificationService {
         },
       );
       if (response.statusCode == 200) {
-        debugPrint('리마인드 알림 동의 정보 수정 성공');
         return true;
       } else {
         debugPrint('리마인드 알림 동의 정보 수정 실패');
@@ -245,7 +238,7 @@ class NotificationService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.put(
+      final response = await dio.patch(
         '/notification/agree/quest',
         queryParameters: {
           'fcm_token': fcmToken,
@@ -255,7 +248,6 @@ class NotificationService {
         },
       );
       if (response.statusCode == 200) {
-        debugPrint('퀘스트 알림 동의 정보 수정 성공');
         return true;
       } else {
         debugPrint('퀘스트 알림 동의 정보 수정 실패');

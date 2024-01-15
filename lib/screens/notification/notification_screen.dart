@@ -100,7 +100,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       isLoading = true;
     });
     await getTimeAgreeInfo(context, fcmToken).then((value) {
-      debugPrint(value.agree01.toString());
       setState(() {
         isReadingTimeNotificationOn = value.agree01;
         readingTime = value.time01;
@@ -253,12 +252,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       title: '문구 리마인드',
                                       description: '기억에 남길 문구를 알림으로 받을 수 있어요',
                                       switchValue: isReminderNotificationOn,
-                                      onClick: () {
+                                      onClick: () async {
                                         HapticFeedback.lightImpact();
-                                        setState(() {
-                                          isReminderNotificationOn =
-                                              !isReminderNotificationOn;
-                                        });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
+                                        final result =
+                                            await updateRemindAgreeInfo(
+                                          context,
+                                          fcmToken,
+                                          !isReminderNotificationOn,
+                                          reminderTime,
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isReminderNotificationOn =
+                                                !isReminderNotificationOn;
+                                          });
+                                        }
                                       },
                                     ),
                                     isReminderNotificationOn
@@ -311,12 +322,25 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       title: '새로운 퀘스트 정보',
                                       description: '새로운 퀘스트가 열리면 알림으로 안내해드려요',
                                       switchValue: isNewQuestNotificationOn,
-                                      onClick: () {
+                                      onClick: () async {
                                         HapticFeedback.lightImpact();
-                                        setState(() {
-                                          isNewQuestNotificationOn =
-                                              !isNewQuestNotificationOn;
-                                        });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
+                                        final result =
+                                            await updateQuestAgreeInfo(
+                                          context,
+                                          fcmToken,
+                                          !isNewQuestNotificationOn,
+                                          isQuestEndNotificationOn,
+                                          isQuestTimeNotificationOn,
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isNewQuestNotificationOn =
+                                                !isNewQuestNotificationOn;
+                                          });
+                                        }
                                       },
                                     ),
                                     const Divider(
@@ -328,12 +352,25 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       title: '퀘스트 마감 알림',
                                       description: '참여한 퀘스트의 마감일이 다가올 때 알려드려요',
                                       switchValue: isQuestEndNotificationOn,
-                                      onClick: () {
+                                      onClick: () async {
                                         HapticFeedback.lightImpact();
-                                        setState(() {
-                                          isQuestEndNotificationOn =
-                                              !isQuestEndNotificationOn;
-                                        });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
+                                        final result =
+                                            await updateQuestAgreeInfo(
+                                          context,
+                                          fcmToken,
+                                          isNewQuestNotificationOn,
+                                          !isQuestEndNotificationOn,
+                                          isQuestTimeNotificationOn,
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isQuestEndNotificationOn =
+                                                !isQuestEndNotificationOn;
+                                          });
+                                        }
                                       },
                                     ),
                                     const Divider(
@@ -346,12 +383,25 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       description:
                                           '퀘스트가 진행되는 동안 무엇을 해야할지 알려드려요',
                                       switchValue: isQuestTimeNotificationOn,
-                                      onClick: () {
+                                      onClick: () async {
                                         HapticFeedback.lightImpact();
-                                        setState(() {
-                                          isQuestTimeNotificationOn =
-                                              !isQuestTimeNotificationOn;
-                                        });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
+                                        final result =
+                                            await updateQuestAgreeInfo(
+                                          context,
+                                          fcmToken,
+                                          isNewQuestNotificationOn,
+                                          isQuestEndNotificationOn,
+                                          !isQuestTimeNotificationOn,
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isQuestTimeNotificationOn =
+                                                !isQuestTimeNotificationOn;
+                                          });
+                                        }
                                       },
                                     ),
                                   ],
