@@ -58,7 +58,45 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const RemindMentWidget(),
+                      Container(
+                        width: Scaler.width(1, context),
+                        height: 1,
+                        color: ColorSet.lightGrey,
+                      ),
+                      const SizedBox(
+                        height: 11,
+                      ),
+                      RemindMentWidget(
+                        title: '역행자',
+                        description: '선택. 집중. 몰입 대상을 정하자. "나는 ~ 한 사람이야.',
+                        switchValue: true,
+                        onToggle: () {},
+                      ),
+                      const SizedBox(
+                        height: 11,
+                      ),
+                      Container(
+                        width: Scaler.width(1, context),
+                        height: 1,
+                        color: ColorSet.lightGrey,
+                      ),
+                      const SizedBox(
+                        height: 11,
+                      ),
+                      RemindMentWidget(
+                        title: '돈의 심리학',
+                        description: '성공을 위한 비용을 기꺼이 지불하라',
+                        switchValue: true,
+                        onToggle: () {},
+                      ),
+                      const SizedBox(
+                        height: 11,
+                      ),
+                      Container(
+                        width: Scaler.width(1, context),
+                        height: 1,
+                        color: ColorSet.lightGrey,
+                      ),
                       const SizedBox(
                         height: 25,
                       ),
@@ -73,7 +111,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                               color: ColorSet.lightGrey,
                               borderColor: ColorSet.lightGrey,
                               child: const Text(
-                                '초기화',
+                                '모두 선택',
                                 style: TextStyles.loginButtonStyle,
                               ),
                             ),

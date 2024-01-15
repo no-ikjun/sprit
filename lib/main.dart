@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,6 +6,7 @@ import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:provider/provider.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/firebase_options.dart';
+import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
@@ -28,14 +28,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  debugPrint('token: $fcmToken');
+
   KakaoSdk.init(nativeAppKey: '${dotenv.env['KAKAO_NATIVE_APP_KEY']}');
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserInfoState()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => FcmTokenState()),
       ],
       child: const MyApp(),
     ),

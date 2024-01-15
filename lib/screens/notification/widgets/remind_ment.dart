@@ -4,7 +4,17 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/switch_button.dart';
 
 class RemindMentWidget extends StatelessWidget {
-  const RemindMentWidget({super.key});
+  final String title;
+  final String description;
+  final bool switchValue;
+  final Function() onToggle;
+  const RemindMentWidget({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.switchValue,
+    required this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,25 +23,45 @@ class RemindMentWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '역행자',
-                style: TextStyles.notificationMentBookTitleStyle,
-              ),
               SizedBox(
+                width: Scaler.width(0.85, context) - 55,
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: TextStyles.notificationMentBookTitleStyle,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
                 height: 3,
               ),
-              Text(
-                '매일 독서 시간을 알려드립니다.',
-                style: TextStyles.notificationMentBookDescriptionStyle,
+              SizedBox(
+                width: Scaler.width(0.85, context) - 55,
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        description,
+                        style: TextStyles.notificationMentBookDescriptionStyle,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
           CustomSwitch(
-            onToggle: () {},
-            switchValue: true,
+            onToggle: onToggle,
+            switchValue: switchValue,
           ),
         ],
       ),
