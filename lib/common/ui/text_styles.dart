@@ -297,4 +297,18 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle notificationMentBookTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle notificationMentBookDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

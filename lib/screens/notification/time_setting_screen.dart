@@ -15,7 +15,7 @@ class TimeSettingScreen extends StatefulWidget {
 }
 
 class _TimeSettingScreenState extends State<TimeSettingScreen> {
-  int _selectedSectionIndex = 0;
+  int _selectedSectionIndex = 1;
   int _selectedTimeIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -89,6 +89,10 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                                   width: Scaler.width(0.2, context),
                                   height: 150,
                                   child: CupertinoPicker(
+                                    scrollController:
+                                        FixedExtentScrollController(
+                                      initialItem: _selectedSectionIndex,
+                                    ),
                                     backgroundColor: Colors.transparent,
                                     selectionOverlay: null,
                                     itemExtent: 32.0,
@@ -107,6 +111,10 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                                   width: Scaler.width(0.25, context),
                                   height: 150,
                                   child: CupertinoPicker(
+                                    scrollController:
+                                        FixedExtentScrollController(
+                                      initialItem: _selectedTimeIndex,
+                                    ),
                                     backgroundColor: Colors.transparent,
                                     selectionOverlay: null,
                                     itemExtent: 32.0,

@@ -138,7 +138,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       title: '문구 선택 · 시간 설정',
                                       description: '기억에 남길 문구를 선택하고 시간을 설정하세요',
                                       onClick: () {
-                                        HapticFeedback.lightImpact();
+                                        Navigator.pushNamed(
+                                          context,
+                                          RouteName.mentSetting,
+                                        );
                                       },
                                       isSwitch: false,
                                     )

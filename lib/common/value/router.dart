@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sprit/screens/main_screen.dart';
 import 'package:sprit/screens/login/login_screen.dart';
 import 'package:sprit/screens/login/sign_up_screen.dart';
+import 'package:sprit/screens/notification/ment_setting_screen.dart';
 import 'package:sprit/screens/notification/notification_screen.dart';
 import 'package:sprit/screens/notification/time_setting_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
@@ -15,6 +16,7 @@ class RouteName {
   static const search = "/search";
   static const notification = "/notification";
   static const timeSetting = "/notifiction/timeSetting";
+  static const mentSetting = "/notifiction/mentSetting";
   static const bookDetail = "/bookDetail";
   static const review = "/review";
 }
@@ -27,4 +29,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.search: (context) => const SearchScreen(),
   RouteName.notification: (context) => const NotificationScreen(),
   RouteName.timeSetting: (context) => const TimeSettingScreen(),
+  RouteName.mentSetting: (context) => const MentSettingScreen(),
 };
