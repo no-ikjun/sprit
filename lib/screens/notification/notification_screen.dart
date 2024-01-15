@@ -32,6 +32,25 @@ Future<QuestAgreeInfo> getQuestAgreeInfo(
   return await NotificationService.getQuestAgreeInfo(context, fcmToken);
 }
 
+Future<bool> getMarketingAgreeInfo(
+  BuildContext context,
+  String fcmToken,
+) async {
+  return await NotificationService.getMarketingAgree(context, fcmToken);
+}
+
+Future<bool> updateMarketingAgreeInfo(
+  BuildContext context,
+  String fcmToken,
+  bool marketingAgree,
+) async {
+  return await NotificationService.updateMarketingAgree(
+    context,
+    fcmToken,
+    marketingAgree,
+  );
+}
+
 Future<bool> updateTimeAgreeInfo(
   BuildContext context,
   String fcmToken,
@@ -86,14 +105,14 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   bool isLoading = false;
 
-  bool isReadingTimeNotificationOn = true;
+  bool isReadingTimeNotificationOn = false;
   int readingTime = 0;
-  bool isReminderNotificationOn = true;
+  bool isReminderNotificationOn = false;
   int reminderTime = 0;
-  bool isNewQuestNotificationOn = true;
-  bool isQuestEndNotificationOn = true;
-  bool isQuestTimeNotificationOn = true;
-  bool isMarketingNotificationOn = true;
+  bool isNewQuestNotificationOn = false;
+  bool isQuestEndNotificationOn = false;
+  bool isQuestTimeNotificationOn = false;
+  bool isMarketingNotificationOn = false;
 
   Future<void> _fetchData(BuildContext context, String fcmToken) async {
     setState(() {
@@ -114,6 +133,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
             isNewQuestNotificationOn = value.agree01;
             isQuestEndNotificationOn = value.agree02;
             isQuestTimeNotificationOn = value.agree03;
+          });
+          getMarketingAgreeInfo(context, fcmToken).then((value) {
+            setState(() {
+              isMarketingNotificationOn = value;
+            });
           });
         });
       });
@@ -433,12 +457,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       title: '마케팅 정보 수신',
                                       description: '광고성 정보 수신 동의 여부',
                                       switchValue: isMarketingNotificationOn,
-                                      onClick: () {
+                                      onClick: () async {
                                         HapticFeedback.lightImpact();
-                                        setState(() {
-                                          isMarketingNotificationOn =
-                                              !isMarketingNotificationOn;
-                                        });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
+                                        final result =
+                                            await updateMarketingAgreeInfo(
+                                          context,
+                                          fcmToken,
+                                          !isMarketingNotificationOn,
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isMarketingNotificationOn =
+                                                !isMarketingNotificationOn;
+                                          });
+                                        }
                                       },
                                     ),
                                   ],

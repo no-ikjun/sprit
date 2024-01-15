@@ -258,4 +258,54 @@ class NotificationService {
       return false;
     }
   }
+
+  static Future<bool> getMarketingAgree(
+    BuildContext context,
+    String fcmToken,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/notification/agree/marketing',
+        queryParameters: {
+          'fcm_token': fcmToken,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.data.toString() == 'true';
+      } else {
+        debugPrint('마케팅 알림 동의 정보 조회 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('마케팅 알림 동의 정보 조회 실패 $e');
+      return false;
+    }
+  }
+
+  static Future<bool> updateMarketingAgree(
+    BuildContext context,
+    String fcmToken,
+    bool marketingAgree,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/notification/agree/marketing',
+        queryParameters: {
+          'fcm_token': fcmToken,
+          'marketing_agree': marketingAgree,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        debugPrint('마케팅 알림 동의 정보 수정 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('마케팅 알림 동의 정보 수정 실패 $e');
+      return false;
+    }
+  }
 }
