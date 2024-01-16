@@ -1,3 +1,4 @@
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
@@ -57,7 +58,7 @@ void showBookInfo(
 
 class SearchScreen extends StatefulWidget {
   final bool isHome;
-  const SearchScreen({Key? key, this.isHome = false}) : super(key: key);
+  const SearchScreen({super.key, this.isHome = false});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -124,55 +125,92 @@ class _SearchScreenState extends State<SearchScreen>
               label: '도서 검색',
               onlyLabel: widget.isHome,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: Scaler.width(0.075, context),
-              ),
-              child: TextField(
-                textInputAction: TextInputAction.search,
-                onChanged: (value) {
-                  setState(() {
-                    query = value;
-                  });
-                },
-                onSubmitted: (value) async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  Map<String, dynamic> response =
-                      await searchBook(context, value, 1);
-                  setState(() {
-                    searchResult = response['search_list'];
-                    isEnd = response['is_end'];
-                    isLoading = false;
-                  });
-                },
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: '검색어를 입력해주세요',
-                  hintStyle: TextStyles.textFieldStyle.copyWith(
-                    color: ColorSet.grey,
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: ColorSet.grey, width: 1.0),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12),
+            SizedBox(
+              width: Scaler.width(0.85, context),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: Scaler.width(0.85, context) - 35,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: TextField(
+                        textInputAction: TextInputAction.search,
+                        onChanged: (value) {
+                          setState(() {
+                            query = value;
+                          });
+                        },
+                        onSubmitted: (value) async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          Map<String, dynamic> response =
+                              await searchBook(context, value, 1);
+                          setState(() {
+                            searchResult = response['search_list'];
+                            isEnd = response['is_end'];
+                            isLoading = false;
+                          });
+                        },
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          hintText: '검색어를 입력해주세요',
+                          hintStyle: TextStyles.textFieldStyle.copyWith(
+                            color: ColorSet.grey,
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: ColorSet.grey, width: 1.0),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.all(10),
+                          filled: true,
+                          fillColor: Colors.white,
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: ColorSet.border, width: 1.0),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: ColorSet.grey,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  contentPadding: const EdgeInsets.all(10),
-                  filled: true,
-                  fillColor: Colors.white,
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: ColorSet.border, width: 1.0),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12),
-                    ),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          BarcodeScanner.scan().then((value) async {
+                            if (value.type != ResultType.Cancelled ||
+                                value.type != ResultType.Error) {
+                              Map<String, dynamic> response = await searchBook(
+                                  context, value.rawContent, 1);
+                              setState(() {
+                                searchResult = response['search_list'];
+                                isEnd = response['is_end'];
+                                isLoading = false;
+                              });
+                            }
+                          });
+                        },
+                        child: Image.asset(
+                          'assets/images/barcode_icon.png',
+                          width: 30,
+                        ),
+                      ),
+                    ],
                   ),
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: ColorSet.grey,
-                  ),
-                ),
+                ],
               ),
             ),
             const SizedBox(

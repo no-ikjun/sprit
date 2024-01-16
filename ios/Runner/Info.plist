@@ -70,5 +70,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+  <string>바코드 검색을 위해 카메라 사용 권한이 필요합니다.</string>
 </dict>
 </plist>
