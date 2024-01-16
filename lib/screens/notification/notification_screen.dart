@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/notification.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/popups/notification/notification_confirm.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/screens/notification/widgets/control_menu.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -469,6 +472,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           !isMarketingNotificationOn,
                                         );
                                         if (result == true) {
+                                          DateTime now = DateTime.now();
+                                          String formattedDate = DateFormat(
+                                                  'yyyy년 MM월 dd일\nHH시 mm분')
+                                              .format(now);
+                                          showModal(
+                                              context,
+                                              NotificationConfirm(
+                                                title:
+                                                    !isMarketingNotificationOn
+                                                        ? "마케팅 정보 수신 동의"
+                                                        : "마케팅 정보 수신 거부",
+                                                description: !isMarketingNotificationOn
+                                                    ? "아래 시간을 기준으로\n마케팅 정보 수신에 동의하였습니다"
+                                                    : "아래 시간을 기준으로\n마케팅 정보 수신을 거부하였습니다",
+                                                notificationInfo: formattedDate,
+                                              ),
+                                              false);
                                           setState(() {
                                             isMarketingNotificationOn =
                                                 !isMarketingNotificationOn;

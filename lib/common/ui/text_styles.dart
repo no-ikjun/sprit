@@ -311,4 +311,25 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle notificationConfirmModalTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle notificationConfirmModalDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle notificationConfirmModalInfoStyle = TextStyle(
+    color: ColorSet.black,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
 }

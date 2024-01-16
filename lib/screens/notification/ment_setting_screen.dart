@@ -108,6 +108,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                             CustomButton(
                               onPressed: () {},
                               width: Scaler.width(0.85 * 0.4, context) - 5,
+                              height: 45,
                               color: ColorSet.lightGrey,
                               borderColor: ColorSet.lightGrey,
                               child: const Text(
@@ -118,6 +119,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                             CustomButton(
                               onPressed: () {},
                               width: Scaler.width(0.85 * 0.6, context) - 5,
+                              height: 45,
                               child: const Text(
                                 '적용하기',
                                 style: TextStyles.loginButtonStyle,
