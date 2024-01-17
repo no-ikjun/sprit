@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/banner.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
@@ -17,12 +18,9 @@ import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
-List<String> bookList = [
-  "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6052975%3Ftimestamp%3D20231124154518",
-  "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5558360%3Ftimestamp%3D20231114150030",
-  "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5853564%3Ftimestamp%3D20231025145616",
-  "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6318015%3Ftimestamp%3D20231124172005",
-];
+Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
+  return await BookLibraryService.getBookLibrary(context, 'READING');
+}
 
 void updateUserInfo(BuildContext context) async {
   final userInfo = await UserInfoService.getUserInfo(context);
@@ -48,6 +46,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<BookInfo> bookInfo = [];
+
   int bannerCurrent = 0;
   List<BannerInfo> bannerInfo = [];
 
@@ -59,10 +59,12 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
   Future<void> _onRefresh() async {
+    final readingBookInfo = await getReadingBookInfo(context);
     updateUserInfo(context);
     final newBannerInfo = await getBannerInfo(context);
     final newPopularBookInfo = await getPopularBook(context, 1);
     setState(() {
+      bookInfo = readingBookInfo;
       bannerInfo = newBannerInfo;
       popularBookInfo = newPopularBookInfo['books'];
       moreAvailable = newPopularBookInfo['more_available'];
@@ -73,6 +75,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    getReadingBookInfo(context).then((value) {
+      setState(() {
+        bookInfo = value;
+      });
+    });
     updateUserInfo(context);
     getBannerInfo(context).then((value) {
       setState(() {
@@ -161,35 +168,40 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(
                 height: 160,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: bookList.length,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        children: [
-                          (index == 0)
-                              ? SizedBox(
-                                  width: Scaler.width(0.075, context),
-                                )
-                              : const SizedBox(
-                                  width: 0,
-                                ),
-                          BookThumbnail(imgUrl: bookList[index]),
-                          (index == bookList.length - 1)
-                              ? SizedBox(
-                                  width: Scaler.width(0.075, context),
-                                )
-                              : const SizedBox(
-                                  width: 10,
-                                ),
-                        ],
-                      );
-                    },
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: bookInfo.length,
+                        itemBuilder: (context, index) {
+                          return Row(
+                            children: [
+                              (index == 0)
+                                  ? SizedBox(
+                                      width: Scaler.width(0.075, context),
+                                    )
+                                  : const SizedBox(
+                                      width: 0,
+                                    ),
+                              BookThumbnail(imgUrl: bookInfo[index].thumbnail),
+                              (index == bookInfo.length - 1)
+                                  ? SizedBox(
+                                      width: Scaler.width(0.075, context),
+                                    )
+                                  : const SizedBox(
+                                      width: 10,
+                                    ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(
