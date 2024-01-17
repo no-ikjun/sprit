@@ -237,7 +237,7 @@ class TextStyles {
 
   static const TextStyle questWidgetDescriptionStyle = TextStyle(
     color: ColorSet.darkGrey,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );

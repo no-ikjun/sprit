@@ -7,7 +7,7 @@ class QuestInfo {
   final String shortDescription;
   final String longDescription;
   final String iconUrl;
-  final String thubmnailUrl;
+  final String thumbnailUrl;
   final String startDate;
   final String endDate;
   final int limit;
@@ -20,7 +20,7 @@ class QuestInfo {
     required this.shortDescription,
     required this.longDescription,
     required this.iconUrl,
-    required this.thubmnailUrl,
+    required this.thumbnailUrl,
     required this.startDate,
     required this.endDate,
     required this.limit,
@@ -34,7 +34,7 @@ class QuestInfo {
         shortDescription = json['short_description'],
         longDescription = json['long_description'],
         iconUrl = json['icon_url'],
-        thubmnailUrl = json['thubmnail_url'] ?? '',
+        thumbnailUrl = json['thumbnail_url'] ?? '',
         startDate = json['start_date'],
         endDate = json['end_date'],
         limit = json['limit'],
@@ -47,7 +47,7 @@ class QuestInfo {
         'short_description': shortDescription,
         'long_description': longDescription,
         'icon_url': iconUrl,
-        'thubmnail_url': thubmnailUrl,
+        'thumbnail_url': thumbnailUrl,
         'start_date': startDate,
         'end_date': endDate,
         'limit': limit,
