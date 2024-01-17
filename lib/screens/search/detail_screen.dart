@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/popups/book/register_book_library.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/remove_glow.dart';
@@ -19,10 +22,18 @@ Future<BookInfo> getBookInfoByUuid(
   return await BookInfoService.getBookInfoByUuid(context, uuid);
 }
 
+Future<bool> setBookLibrary(
+  BuildContext context,
+  String bookUuid,
+  String state,
+) async {
+  return await BookLibraryService.setBookLibrary(context, bookUuid, state);
+}
+
 class BookDetailScreen extends StatefulWidget {
   final String bookUuid;
 
-  const BookDetailScreen({Key? key, required this.bookUuid}) : super(key: key);
+  const BookDetailScreen({super.key, required this.bookUuid});
 
   @override
   _BookDetailScreenState createState() => _BookDetailScreenState();
@@ -370,24 +381,46 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        SizedBox(
-                                          width:
-                                              Scaler.width(0.425, context) - 20,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              SvgPicture.asset(
-                                                'assets/images/clock_icon.svg',
-                                                width:
-                                                    Scaler.width(0.08, context),
+                                        InkWell(
+                                          onTap: () async {
+                                            final response =
+                                                await setBookLibrary(
+                                              context,
+                                              bookInfo.bookUuid,
+                                              'BEFORE',
+                                            );
+                                            showModal(
+                                              context,
+                                              RegisterBookLibraryConfirm(
+                                                result: response,
+                                                state: 'BEFORE',
                                               ),
-                                              const Text(
-                                                '나중에 읽을 목록에\n추가하기',
-                                                style: TextStyles
-                                                    .bookDeatilLabelStyle,
-                                              ),
-                                            ],
+                                              false,
+                                            );
+                                          },
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          child: SizedBox(
+                                            width:
+                                                Scaler.width(0.425, context) -
+                                                    20,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/clock_icon.svg',
+                                                  width: Scaler.width(
+                                                      0.08, context),
+                                                ),
+                                                const Text(
+                                                  '나중에 읽을 목록에\n추가하기',
+                                                  style: TextStyles
+                                                      .bookDeatilLabelStyle,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         Container(
@@ -395,24 +428,46 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           height: 50,
                                           color: ColorSet.lightGrey,
                                         ),
-                                        SizedBox(
-                                          width:
-                                              Scaler.width(0.425, context) - 20,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              SvgPicture.asset(
-                                                'assets/images/book_icon.svg',
-                                                width:
-                                                    Scaler.width(0.07, context),
+                                        InkWell(
+                                          onTap: () async {
+                                            final response =
+                                                await setBookLibrary(
+                                              context,
+                                              bookInfo.bookUuid,
+                                              'AFTER',
+                                            );
+                                            showModal(
+                                              context,
+                                              RegisterBookLibraryConfirm(
+                                                result: response,
+                                                state: 'AFTER',
                                               ),
-                                              const Text(
-                                                '읽었던 도서 목록에\n추가하기',
-                                                style: TextStyles
-                                                    .bookDeatilLabelStyle,
-                                              ),
-                                            ],
+                                              false,
+                                            );
+                                          },
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          child: SizedBox(
+                                            width:
+                                                Scaler.width(0.425, context) -
+                                                    20,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/book_icon.svg',
+                                                  width: Scaler.width(
+                                                      0.07, context),
+                                                ),
+                                                const Text(
+                                                  '읽었던 도서 목록에\n추가하기',
+                                                  style: TextStyles
+                                                      .bookDeatilLabelStyle,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ],
