@@ -168,104 +168,111 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 160,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    bookInfo.isEmpty
-                        ? Row(
-                            children: [
-                              SizedBox(
-                                width: Scaler.width(0.075, context),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/search');
-                                },
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                child: Container(
-                                  width: 90,
-                                  height: 130,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                    color: ColorSet.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/images/home_plus.png',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 160,
+                    child: bookInfo.isEmpty
+                        ? SizedBox(
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: Scaler.width(0.075, context),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/search');
+                                  },
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: Container(
                                     width: 90,
+                                    height: 130,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                      color: ColorSet.white,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/images/home_plus.png',
+                                      width: 90,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           )
-                        : SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ListView.builder(
-                              shrinkWrap: true,
+                        : SizedBox(
+                            width: Scaler.width(1, context),
+                            child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: bookInfo.length,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  children: [
-                                    (index == 0)
-                                        ? SizedBox(
-                                            width: Scaler.width(0.075, context),
-                                          )
-                                        : const SizedBox(
-                                            width: 0,
-                                          ),
-                                    BookThumbnail(
-                                        imgUrl: bookInfo[index].thumbnail),
-                                    (index == bookInfo.length - 1)
-                                        ? Row(
-                                            children: [
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  Navigator.pushNamed(
-                                                      context, '/search');
-                                                },
-                                                splashColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                child: Container(
-                                                  width: 90,
-                                                  height: 130,
-                                                  clipBehavior: Clip.hardEdge,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorSet.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child: Image.asset(
-                                                    'assets/images/home_plus.png',
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: bookInfo.length,
+                                itemBuilder: (context, index) {
+                                  return Row(
+                                    children: [
+                                      (index == 0)
+                                          ? SizedBox(
+                                              width:
+                                                  Scaler.width(0.075, context),
+                                            )
+                                          : const SizedBox(
+                                              width: 0,
+                                            ),
+                                      BookThumbnail(
+                                          imgUrl: bookInfo[index].thumbnail),
+                                      (index == bookInfo.length - 1)
+                                          ? Row(
+                                              children: [
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(
+                                                        context, '/search');
+                                                  },
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  child: Container(
                                                     width: 90,
+                                                    height: 130,
+                                                    clipBehavior: Clip.hardEdge,
+                                                    decoration: BoxDecoration(
+                                                      color: ColorSet.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Image.asset(
+                                                      'assets/images/home_plus.png',
+                                                      width: 90,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: Scaler.width(
-                                                    0.075, context),
-                                              ),
-                                            ],
-                                          )
-                                        : const SizedBox(
-                                            width: 10,
-                                          ),
-                                  ],
-                                );
-                              },
+                                                SizedBox(
+                                                  width: Scaler.width(
+                                                      0.075, context),
+                                                ),
+                                              ],
+                                            )
+                                          : const SizedBox(
+                                              width: 10,
+                                            ),
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 10,
