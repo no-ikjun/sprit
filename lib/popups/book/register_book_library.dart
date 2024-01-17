@@ -29,9 +29,9 @@ class RegisterBookLibraryConfirm extends StatelessWidget {
         Text(
           result
               ? (state == 'AFTER')
-                  ? '읽었던 도서 목록에 추가되었습니다'
-                  : '나중에 읽을 목록에 추가되었습니다'
-              : '이미 목록에 저장되어있는 도서입니다',
+                  ? '읽었던 도서 목록에 추가되었어요'
+                  : '나중에 읽을 목록에 추가되었어요'
+              : "이미 목록에 저장되어있는 도서에요\n상태 변경은 '내 서재' 탭에서 할 수 있어요",
           style: TextStyles.notificationConfirmModalDescriptionStyle,
           textAlign: TextAlign.center,
         ),
