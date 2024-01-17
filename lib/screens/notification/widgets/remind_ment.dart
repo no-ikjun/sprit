@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/switch_button.dart';
 
@@ -18,8 +19,16 @@ class RemindMentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: Scaler.width(0.85, context),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: ColorSet.white,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -27,7 +36,7 @@ class RemindMentWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: Scaler.width(0.85, context) - 55,
+                width: Scaler.width(0.85, context) - 80,
                 child: Row(
                   children: [
                     Flexible(
@@ -44,7 +53,7 @@ class RemindMentWidget extends StatelessWidget {
                 height: 3,
               ),
               SizedBox(
-                width: Scaler.width(0.85, context) - 55,
+                width: Scaler.width(0.85, context) - 80,
                 child: Row(
                   children: [
                     Flexible(
