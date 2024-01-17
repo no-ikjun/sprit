@@ -63,13 +63,14 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.bookUuid == '') {
-      getBookList(context, state).then((value) {
-        setState(() {
-          bookInfoList = value;
-        });
+    getBookList(context, state).then((value) {
+      setState(() {
+        isBookSelected = true;
+        bookInfoList = value;
       });
-    } else {
+    });
+
+    if (widget.bookUuid != '') {
       getBookInfoByUuid(context, widget.bookUuid).then((value) {
         setState(() {
           selectedBookInfo = value;
@@ -397,12 +398,19 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                           : const SizedBox(),
                                                     ],
                                                   ),
-                                                  Text(
-                                                    '${selectedBookInfo.publisher} · ${selectedBookInfo.publishedAt.substring(0, 10)}',
-                                                    style: TextStyles
-                                                        .readBookSelectedDescriptionStyle
-                                                        .copyWith(
-                                                      color: ColorSet.grey,
+                                                  SizedBox(
+                                                    width: Scaler.width(
+                                                            0.85, context) -
+                                                        118.15,
+                                                    child: Text(
+                                                      '${selectedBookInfo.publisher} · ${selectedBookInfo.publishedAt.substring(0, 10)}',
+                                                      style: TextStyles
+                                                          .readBookSelectedDescriptionStyle
+                                                          .copyWith(
+                                                        color: ColorSet.grey,
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.clip,
                                                     ),
                                                   ),
                                                 ],
