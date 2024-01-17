@@ -156,8 +156,10 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyles.homeNameStyle,
                             ),
                           ),
-                          const Text(
-                            '님이 읽고있는 책이에요 📚',
+                          Text(
+                            bookInfo.isNotEmpty
+                                ? '님이 읽고있는 책이에요 📚'
+                                : '님, 독서를 시작하세요 📚',
                             style: TextStyles.homeNameStyle,
                           ),
                         ],
@@ -171,36 +173,97 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: bookInfo.length,
-                        itemBuilder: (context, index) {
-                          return Row(
+                    bookInfo.isEmpty
+                        ? Row(
                             children: [
-                              (index == 0)
-                                  ? SizedBox(
-                                      width: Scaler.width(0.075, context),
-                                    )
-                                  : const SizedBox(
-                                      width: 0,
-                                    ),
-                              BookThumbnail(imgUrl: bookInfo[index].thumbnail),
-                              (index == bookInfo.length - 1)
-                                  ? SizedBox(
-                                      width: Scaler.width(0.075, context),
-                                    )
-                                  : const SizedBox(
-                                      width: 10,
-                                    ),
+                              SizedBox(
+                                width: Scaler.width(0.075, context),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/search');
+                                },
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: Container(
+                                  width: 90,
+                                  height: 130,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                    color: ColorSet.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Image.asset(
+                                    'assets/images/home_plus.png',
+                                    width: 90,
+                                  ),
+                                ),
+                              ),
                             ],
-                          );
-                        },
-                      ),
-                    ),
+                          )
+                        : SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: bookInfo.length,
+                              itemBuilder: (context, index) {
+                                return Row(
+                                  children: [
+                                    (index == 0)
+                                        ? SizedBox(
+                                            width: Scaler.width(0.075, context),
+                                          )
+                                        : const SizedBox(
+                                            width: 0,
+                                          ),
+                                    BookThumbnail(
+                                        imgUrl: bookInfo[index].thumbnail),
+                                    (index == bookInfo.length - 1)
+                                        ? Row(
+                                            children: [
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.pushNamed(
+                                                      context, '/search');
+                                                },
+                                                splashColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                child: Container(
+                                                  width: 90,
+                                                  height: 130,
+                                                  clipBehavior: Clip.hardEdge,
+                                                  decoration: BoxDecoration(
+                                                    color: ColorSet.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: Image.asset(
+                                                    'assets/images/home_plus.png',
+                                                    width: 90,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: Scaler.width(
+                                                    0.075, context),
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox(
+                                            width: 10,
+                                          ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
                   ],
                 ),
               ),
