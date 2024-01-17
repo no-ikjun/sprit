@@ -166,7 +166,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             ],
           ),
           Positioned(
-            top: -15,
+            top: -10,
             child: InkWell(
               borderRadius: BorderRadius.circular(30),
               onTap: () {
