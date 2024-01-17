@@ -9,6 +9,7 @@ import 'package:sprit/firebase_options.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/read/record_setting_screen.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
@@ -72,6 +73,11 @@ class MyApp extends StatelessWidget {
               final String bookUuid = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => ReviewScreen(bookUuid: bookUuid),
+              );
+            case RouteName.recordSetting:
+              final String bookUuid = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => RecordSettingScreen(bookUuid: bookUuid),
               );
             default:
               return MaterialPageRoute(

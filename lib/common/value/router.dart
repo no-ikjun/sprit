@@ -19,6 +19,7 @@ class RouteName {
   static const mentSetting = "/notifiction/mentSetting";
   static const bookDetail = "/bookDetail";
   static const review = "/review";
+  static const recordSetting = "/recordSetting";
 }
 
 var namedRoutes = <String, WidgetBuilder>{

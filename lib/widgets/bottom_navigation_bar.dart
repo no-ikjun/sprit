@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final int selectedIndex;
@@ -164,13 +165,16 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               ),
             ],
           ),
-          // 겹쳐지는 원 모양의 버튼
           Positioned(
-            top: -15, // 원하는 오프셋으로 조정
+            top: -15,
             child: InkWell(
               borderRadius: BorderRadius.circular(30),
               onTap: () {
-                // 원 모양 버튼 클릭 시 액션
+                Navigator.pushNamed(
+                  context,
+                  RouteName.recordSetting,
+                  arguments: '',
+                );
               },
               child: Container(
                 width: 60,
