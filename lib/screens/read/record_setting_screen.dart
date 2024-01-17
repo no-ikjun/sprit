@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
@@ -26,6 +27,10 @@ Future<BookInfo> getBookInfoByUuid(
   return await BookInfoService.getBookInfoByUuid(context, uuid);
 }
 
+Future<List<BookInfo>> getBookList(BuildContext context, String state) async {
+  return await BookLibraryService.getBookLibrary(context, state);
+}
+
 class RecordSettingScreen extends StatefulWidget {
   final String bookUuid;
   const RecordSettingScreen({super.key, required this.bookUuid});
@@ -35,8 +40,10 @@ class RecordSettingScreen extends StatefulWidget {
 }
 
 class _RecordSettingScreenState extends State<RecordSettingScreen> {
+  String state = 'READING';
+
   bool isBookSelected = false;
-  BookInfo bookInfo = const BookInfo(
+  BookInfo selectedBookInfo = const BookInfo(
     bookUuid: '',
     isbn: '',
     title: '',
@@ -51,15 +58,21 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
     score: 0,
   );
 
+  List<BookInfo> bookInfoList = [];
+
   @override
   void initState() {
     super.initState();
     if (widget.bookUuid == '') {
-      //선택된 책 없을 때
+      getBookList(context, state).then((value) {
+        setState(() {
+          bookInfoList = value;
+        });
+      });
     } else {
       getBookInfoByUuid(context, widget.bookUuid).then((value) {
         setState(() {
-          bookInfo = value;
+          selectedBookInfo = value;
           isBookSelected = true;
         });
       });
@@ -89,11 +102,13 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                       ),
                       SizedBox(
                         width: Scaler.width(0.85, context),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              '읽을 책을 선택해주세요 📕',
+                              isBookSelected
+                                  ? '읽을 책이 정해졌어요 📘'
+                                  : '읽을 책을 선택해주세요 📕',
                               style: TextStyles.readRecordTitleStyle,
                             ),
                           ],
@@ -102,110 +117,335 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      SizedBox(
-                        width: Scaler.width(0.85, context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                      !isBookSelected
+                          ? Column(
                               children: [
-                                Container(
-                                  height: 34,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
+                                SizedBox(
+                                  width: Scaler.width(0.85, context),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              setState(() {
+                                                state = 'READING';
+                                              });
+                                              await getBookList(context, state)
+                                                  .then((value) {
+                                                setState(() {
+                                                  bookInfoList = value;
+                                                });
+                                              });
+                                            },
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            child: Container(
+                                              height: 34,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: (state == 'READING')
+                                                    ? ColorSet.primary
+                                                        .withOpacity(0.8)
+                                                    : ColorSet.superLightGrey,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(17),
+                                                ),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                '읽는 중인 책',
+                                                style: TextStyles
+                                                    .readBookSelectButtonStyle
+                                                    .copyWith(
+                                                  color: (state == 'READING')
+                                                      ? ColorSet.white
+                                                      : ColorSet.semiDarkGrey,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              setState(() {
+                                                state = 'BEFORE';
+                                              });
+                                              await getBookList(context, state)
+                                                  .then((value) {
+                                                setState(() {
+                                                  bookInfoList = value;
+                                                });
+                                              });
+                                            },
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            child: Container(
+                                              height: 34,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: (state == 'BEFORE')
+                                                    ? ColorSet.primary
+                                                        .withOpacity(0.8)
+                                                    : ColorSet.superLightGrey,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(17),
+                                                ),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                '읽을 책 목록',
+                                                style: TextStyles
+                                                    .readBookSelectButtonStyle
+                                                    .copyWith(
+                                                  color: (state == 'BEFORE')
+                                                      ? ColorSet.white
+                                                      : ColorSet.semiDarkGrey,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Row(
+                                        children: [
+                                          Text(
+                                            '직접 검색',
+                                            style: TextStyles
+                                                .readBookSearchButtonStyle,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Icon(
+                                            Icons.search,
+                                            size: 14,
+                                            color: ColorSet.darkGrey,
+                                          ),
+                                        ],
+                                      )
+                                    ],
                                   ),
-                                  decoration: const BoxDecoration(
-                                    color: ColorSet.superLightGrey,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(17),
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '읽는 중인 책',
-                                    style: TextStyles.readBookSelectButtonStyle,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Container(
-                                  height: 34,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: ColorSet.primary.withOpacity(0.8),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(17),
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    '읽을 책 목록',
-                                    style: TextStyles.readBookSelectButtonStyle
-                                        .copyWith(
-                                      color: ColorSet.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Row(
-                              children: [
-                                Text(
-                                  '직접 검색',
-                                  style: TextStyles.readBookSearchButtonStyle,
                                 ),
                                 SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  Icons.search,
-                                  size: 14,
-                                  color: ColorSet.darkGrey,
+                                  width: Scaler.width(1, context),
+                                  height: 150,
+                                  child: ScrollConfiguration(
+                                    behavior: RemoveGlow(),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: bookInfoList.length,
+                                        itemBuilder: (context, index) {
+                                          return Row(
+                                            children: [
+                                              (index == 0)
+                                                  ? SizedBox(
+                                                      width: Scaler.width(
+                                                          0.075, context),
+                                                    )
+                                                  : const SizedBox(
+                                                      width: 0,
+                                                    ),
+                                              InkWell(
+                                                onTap: () async {
+                                                  await getBookInfoByUuid(
+                                                          context,
+                                                          bookInfoList[index]
+                                                              .bookUuid)
+                                                      .then((value) {
+                                                    setState(() {
+                                                      selectedBookInfo = value;
+                                                      isBookSelected = true;
+                                                    });
+                                                  });
+                                                },
+                                                splashColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                child: BookThumbnail(
+                                                    imgUrl: bookInfoList[index]
+                                                        .thumbnail),
+                                              ),
+                                              (index == bookList.length - 1)
+                                                  ? SizedBox(
+                                                      width: Scaler.width(
+                                                          0.075, context),
+                                                    )
+                                                  : const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 150,
-                        child: ScrollConfiguration(
-                          behavior: RemoveGlow(),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: bookList.length,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  children: [
-                                    (index == 0)
-                                        ? SizedBox(
-                                            width: Scaler.width(0.075, context),
-                                          )
-                                        : const SizedBox(
-                                            width: 0,
+                          : SizedBox(
+                              width: Scaler.width(0.85, context),
+                              child: Stack(
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Container(
+                                    width: Scaler.width(0.85, context),
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      color: ColorSet.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          spreadRadius: 0,
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        BookThumbnail(
+                                          imgUrl: selectedBookInfo.thumbnail,
+                                          width: 76.15,
+                                          height: 110,
+                                        ),
+                                        const SizedBox(
+                                          width: 12,
+                                        ),
+                                        SizedBox(
+                                          height: 110,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: Scaler.width(
+                                                        0.85, context) -
+                                                    118.15,
+                                                child: Text(
+                                                  selectedBookInfo.title,
+                                                  style: TextStyles
+                                                      .readBookSelectedTitleStyle,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        '저자 ',
+                                                        style: TextStyles
+                                                            .readBookSelectedDescriptionStyle
+                                                            .copyWith(
+                                                          color: ColorSet.grey,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        selectedBookInfo
+                                                            .authors[0],
+                                                        style: TextStyles
+                                                            .readBookSelectedDescriptionStyle,
+                                                      ),
+                                                      selectedBookInfo
+                                                              .translators
+                                                              .isNotEmpty
+                                                          ? Text(
+                                                              ' 번역 ',
+                                                              style: TextStyles
+                                                                  .readBookSelectedDescriptionStyle
+                                                                  .copyWith(
+                                                                color: ColorSet
+                                                                    .grey,
+                                                              ),
+                                                            )
+                                                          : const SizedBox(),
+                                                      selectedBookInfo
+                                                              .translators
+                                                              .isNotEmpty
+                                                          ? Text(
+                                                              selectedBookInfo
+                                                                  .translators[0],
+                                                              style: TextStyles
+                                                                  .readBookSelectedDescriptionStyle,
+                                                            )
+                                                          : const SizedBox(),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    '${selectedBookInfo.publisher} · ${selectedBookInfo.publishedAt.substring(0, 10)}',
+                                                    style: TextStyles
+                                                        .readBookSelectedDescriptionStyle
+                                                        .copyWith(
+                                                      color: ColorSet.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
                                           ),
-                                    BookThumbnail(imgUrl: bookList[index]),
-                                    (index == bookList.length - 1)
-                                        ? SizedBox(
-                                            width: Scaler.width(0.075, context),
-                                          )
-                                        : const SizedBox(
-                                            width: 10,
-                                          ),
-                                  ],
-                                );
-                              },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          isBookSelected = false;
+                                          selectedBookInfo = const BookInfo(
+                                            bookUuid: '',
+                                            isbn: '',
+                                            title: '',
+                                            authors: [],
+                                            publisher: '',
+                                            translators: [],
+                                            searchUrl: '',
+                                            thumbnail: '',
+                                            content: '',
+                                            publishedAt: '',
+                                            updatedAt: '',
+                                            score: 0,
+                                          );
+                                        });
+                                      },
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      child: SvgPicture.asset(
+                                        'assets/images/cancel_icon.svg',
+                                        width: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                       const SizedBox(
                         height: 23,
                       ),
