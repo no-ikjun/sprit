@@ -388,4 +388,46 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle timerGoalTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerGoalDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerTimeStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 40,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerLeaveMentStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerLeaveButtonStyle = TextStyle(
+    color: ColorSet.primary,
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerEndingButtonStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    fontFamily: "IBMPlexSans",
+  );
 }
