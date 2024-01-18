@@ -1,5 +1,4 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +7,10 @@ import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/router.dart';
+import 'package:sprit/popups/read/record_alert.dart';
+import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
@@ -36,6 +39,9 @@ class RecordSettingScreen extends StatefulWidget {
 class _RecordSettingScreenState extends State<RecordSettingScreen> {
   String state = 'READING';
   String goalType = 'TIME';
+  int goalTime = 0;
+  int goalPage = 0;
+  int startPage = 0;
 
   bool isBookSelected = false;
   BookInfo selectedBookInfo = const BookInfo(
@@ -300,123 +306,8 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                               child: Stack(
                                 alignment: Alignment.topRight,
                                 children: [
-                                  Container(
-                                    width: Scaler.width(0.85, context),
-                                    padding: const EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                      color: ColorSet.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          spreadRadius: 0,
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        BookThumbnail(
-                                          imgUrl: selectedBookInfo.thumbnail,
-                                          width: 76.15,
-                                          height: 110,
-                                        ),
-                                        const SizedBox(
-                                          width: 12,
-                                        ),
-                                        SizedBox(
-                                          height: 110,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: Scaler.width(
-                                                        0.85, context) -
-                                                    118.15,
-                                                child: Text(
-                                                  selectedBookInfo.title,
-                                                  style: TextStyles
-                                                      .readBookSelectedTitleStyle,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        '저자 ',
-                                                        style: TextStyles
-                                                            .readBookSelectedDescriptionStyle
-                                                            .copyWith(
-                                                          color: ColorSet.grey,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        selectedBookInfo.authors
-                                                                .isNotEmpty
-                                                            ? selectedBookInfo
-                                                                .authors[0]
-                                                            : '',
-                                                        style: TextStyles
-                                                            .readBookSelectedDescriptionStyle,
-                                                      ),
-                                                      selectedBookInfo
-                                                              .translators
-                                                              .isNotEmpty
-                                                          ? Text(
-                                                              ' 번역 ',
-                                                              style: TextStyles
-                                                                  .readBookSelectedDescriptionStyle
-                                                                  .copyWith(
-                                                                color: ColorSet
-                                                                    .grey,
-                                                              ),
-                                                            )
-                                                          : const SizedBox(),
-                                                      selectedBookInfo
-                                                              .translators
-                                                              .isNotEmpty
-                                                          ? Text(
-                                                              selectedBookInfo
-                                                                  .translators[0],
-                                                              style: TextStyles
-                                                                  .readBookSelectedDescriptionStyle,
-                                                            )
-                                                          : const SizedBox(),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    width: Scaler.width(
-                                                            0.85, context) -
-                                                        118.15,
-                                                    child: Text(
-                                                      '${selectedBookInfo.publisher} · ${(selectedBookInfo.publishedAt.length > 9) ? selectedBookInfo.publishedAt.substring(0, 10) : selectedBookInfo.publishedAt}',
-                                                      style: TextStyles
-                                                          .readBookSelectedDescriptionStyle
-                                                          .copyWith(
-                                                        color: ColorSet.grey,
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.clip,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  SelectedBook(
+                                    selectedBookInfo: selectedBookInfo,
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(8),
@@ -477,11 +368,15 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                         onLeftTap: () {
                           setState(() {
                             goalType = 'TIME';
+                            goalPage = 0;
+                            goalTime = 0;
                           });
                         },
                         onRightTap: () {
                           setState(() {
                             goalType = 'PAGE';
+                            goalPage = 0;
+                            goalTime = 0;
                           });
                         },
                         leftText: const Text(
@@ -533,6 +428,9 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               .copyWith(
                                             fontSize: 18,
                                           ),
+                                          onChanged: (value) => setState(() {
+                                            goalPage = int.parse(value);
+                                          }),
                                           decoration: InputDecoration(
                                             hintText: '페이지 수 입력',
                                             hintStyle: TextStyles.textFieldStyle
@@ -604,6 +502,9 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               .copyWith(
                                             fontSize: 16,
                                           ),
+                                          onChanged: (value) => setState(() {
+                                            startPage = int.parse(value);
+                                          }),
                                           decoration: InputDecoration(
                                             hintText: '시작 페이지 번호',
                                             hintStyle: TextStyles.textFieldStyle
@@ -673,7 +574,50 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                     height: 12,
                                   ),
                                   CustomButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (isBookSelected) {
+                                        if (goalType == 'PAGE' &&
+                                            goalPage == 0) {
+                                          showModal(
+                                            context,
+                                            const RecordAlert(
+                                              title: '기록을 시작할 수 없음',
+                                              description:
+                                                  '독서를 시작하려면\n목표 독서량을 입력해야 해요',
+                                            ),
+                                            false,
+                                          );
+                                        } else if (goalType == 'PAGE' &&
+                                            goalPage > 500) {
+                                          showModal(
+                                            context,
+                                            const RecordAlert(
+                                              title: '기록을 시작할 수 없음',
+                                              description:
+                                                  '독서 기록은 한 번에\n최대 500페이지까지만 가능해요',
+                                            ),
+                                            false,
+                                          );
+                                        } else {
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouteName.readTimer,
+                                            arguments:
+                                                selectedBookInfo.bookUuid,
+                                          );
+                                        }
+                                      } else {
+                                        showModal(
+                                          context,
+                                          const RecordAlert(
+                                            title: '기록을 시작할 수 없음',
+                                            description:
+                                                '독서를 시작하려면\n읽을 책을 선택해야 해요',
+                                          ),
+                                          false,
+                                        );
+                                      }
+                                    },
                                     width: Scaler.width(1, context),
                                     height: 45,
                                     child: const Text(
@@ -806,7 +750,11 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             }
                                             return null;
                                           },
-                                          onChanged: (value) {},
+                                          onChanged: (value) {
+                                            setState(() {
+                                              goalTime = value as int;
+                                            });
+                                          },
                                           buttonStyleData: ButtonStyleData(
                                             padding:
                                                 const EdgeInsets.only(right: 8),
@@ -882,7 +830,39 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                     height: 12,
                                   ),
                                   CustomButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (isBookSelected) {
+                                        if (goalType == 'TIME' &&
+                                            goalTime == 0) {
+                                          showModal(
+                                            context,
+                                            const RecordAlert(
+                                              title: '기록을 시작할 수 없음',
+                                              description:
+                                                  '독서를 시작하려면\n목표 독서량을 입력해야 해요',
+                                            ),
+                                            false,
+                                          );
+                                        } else {
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouteName.readTimer,
+                                            arguments:
+                                                selectedBookInfo.bookUuid,
+                                          );
+                                        }
+                                      } else {
+                                        showModal(
+                                          context,
+                                          const RecordAlert(
+                                            title: '기록을 시작할 수 없음',
+                                            description:
+                                                '독서를 시작하려면\n읽을 책을 선택해야 해요',
+                                          ),
+                                          false,
+                                        );
+                                      }
+                                    },
                                     width: Scaler.width(1, context),
                                     height: 45,
                                     child: const Text(

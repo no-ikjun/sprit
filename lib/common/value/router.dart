@@ -20,6 +20,7 @@ class RouteName {
   static const bookDetail = "/bookDetail";
   static const review = "/review";
   static const recordSetting = "/recordSetting";
+  static const readTimer = "/readTimer";
 }
 
 var namedRoutes = <String, WidgetBuilder>{

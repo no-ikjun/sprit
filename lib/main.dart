@@ -9,6 +9,7 @@ import 'package:sprit/firebase_options.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/read/record_setting_screen.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
@@ -79,9 +80,15 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                 builder: (context) => RecordSettingScreen(bookUuid: bookUuid),
               );
+            case RouteName.readTimer:
+              final String bookUuid = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => ReadTimerScreen(bookUuid: bookUuid),
+              );
             default:
               return MaterialPageRoute(
-                  builder: (context) => const SplashScreen());
+                builder: (context) => const SplashScreen(),
+              );
           }
         },
       ),
