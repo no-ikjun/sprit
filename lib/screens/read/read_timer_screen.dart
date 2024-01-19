@@ -9,13 +9,142 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
+import 'package:sprit/widgets/switch_button.dart';
 
 Future<BookInfo> getBookInfo(
   BuildContext context,
   String bookUuid,
 ) async {
   return await BookInfoService.getBookInfoByUuid(context, bookUuid);
+}
+
+void _showBottomModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+    ),
+    builder: (context) {
+      TextEditingController textarea = TextEditingController();
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: SingleChildScrollView(
+          child: SafeArea(
+            maintainBottomViewPadding: true,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 8,
+                ),
+                Container(
+                  width: 60,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: ColorSet.superLightGrey,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text(
+                  '문구 작성',
+                  style: TextStyles.timerBottomSheetTitleStyle,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                const Text(
+                  '기억하고 싶은 문구를 작성해주세요',
+                  style: TextStyles.timerBottomSheetDescriptionStyle,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                SizedBox(
+                  width: Scaler.width(0.8, context),
+                  child: TextField(
+                    controller: textarea,
+                    autofocus: true,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 5,
+                    decoration: const InputDecoration(
+                      hintText: "예) 선택. 집중. 몰입 대상을 정하자.",
+                      hintStyle: TextStyles.timerBottomSheetHintTextStyle,
+                      contentPadding: EdgeInsets.all(15),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: ColorSet.lightGrey,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: ColorSet.lightGrey,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                SizedBox(
+                  width: Scaler.width(0.8, context),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('리마인드 알림 받기',
+                              style:
+                                  TextStyles.timerBottomSheetReminderTextStyle),
+                          Text(
+                            '150자 이내의 문구만 알림으로 받을 수 있어요',
+                            style: TextStyles.timerBottomSheetReminderMentStyle,
+                          ),
+                        ],
+                      ),
+                      CustomSwitch(onToggle: () {}, switchValue: true),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                CustomButton(
+                  onPressed: () {},
+                  width: Scaler.width(0.8, context),
+                  height: 45,
+                  child: const Text(
+                    '저장하기',
+                    style: TextStyles.loginButtonStyle,
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class ReadTimerScreen extends StatefulWidget {
@@ -31,6 +160,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
   Timer? _timer;
   int _elapsedSeconds = 0;
   bool _isRunning = false;
+  DateTime? _lastPausedTime;
 
   BookInfo selectedBookInfo = const BookInfo(
     bookUuid: '',
@@ -68,10 +198,27 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      // 앱이 백그라운드로 이동하거나 종료될 때
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      debugPrint('백그라운드 전환');
+      _lastPausedTime = DateTime.now();
       _saveTimerState();
+    } else if (state == AppLifecycleState.resumed) {
+      debugPrint('다시 돌아옴');
+      _updateTimerAfterResume();
     }
+  }
+
+  void _updateTimerAfterResume() {
+    final currentTime = DateTime.now();
+    if (_lastPausedTime != null) {
+      final pauseDuration = currentTime.difference(_lastPausedTime!).inSeconds;
+      setState(() {
+        _elapsedSeconds += pauseDuration;
+      });
+      _lastPausedTime = null;
+    }
+    _loadTimerState();
   }
 
   void _startTimer() {
@@ -106,7 +253,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
       _isRunning = prefs.getBool('isRunning') ?? false;
     });
 
-    if (_isRunning) {
+    if (_isRunning && _timer == null) {
       _startTimer();
     }
   }
@@ -134,7 +281,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorSet.background,
         body: SafeArea(
-          maintainBottomViewPadding: true,
+          maintainBottomViewPadding: false,
           child: Column(
             children: [
               const CustomAppBar(
@@ -242,7 +389,9 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             height: 9,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              _showBottomModal(context);
+                            },
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             child: Container(
@@ -292,6 +441,12 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             onTap: () {
                               //TODO: 진짜 종료할건지 팝업 띄우기
                               Navigator.pop(context);
+                              SharedPreferences.getInstance().then(
+                                (prefs) {
+                                  prefs.remove('elapsedSeconds');
+                                  prefs.remove('isRunning');
+                                },
+                              );
                             },
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,

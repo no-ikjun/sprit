@@ -430,4 +430,39 @@ class TextStyles {
     fontWeight: FontWeight.w700,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle timerBottomSheetTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerBottomSheetDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerBottomSheetHintTextStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerBottomSheetReminderTextStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle timerBottomSheetReminderMentStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }
