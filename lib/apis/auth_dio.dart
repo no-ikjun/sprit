@@ -7,11 +7,9 @@ import "package:shared_preferences/shared_preferences.dart";
 import "package:sprit/screens/login/login_screen.dart";
 
 Future<Dio> authDio(BuildContext context) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final debugMode = prefs.getBool("debugMode") ?? false;
   var dio = Dio();
   dio.options.baseUrl =
-      (kReleaseMode && !debugMode) ? "" : dotenv.env["BASE_URL"]!;
+      (kReleaseMode) ? dotenv.env["BASE_URL"]! : dotenv.env["DEBUG_BASE_URL"]!;
 
   const storage = FlutterSecureStorage();
   dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
