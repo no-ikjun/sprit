@@ -19,14 +19,21 @@ Future<Dio> authDio(BuildContext context) async {
     }
     return handler.next(options);
   }, onError: (error, handler) async {
-    print("authDio Error: ${error.response?.data.toString()}");
-    if (error.response?.statusCode == 401) {
-      await storage.deleteAll();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false);
-    }
+    debugPrint("authDio Error: ${error.response?.data.toString()}");
+    await storage.deleteAll();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
+    // if (error.response?.statusCode == 401) {
+    //   await storage.deleteAll();
+    //   Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => const LoginScreen()),
+    //     (route) => false,
+    //   );
+    // }
     return handler.next(error);
   }));
   return dio;
