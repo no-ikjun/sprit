@@ -17,6 +17,7 @@ import 'package:sprit/screens/home/widgets/popular_book.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/loader.dart';
 
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
   return await BookLibraryService.getBookLibrary(context, 'READING');
@@ -46,6 +47,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _isLoading = false;
+
   List<BookInfo> bookInfo = [];
 
   int bannerCurrent = 0;
@@ -68,6 +71,17 @@ class _HomePageState extends State<HomePage> {
       bannerInfo = newBannerInfo;
       popularBookInfo = newPopularBookInfo['books'];
       moreAvailable = newPopularBookInfo['more_available'];
+    });
+  }
+
+  void _showLoadingIndicator() {
+    setState(() {
+      _isLoading = true;
+    });
+    Future.delayed(const Duration(milliseconds: 700), () {
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -223,8 +237,13 @@ class _HomePageState extends State<HomePage> {
                                           : const SizedBox(
                                               width: 0,
                                             ),
-                                      BookThumbnail(
-                                          imgUrl: bookInfo[index].thumbnail),
+                                      InkWell(
+                                        onTap: () {},
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        child: BookThumbnail(
+                                            imgUrl: bookInfo[index].thumbnail),
+                                      ),
                                       (index == bookInfo.length - 1)
                                           ? Row(
                                               children: [
@@ -550,15 +569,22 @@ class _HomePageState extends State<HomePage> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) => PopularBookWidget(
                               bookInfo: popularBookInfo[index],
-                              onTap: () {
-                                showBookInfo(
+                              onTap: () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                await showBookInfo(
                                   context,
                                   popularBookInfo[index]
                                       .isbn
                                       .trim()
                                       .split(' ')[0],
                                   popularBookInfo[index].isbn,
-                                );
+                                ).then((value) {
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                });
                               },
                             ),
                           ),
@@ -596,33 +622,39 @@ class _HomePageState extends State<HomePage> {
 
     return SafeArea(
       maintainBottomViewPadding: true,
-      child: Column(
+      child: Stack(
         children: [
-          CustomAppBar(
-            isHomeScreen: true,
-            rightIcons: [
-              IconButton(
-                iconSize: 30,
-                splashColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                padding: EdgeInsets.only(right: Scaler.width(0.075, context)),
-                icon: SvgPicture.asset(
-                  'assets/images/hamburger_icon.svg',
-                  width: 30,
+          Column(
+            children: [
+              CustomAppBar(
+                isHomeScreen: true,
+                rightIcons: [
+                  IconButton(
+                    iconSize: 30,
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    padding:
+                        EdgeInsets.only(right: Scaler.width(0.075, context)),
+                    icon: SvgPicture.asset(
+                      'assets/images/hamburger_icon.svg',
+                      width: 30,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer();
+                    },
+                  ),
+                ],
+              ),
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: const ScrollBehavior(),
+                  child: scrollView,
                 ),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
               ),
             ],
           ),
-          Expanded(
-            child: ScrollConfiguration(
-              behavior: const ScrollBehavior(),
-              child: scrollView,
-            ),
-          ),
+          _isLoading ? const Loader() : Container(),
         ],
       ),
     );

@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:sprit/common/ui/color_set.dart';
 
 class TextStyles {
+  static const TextStyle loaderText = TextStyle(
+    color: ColorSet.white,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle appBarLabel = TextStyle(
     color: ColorSet.text,
     fontSize: 18,

@@ -33,7 +33,7 @@ Future<void> registerBook(
   return await BookInfoService.registerBook(context, isbn);
 }
 
-void showBookInfo(
+Future<void> showBookInfo(
   BuildContext context,
   String isbn,
   String isbnAll,
