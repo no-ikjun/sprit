@@ -9,6 +9,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/screens/search/widgets/search_result.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
+import 'package:sprit/widgets/loader.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
 Future<Map<String, dynamic>> searchBook(
@@ -67,6 +68,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen>
     with AutomaticKeepAliveClientMixin {
   bool isLoading = false;
+  bool isBookInfoLoading = false;
 
   late ScrollController _scrollController;
 
@@ -119,169 +121,182 @@ class _SearchScreenState extends State<SearchScreen>
       backgroundColor: ColorSet.background,
       body: SafeArea(
         maintainBottomViewPadding: true,
-        child: Column(
+        child: Stack(
           children: [
-            CustomAppBar(
-              label: '도서 검색',
-              onlyLabel: widget.isHome,
-            ),
-            SizedBox(
-              width: Scaler.width(0.85, context),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: Scaler.width(0.85, context) - 35,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        right: 10,
-                      ),
-                      child: TextField(
-                        textInputAction: TextInputAction.search,
-                        onChanged: (value) {
-                          setState(() {
-                            query = value;
-                          });
-                        },
-                        onSubmitted: (value) async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          Map<String, dynamic> response =
-                              await searchBook(context, value, 1);
-                          setState(() {
-                            searchResult = response['search_list'];
-                            isEnd = response['is_end'];
-                            isLoading = false;
-                          });
-                        },
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: '검색어를 입력해주세요',
-                          hintStyle: TextStyles.textFieldStyle.copyWith(
-                            color: ColorSet.grey,
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: ColorSet.grey, width: 1.0),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.all(10),
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: ColorSet.border, width: 1.0),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: ColorSet.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
+            Column(
+              children: [
+                CustomAppBar(
+                  label: '도서 검색',
+                  onlyLabel: widget.isHome,
+                ),
+                SizedBox(
+                  width: Scaler.width(0.85, context),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          BarcodeScanner.scan().then((value) async {
-                            if (value.type != ResultType.Cancelled ||
-                                value.type != ResultType.Error) {
-                              Map<String, dynamic> response = await searchBook(
-                                  context, value.rawContent, 1);
+                      SizedBox(
+                        width: Scaler.width(0.85, context) - 35,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: TextField(
+                            textInputAction: TextInputAction.search,
+                            onChanged: (value) {
+                              setState(() {
+                                query = value;
+                              });
+                            },
+                            onSubmitted: (value) async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              Map<String, dynamic> response =
+                                  await searchBook(context, value, 1);
                               setState(() {
                                 searchResult = response['search_list'];
                                 isEnd = response['is_end'];
                                 isLoading = false;
                               });
-                            }
-                          });
-                        },
-                        child: Image.asset(
-                          'assets/images/barcode_icon.png',
-                          width: 30,
+                            },
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: '검색어를 입력해주세요',
+                              hintStyle: TextStyles.textFieldStyle.copyWith(
+                                color: ColorSet.grey,
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorSet.grey, width: 1.0),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12),
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.all(10),
+                              filled: true,
+                              fillColor: Colors.white,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorSet.border, width: 1.0),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12),
+                                ),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: ColorSet.grey,
+                              ),
+                            ),
+                          ),
                         ),
+                      ),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              BarcodeScanner.scan().then((value) async {
+                                if (value.type != ResultType.Cancelled ||
+                                    value.type != ResultType.Error) {
+                                  Map<String, dynamic> response =
+                                      await searchBook(
+                                          context, value.rawContent, 1);
+                                  setState(() {
+                                    searchResult = response['search_list'];
+                                    isEnd = response['is_end'];
+                                    isLoading = false;
+                                  });
+                                }
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/barcode_icon.png',
+                              width: 30,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            isLoading
-                ? const Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 50,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                isLoading
+                    ? const Expanded(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                            ),
+                            CupertinoActivityIndicator(
+                              color: ColorSet.grey,
+                              animating: true,
+                              radius: 15,
+                            ),
+                          ],
                         ),
-                        CupertinoActivityIndicator(
-                          color: ColorSet.grey,
-                          animating: true,
-                          radius: 15,
-                        ),
-                      ],
-                    ),
-                  )
-                : Expanded(
-                    child: SizedBox(
-                      width: Scaler.width(0.85, context),
-                      child: (searchResult.isEmpty)
-                          ? Column(
-                              children: [
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                Image.asset(
-                                  'assets/images/no_search.png',
-                                  height: 100,
-                                ),
-                                Text(
-                                  '검색 결과가 없습니다',
-                                  style: TextStyles.appBarLabel.copyWith(
-                                    color: ColorSet.text.withOpacity(0.4),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Scrollbar(
-                              controller: _scrollController,
-                              child: ScrollConfiguration(
-                                behavior: RemoveGlow(),
-                                child: ListView.builder(
-                                  key: const PageStorageKey<String>(
-                                      'search-results'),
+                      )
+                    : Expanded(
+                        child: SizedBox(
+                          width: Scaler.width(0.85, context),
+                          child: (searchResult.isEmpty)
+                              ? Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 50,
+                                    ),
+                                    Image.asset(
+                                      'assets/images/no_search.png',
+                                      height: 100,
+                                    ),
+                                    Text(
+                                      '검색 결과가 없습니다',
+                                      style: TextStyles.appBarLabel.copyWith(
+                                        color: ColorSet.text.withOpacity(0.4),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Scrollbar(
                                   controller: _scrollController,
-                                  shrinkWrap: true,
-                                  itemCount: searchResult.length,
-                                  itemBuilder: (context, index) {
-                                    return SearchResultWidget(
-                                      bookInfo: searchResult[index],
-                                      onTap: () {
-                                        showBookInfo(
-                                          context,
-                                          searchResult[index]
-                                              .isbn
-                                              .trim()
-                                              .split(' ')[0],
-                                          searchResult[index].isbn,
+                                  child: ScrollConfiguration(
+                                    behavior: RemoveGlow(),
+                                    child: ListView.builder(
+                                      key: const PageStorageKey<String>(
+                                          'search-results'),
+                                      controller: _scrollController,
+                                      shrinkWrap: true,
+                                      itemCount: searchResult.length,
+                                      itemBuilder: (context, index) {
+                                        return SearchResultWidget(
+                                          bookInfo: searchResult[index],
+                                          onTap: () async {
+                                            setState(() {
+                                              isBookInfoLoading = true;
+                                            });
+                                            await showBookInfo(
+                                              context,
+                                              searchResult[index]
+                                                  .isbn
+                                                  .trim()
+                                                  .split(' ')[0],
+                                              searchResult[index].isbn,
+                                            ).then((value) {
+                                              setState(() {
+                                                isBookInfoLoading = false;
+                                              });
+                                            });
+                                          },
                                         );
                                       },
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                    ),
-                  ),
+                        ),
+                      ),
+              ],
+            ),
+            isBookInfoLoading ? const Loader() : Container()
           ],
         ),
       ),
