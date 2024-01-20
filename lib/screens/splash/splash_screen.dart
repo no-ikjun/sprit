@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/splash_animation.gif',
+              'assets/images/launch_animation.gif',
               width: Scaler.width(0.5, context),
             ),
           ],
