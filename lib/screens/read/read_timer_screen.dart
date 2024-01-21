@@ -13,7 +13,7 @@ import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 import 'package:sprit/widgets/switch_button.dart';
 
-Future<BookInfo> getBookInfo(
+Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
   String bookUuid,
 ) async {
@@ -157,6 +157,20 @@ class ReadTimerScreen extends StatefulWidget {
 
 class _ReadTimerScreenState extends State<ReadTimerScreen>
     with WidgetsBindingObserver {
+  bool isBookInfoLoading = false;
+
+  Future<void> getBookInfo(BuildContext context, String bookUuid) async {
+    setState(() {
+      isBookInfoLoading = true;
+    });
+    await getBookInfoByUuid(context, bookUuid).then((bookInfo) {
+      setState(() {
+        selectedBookInfo = bookInfo;
+        isBookInfoLoading = false;
+      });
+    });
+  }
+
   Timer? _timer;
   int _elapsedSeconds = 0;
   bool _isRunning = false;
@@ -182,11 +196,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadTimerState();
-    getBookInfo(context, widget.bookUuid).then(
-      (value) => setState(() {
-        selectedBookInfo = value;
-      }),
-    );
+    getBookInfo(context, widget.bookUuid);
   }
 
   @override
@@ -296,6 +306,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                       SelectedBook(
                         selectedBookInfo: selectedBookInfo,
                         padding: 10,
+                        isLoading: isBookInfoLoading,
                       ),
                       const SizedBox(
                         height: 25,

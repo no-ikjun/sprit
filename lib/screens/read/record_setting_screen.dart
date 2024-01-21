@@ -37,6 +37,21 @@ class RecordSettingScreen extends StatefulWidget {
 }
 
 class _RecordSettingScreenState extends State<RecordSettingScreen> {
+  bool isBookInfoLoading = false;
+
+  Future<void> getBookInfo(BuildContext context, String bookUuid) async {
+    setState(() {
+      isBookSelected = true;
+      isBookInfoLoading = true;
+    });
+    await getBookInfoByUuid(context, bookUuid).then((bookInfo) {
+      setState(() {
+        selectedBookInfo = bookInfo;
+        isBookInfoLoading = false;
+      });
+    });
+  }
+
   String state = 'READING';
   String goalType = 'TIME';
   int goalTime = 0;
@@ -71,12 +86,10 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
     });
 
     if (widget.bookUuid != '') {
-      getBookInfoByUuid(context, widget.bookUuid).then((value) {
-        setState(() {
-          selectedBookInfo = value;
-          isBookSelected = true;
-        });
+      setState(() {
+        isBookSelected = true;
       });
+      getBookInfo(context, widget.bookUuid);
     }
   }
 
@@ -266,16 +279,10 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                     ),
                                               InkWell(
                                                 onTap: () async {
-                                                  await getBookInfoByUuid(
-                                                          context,
-                                                          bookInfoList[index]
-                                                              .bookUuid)
-                                                      .then((value) {
-                                                    setState(() {
-                                                      selectedBookInfo = value;
-                                                      isBookSelected = true;
-                                                    });
-                                                  });
+                                                  await getBookInfo(
+                                                      context,
+                                                      bookInfoList[index]
+                                                          .bookUuid);
                                                 },
                                                 splashColor: Colors.transparent,
                                                 highlightColor:
@@ -308,6 +315,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                 children: [
                                   SelectedBook(
                                     selectedBookInfo: selectedBookInfo,
+                                    isLoading: isBookInfoLoading,
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(8),

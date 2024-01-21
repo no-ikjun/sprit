@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
@@ -10,10 +11,12 @@ class SelectedBook extends StatelessWidget {
     super.key,
     required this.selectedBookInfo,
     this.padding = 15,
+    required this.isLoading,
   });
 
   final BookInfo selectedBookInfo;
   final double padding;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -32,86 +35,97 @@ class SelectedBook extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          BookThumbnail(
-            imgUrl: selectedBookInfo.thumbnail,
-            width: 76.15,
-            height: 110,
-          ),
-          const SizedBox(
-            width: 12,
-          ),
-          SizedBox(
-            height: 110,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: Scaler.width(0.85, context) - 118.15,
-                  child: Text(
-                    selectedBookInfo.title,
-                    style: TextStyles.readBookSelectedTitleStyle,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+      child: isLoading
+          ? const SizedBox(
+              height: 110,
+              child: Center(
+                child: CupertinoActivityIndicator(
+                  radius: 15,
+                  animating: true,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          '저자 ',
-                          style: TextStyles.readBookSelectedDescriptionStyle
-                              .copyWith(
-                            color: ColorSet.grey,
-                          ),
+              ))
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                BookThumbnail(
+                  imgUrl: selectedBookInfo.thumbnail,
+                  width: 76.15,
+                  height: 110,
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                SizedBox(
+                  height: 110,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: Scaler.width(0.85, context) - 118.15,
+                        child: Text(
+                          selectedBookInfo.title,
+                          style: TextStyles.readBookSelectedTitleStyle,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        Text(
-                          selectedBookInfo.authors.isNotEmpty
-                              ? selectedBookInfo.authors[0]
-                              : '',
-                          style: TextStyles.readBookSelectedDescriptionStyle,
-                        ),
-                        selectedBookInfo.translators.isNotEmpty
-                            ? Text(
-                                ' 번역 ',
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                '저자 ',
                                 style: TextStyles
                                     .readBookSelectedDescriptionStyle
                                     .copyWith(
                                   color: ColorSet.grey,
                                 ),
-                              )
-                            : const SizedBox(),
-                        selectedBookInfo.translators.isNotEmpty
-                            ? Text(
-                                selectedBookInfo.translators[0],
+                              ),
+                              Text(
+                                selectedBookInfo.authors.isNotEmpty
+                                    ? selectedBookInfo.authors[0]
+                                    : '',
                                 style:
                                     TextStyles.readBookSelectedDescriptionStyle,
-                              )
-                            : const SizedBox(),
-                      ],
-                    ),
-                    SizedBox(
-                      width: Scaler.width(0.85, context) - 118.15,
-                      child: Text(
-                        '${selectedBookInfo.publisher} · ${(selectedBookInfo.publishedAt.length > 9) ? selectedBookInfo.publishedAt.substring(0, 10) : selectedBookInfo.publishedAt}',
-                        style: TextStyles.readBookSelectedDescriptionStyle
-                            .copyWith(
-                          color: ColorSet.grey,
-                        ),
-                        overflow: TextOverflow.clip,
-                      ),
-                    ),
-                  ],
-                )
+                              ),
+                              selectedBookInfo.translators.isNotEmpty
+                                  ? Text(
+                                      ' 번역 ',
+                                      style: TextStyles
+                                          .readBookSelectedDescriptionStyle
+                                          .copyWith(
+                                        color: ColorSet.grey,
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              selectedBookInfo.translators.isNotEmpty
+                                  ? Text(
+                                      selectedBookInfo.translators[0],
+                                      style: TextStyles
+                                          .readBookSelectedDescriptionStyle,
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
+                          SizedBox(
+                            width: Scaler.width(0.85, context) - 118.15,
+                            child: Text(
+                              '${selectedBookInfo.publisher} · ${(selectedBookInfo.publishedAt.length > 9) ? selectedBookInfo.publishedAt.substring(0, 10) : selectedBookInfo.publishedAt}',
+                              style: TextStyles.readBookSelectedDescriptionStyle
+                                  .copyWith(
+                                color: ColorSet.grey,
+                              ),
+                              overflow: TextOverflow.clip,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
