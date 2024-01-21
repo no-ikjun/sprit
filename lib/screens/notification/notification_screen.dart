@@ -140,13 +140,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
           getMarketingAgreeInfo(context, fcmToken).then((value) {
             setState(() {
               isMarketingNotificationOn = value;
+              isLoading = false;
             });
           });
         });
       });
-    });
-    setState(() {
-      isLoading = false;
     });
   }
 
