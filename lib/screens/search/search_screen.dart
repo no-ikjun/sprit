@@ -69,6 +69,7 @@ class _SearchScreenState extends State<SearchScreen>
     with AutomaticKeepAliveClientMixin {
   bool isLoading = false;
   bool isBookInfoLoading = false;
+  bool isSearchDataLoading = false;
 
   late ScrollController _scrollController;
 
@@ -96,11 +97,15 @@ class _SearchScreenState extends State<SearchScreen>
   Future<void> _loadMoreData() async {
     if (isLoading) return;
     currentPage++;
+    setState(() {
+      isSearchDataLoading = true;
+    });
     Map<String, dynamic> response =
         await searchBook(context, query, currentPage);
     setState(() {
       searchResult.addAll(response['search_list']);
       isEnd = response['is_end'];
+      isSearchDataLoading = false;
     });
   }
 
@@ -296,7 +301,11 @@ class _SearchScreenState extends State<SearchScreen>
                       ),
               ],
             ),
-            isBookInfoLoading ? const Loader() : Container()
+            isSearchDataLoading
+                ? const Loader(loadingTxt: '검색 로딩중...')
+                : isBookInfoLoading
+                    ? const Loader()
+                    : Container()
           ],
         ),
       ),
