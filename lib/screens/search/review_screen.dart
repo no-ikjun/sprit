@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
@@ -24,13 +25,15 @@ Future<List<ReviewInfo>> getReviewByBookUuid(
 
 class ReviewScreen extends StatefulWidget {
   final String bookUuid;
-  const ReviewScreen({Key? key, required this.bookUuid}) : super(key: key);
+  const ReviewScreen({super.key, required this.bookUuid});
 
   @override
   State<ReviewScreen> createState() => _ReviewScreenState();
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
+  bool isLoading = false;
+
   BookInfo bookInfo = const BookInfo(
     bookUuid: '',
     isbn: '',
@@ -49,19 +52,27 @@ class _ReviewScreenState extends State<ReviewScreen> {
   );
   List<ReviewInfo> reviews = [];
 
-  @override
-  void initState() {
-    super.initState();
-    getBookInfoByUuid(context, widget.bookUuid).then((value) {
+  Future<void> _getInfo(BuildContext context, String bookUuid) async {
+    setState(() {
+      isLoading = true;
+    });
+    await getBookInfoByUuid(context, bookUuid).then((value) {
       setState(() {
         bookInfo = value;
       });
-    });
-    getReviewByBookUuid(context, widget.bookUuid).then((value) {
-      setState(() {
-        reviews = value;
+      getReviewByBookUuid(context, bookUuid).then((value) {
+        setState(() {
+          reviews = value;
+          isLoading = false;
+        });
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getInfo(context, widget.bookUuid);
   }
 
   @override
@@ -79,40 +90,52 @@ class _ReviewScreenState extends State<ReviewScreen> {
             const SizedBox(
               height: 5,
             ),
-            SizedBox(
-              width: Scaler.width(0.85, context),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    bookInfo.title,
-                    style: TextStyles.bookReviewTitleStyle,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  Row(
+            isLoading
+                ? const Column(
                     children: [
-                      StarRowWidget(star: bookInfo.star),
-                      const SizedBox(
-                        width: 8,
+                      SizedBox(
+                        height: 40,
                       ),
-                      Text(
-                        bookInfo.star.toString().substring(0, 3),
-                        style: TextStyles.bookReviewCountStyle,
-                      ),
-                      Text(
-                        ' (${bookInfo.starCount})',
-                        style: TextStyles.bookReviewCountStyle.copyWith(
-                          color: ColorSet.grey,
-                        ),
+                      CupertinoActivityIndicator(
+                        radius: 17,
+                        animating: true,
                       )
                     ],
+                  )
+                : SizedBox(
+                    width: Scaler.width(0.85, context),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bookInfo.title,
+                          style: TextStyles.bookReviewTitleStyle,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Row(
+                          children: [
+                            StarRowWidget(star: bookInfo.star),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              bookInfo.star.toString().substring(0, 3),
+                              style: TextStyles.bookReviewCountStyle,
+                            ),
+                            Text(
+                              ' (${bookInfo.starCount})',
+                              style: TextStyles.bookReviewCountStyle.copyWith(
+                                color: ColorSet.grey,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
             const SizedBox(
               height: 12,
             ),
