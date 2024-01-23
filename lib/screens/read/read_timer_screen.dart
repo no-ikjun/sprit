@@ -210,6 +210,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     goalScale: 0,
     start: '',
     end: '',
+    goalAchieved: false,
     createdAt: '',
   );
 

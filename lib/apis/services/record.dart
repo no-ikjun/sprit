@@ -9,6 +9,7 @@ class RecordInfo {
   final int goalScale;
   final String start;
   final String? end;
+  final bool goalAchieved;
   final String createdAt;
   const RecordInfo({
     required this.recordUuid,
@@ -18,6 +19,7 @@ class RecordInfo {
     required this.goalScale,
     required this.start,
     this.end,
+    required this.goalAchieved,
     required this.createdAt,
   });
 
@@ -30,6 +32,7 @@ class RecordInfo {
       goalScale: json['goal_scale'] as int,
       start: json['start'] as String,
       end: json['end'] as String?,
+      goalAchieved: json['goal_achieved'] as bool,
       createdAt: json['created_at'] as String,
     );
   }
@@ -43,6 +46,7 @@ class RecordInfo {
       'goal_scale': goalScale,
       'start': start,
       'end': end,
+      'goal_achieved': goalAchieved,
       'created_at': createdAt,
     };
   }
@@ -113,6 +117,7 @@ class RecordService {
       goalScale: 0,
       start: '',
       end: '',
+      goalAchieved: false,
       createdAt: '',
     );
     try {
@@ -169,6 +174,7 @@ class RecordService {
       goalScale: 0,
       start: '',
       end: '',
+      goalAchieved: false,
       createdAt: '',
     );
     try {
