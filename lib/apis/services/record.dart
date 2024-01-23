@@ -49,7 +49,7 @@ class RecordInfo {
 }
 
 class RecordService {
-  static Future<bool> setNewRecord(
+  static Future<String> setNewRecord(
     BuildContext context,
     String bookUuid,
     String goalType,
@@ -68,15 +68,69 @@ class RecordService {
         },
       );
       if (response.statusCode == 201) {
-        return true;
+        return response.data as String;
       } else {
         debugPrint('기록 생성 실패');
-        return false;
+        return '';
       }
     } catch (e) {
       debugPrint('기록 생성 실패: $e');
-      return false;
+      return '';
     }
+  }
+
+  static Future<void> deleteRecord(
+    BuildContext context,
+    String recordUuid,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.delete(
+        '/record',
+        queryParameters: {
+          'record_uuid': recordUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+      } else {
+        debugPrint('기록 삭제 실패');
+      }
+    } catch (e) {
+      debugPrint('기록 삭제 실패: $e');
+    }
+  }
+
+  static Future<RecordInfo> getRecordByRecordUuid(
+    BuildContext context,
+    String recordUuid,
+  ) async {
+    final dio = await authDio(context);
+    RecordInfo recordInfo = const RecordInfo(
+      recordUuid: '',
+      bookUuid: '',
+      userUuid: '',
+      goalType: '',
+      goalScale: 0,
+      start: '',
+      end: '',
+      createdAt: '',
+    );
+    try {
+      final response = await dio.get(
+        '/record',
+        queryParameters: {
+          'record_uuid': recordUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+        recordInfo = RecordInfo.fromJson(response.data);
+      } else {
+        debugPrint('기록 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('기록 불러오기 실패: $e');
+    }
+    return recordInfo;
   }
 
   static Future<bool> stopRecord(

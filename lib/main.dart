@@ -81,9 +81,9 @@ class MyApp extends StatelessWidget {
                 builder: (context) => RecordSettingScreen(bookUuid: bookUuid),
               );
             case RouteName.readTimer:
-              final String bookUuid = settings.arguments as String;
+              final String recordUuid = settings.arguments as String;
               return MaterialPageRoute(
-                builder: (context) => ReadTimerScreen(bookUuid: bookUuid),
+                builder: (context) => ReadTimerScreen(recordUuid: recordUuid),
               );
             default:
               return MaterialPageRoute(

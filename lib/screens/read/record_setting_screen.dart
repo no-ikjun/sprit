@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
+import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
@@ -16,6 +17,22 @@ import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 import 'package:sprit/widgets/toggle_button.dart';
+
+Future<String> setRecord(
+  BuildContext context,
+  String bookUuid,
+  String goalType,
+  int goalScale,
+  int startPage,
+) async {
+  return await RecordService.setNewRecord(
+    context,
+    bookUuid,
+    goalType,
+    goalScale,
+    startPage,
+  );
+}
 
 Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
@@ -582,7 +599,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                     height: 12,
                                   ),
                                   CustomButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (isBookSelected) {
                                         if (goalType == 'PAGE' &&
                                             goalPage == 0) {
@@ -592,6 +609,16 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               title: '기록을 시작할 수 없음',
                                               description:
                                                   '독서를 시작하려면\n목표 독서량을 입력해야 해요',
+                                            ),
+                                            false,
+                                          );
+                                        } else if (goalType == 'PAGE' &&
+                                            startPage == 0) {
+                                          showModal(
+                                            context,
+                                            const RecordAlert(
+                                              title: '기록을 시작할 수 없음',
+                                              description: '시작 페이지를 입력해주세요',
                                             ),
                                             false,
                                           );
@@ -607,12 +634,30 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             false,
                                           );
                                         } else {
-                                          Navigator.pushNamed(
+                                          await setRecord(
                                             context,
-                                            RouteName.readTimer,
-                                            arguments:
-                                                selectedBookInfo.bookUuid,
-                                          );
+                                            selectedBookInfo.bookUuid,
+                                            'PAGE',
+                                            goalPage,
+                                            startPage,
+                                          ).then((value) {
+                                            if (value != '') {
+                                              Navigator.pushNamed(
+                                                context,
+                                                RouteName.readTimer,
+                                                arguments: value,
+                                              );
+                                            } else {
+                                              showModal(
+                                                context,
+                                                const RecordAlert(
+                                                  title: '기록을 시작할 수 없음',
+                                                  description: '다시 시도해주세요',
+                                                ),
+                                                false,
+                                              );
+                                            }
+                                          });
                                         }
                                       } else {
                                         showModal(
@@ -838,7 +883,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                     height: 12,
                                   ),
                                   CustomButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (isBookSelected) {
                                         if (goalType == 'TIME' &&
                                             goalTime == 0) {
@@ -852,12 +897,19 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             false,
                                           );
                                         } else {
-                                          Navigator.pushNamed(
+                                          await setRecord(
                                             context,
-                                            RouteName.readTimer,
-                                            arguments:
-                                                selectedBookInfo.bookUuid,
-                                          );
+                                            selectedBookInfo.bookUuid,
+                                            'TIME',
+                                            goalTime,
+                                            0,
+                                          ).then((value) {
+                                            Navigator.pushNamed(
+                                              context,
+                                              RouteName.readTimer,
+                                              arguments: value,
+                                            );
+                                          });
                                         }
                                       } else {
                                         showModal(

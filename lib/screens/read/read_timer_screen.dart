@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
@@ -12,6 +13,20 @@ import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 import 'package:sprit/widgets/switch_button.dart';
+
+Future<RecordInfo> getRecordInfoByUuid(
+  BuildContext context,
+  String recordUuid,
+) async {
+  return await RecordService.getRecordByRecordUuid(context, recordUuid);
+}
+
+Future<void> deleteRecordByUuid(
+  BuildContext context,
+  String recordUuid,
+) async {
+  return await RecordService.deleteRecord(context, recordUuid);
+}
 
 Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
@@ -148,8 +163,8 @@ void _showBottomModal(BuildContext context) {
 }
 
 class ReadTimerScreen extends StatefulWidget {
-  final String bookUuid;
-  const ReadTimerScreen({super.key, required this.bookUuid});
+  final String recordUuid;
+  const ReadTimerScreen({super.key, required this.recordUuid});
 
   @override
   State<ReadTimerScreen> createState() => _ReadTimerScreenState();
@@ -158,6 +173,15 @@ class ReadTimerScreen extends StatefulWidget {
 class _ReadTimerScreenState extends State<ReadTimerScreen>
     with WidgetsBindingObserver {
   bool isBookInfoLoading = false;
+
+  Future<void> getRecordInfo(BuildContext context, String recordUuid) async {
+    await getRecordInfoByUuid(context, recordUuid).then((recordInfo) {
+      setState(() {
+        selectedRecordInfo = recordInfo;
+      });
+      getBookInfo(context, recordInfo.bookUuid);
+    });
+  }
 
   Future<void> getBookInfo(BuildContext context, String bookUuid) async {
     setState(() {
@@ -173,8 +197,19 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   Timer? _timer;
   int _elapsedSeconds = 0;
-  bool _isRunning = false;
+  bool _isRunning = true;
   DateTime? _lastPausedTime;
+
+  RecordInfo selectedRecordInfo = const RecordInfo(
+    recordUuid: '',
+    bookUuid: '',
+    userUuid: '',
+    goalType: '',
+    goalScale: 0,
+    start: '',
+    end: '',
+    createdAt: '',
+  );
 
   BookInfo selectedBookInfo = const BookInfo(
     bookUuid: '',
@@ -196,7 +231,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadTimerState();
-    getBookInfo(context, widget.bookUuid);
+    getRecordInfo(context, widget.recordUuid);
   }
 
   @override
@@ -260,7 +295,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _elapsedSeconds = prefs.getInt('elapsedSeconds') ?? 0;
-      _isRunning = prefs.getBool('isRunning') ?? false;
+      _isRunning = prefs.getBool('isRunning') ?? true;
     });
 
     if (_isRunning && _timer == null) {
@@ -340,17 +375,21 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Column(
+                              Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     '독서 목표',
                                     style: TextStyles.timerGoalTitleStyle,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 2,
                                   ),
                                   Text(
-                                    '2시간',
+                                    (selectedRecordInfo.goalType == 'PAGE')
+                                        ? '${selectedRecordInfo.goalScale} 페이지'
+                                        : selectedRecordInfo.goalScale >= 60
+                                            ? '${selectedRecordInfo.goalScale ~/ 60} 시간'
+                                            : '${selectedRecordInfo.goalScale} 분',
                                     style: TextStyles.timerGoalDescriptionStyle,
                                   ),
                                 ],
@@ -449,8 +488,12 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               //TODO: 진짜 종료할건지 팝업 띄우기
+                              await deleteRecordByUuid(
+                                context,
+                                widget.recordUuid,
+                              );
                               Navigator.pop(context);
                               SharedPreferences.getInstance().then(
                                 (prefs) {
