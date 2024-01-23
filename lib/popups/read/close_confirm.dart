@@ -33,7 +33,7 @@ class CloseConfirm extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(
-          height: 18,
+          height: 22,
         ),
         SizedBox(
           width: Scaler.width(0.85, context),
