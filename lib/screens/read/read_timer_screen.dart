@@ -8,6 +8,8 @@ import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/read/close_confirm.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
@@ -489,17 +491,25 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                         children: [
                           InkWell(
                             onTap: () async {
-                              //TODO: 진짜 종료할건지 팝업 띄우기
-                              await deleteRecordByUuid(
+                              await showModal(
                                 context,
-                                widget.recordUuid,
-                              );
-                              Navigator.pop(context);
-                              SharedPreferences.getInstance().then(
-                                (prefs) {
-                                  prefs.remove('elapsedSeconds');
-                                  prefs.remove('isRunning');
-                                },
+                                CloseConfirm(onLeftPressed: () {
+                                  Navigator.pop(context);
+                                }, onRightPressed: () async {
+                                  await deleteRecordByUuid(
+                                    context,
+                                    widget.recordUuid,
+                                  );
+                                  SharedPreferences.getInstance().then(
+                                    (prefs) {
+                                      prefs.remove('elapsedSeconds');
+                                      prefs.remove('isRunning');
+                                    },
+                                  );
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                }),
+                                false,
                               );
                             },
                             splashColor: Colors.transparent,
