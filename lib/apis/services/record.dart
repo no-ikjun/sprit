@@ -54,6 +54,7 @@ class RecordService {
     String bookUuid,
     String goalType,
     int goalScale,
+    int startPage,
   ) async {
     final dio = await authDio(context);
     try {
@@ -63,6 +64,7 @@ class RecordService {
           'book_uuid': bookUuid,
           'goal_type': goalType,
           'goal_scale': goalScale,
+          'start_page': startPage,
         },
       );
       if (response.statusCode == 201) {
@@ -73,6 +75,32 @@ class RecordService {
       }
     } catch (e) {
       debugPrint('기록 생성 실패: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> stopRecord(
+    BuildContext context,
+    String recordUuid,
+    int pageEnd,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/record/stop',
+        data: {
+          'record_uuid': recordUuid,
+          'page_end': pageEnd,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        debugPrint('기록 종료 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('기록 종료 실패: $e');
       return false;
     }
   }
@@ -90,7 +118,7 @@ class RecordService {
       createdAt: '',
     );
     try {
-      final response = await dio.get('/record/not-ended');
+      final response = await dio.get('/record/notended');
       if (response.statusCode == 200) {
         recordInfo = RecordInfo.fromJson(response.data);
       } else {
@@ -124,7 +152,7 @@ class RecordService {
     final dio = await authDio(context);
     List<RecordInfo> records = [];
     try {
-      final response = await dio.get('/record/end');
+      final response = await dio.get('/record/ended');
       if (response.statusCode == 200) {
         for (var record in response.data) {
           records.add(RecordInfo.fromJson(record));
