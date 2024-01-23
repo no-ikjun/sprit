@@ -9,6 +9,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle buttonLabelStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 17,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle appBarLabel = TextStyle(
     color: ColorSet.text,
     fontSize: 18,

@@ -48,7 +48,7 @@ class CloseConfirm extends StatelessWidget {
                 onPressed: () {
                   onLeftPressed();
                 },
-                child: const Text('취소', style: TextStyles.loginButtonStyle),
+                child: const Text('취소', style: TextStyles.buttonLabelStyle),
               ),
               CustomButton(
                 width: Scaler.width(0.8, context) * 0.5 - 5,
@@ -56,7 +56,7 @@ class CloseConfirm extends StatelessWidget {
                 onPressed: () {
                   onRightPressed();
                 },
-                child: const Text('중지', style: TextStyles.loginButtonStyle),
+                child: const Text('중지', style: TextStyles.buttonLabelStyle),
               ),
             ],
           ),
