@@ -147,7 +147,7 @@ class RecordService {
     try {
       final response = await dio.patch(
         '/record/stop',
-        data: {
+        queryParameters: {
           'record_uuid': recordUuid,
           'page_end': pageEnd,
         },
@@ -224,5 +224,26 @@ class RecordService {
       debugPrint('지난 기록 불러오기 실패: $e');
     }
     return records;
+  }
+
+  static Future<int> getLastPage(BuildContext context, String bookUuid) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/record/last-page',
+        queryParameters: {
+          'book_uuid': bookUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.data as int;
+      } else {
+        debugPrint('마지막 페이지 불러오기 실패');
+        return 0;
+      }
+    } catch (e) {
+      debugPrint('마지막 페이지 불러오기 실패: $e');
+      return 0;
+    }
   }
 }
