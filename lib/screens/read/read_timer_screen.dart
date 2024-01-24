@@ -389,10 +389,10 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   ),
                                   Text(
                                     (selectedRecordInfo.goalType == 'PAGE')
-                                        ? '${selectedRecordInfo.goalScale} 페이지'
+                                        ? '${selectedRecordInfo.goalScale}페이지'
                                         : selectedRecordInfo.goalScale >= 60
-                                            ? '${selectedRecordInfo.goalScale ~/ 60} 시간'
-                                            : '${selectedRecordInfo.goalScale} 분',
+                                            ? '${selectedRecordInfo.goalScale ~/ 60}시간'
+                                            : '${selectedRecordInfo.goalScale}분',
                                     style: TextStyles.timerGoalDescriptionStyle,
                                   ),
                                 ],
