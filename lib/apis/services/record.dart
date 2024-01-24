@@ -68,7 +68,7 @@ class RecordService {
           'book_uuid': bookUuid,
           'goal_type': goalType,
           'goal_scale': goalScale,
-          'start_page': startPage,
+          'page_start': startPage,
         },
       );
       if (response.statusCode == 201) {
