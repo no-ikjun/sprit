@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
@@ -11,6 +12,8 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/read/record_alert.dart';
+import 'package:sprit/providers/selected_book.dart';
+import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -32,6 +35,13 @@ Future<String> setRecord(
     goalScale,
     startPage,
   );
+}
+
+Future<RecordInfo> getRecordInfoByUuid(
+  BuildContext context,
+  String recordUuid,
+) async {
+  return await RecordService.getRecordByRecordUuid(context, recordUuid);
 }
 
 Future<BookInfo> getBookInfoByUuid(
@@ -56,14 +66,14 @@ class RecordSettingScreen extends StatefulWidget {
 class _RecordSettingScreenState extends State<RecordSettingScreen> {
   bool isBookInfoLoading = false;
 
-  Future<void> getBookInfo(BuildContext context, String bookUuid) async {
+  Future<void> selectBook(BuildContext context, String bookUuid) async {
     setState(() {
       isBookSelected = true;
       isBookInfoLoading = true;
     });
     await getBookInfoByUuid(context, bookUuid).then((bookInfo) {
+      context.read<SelectedBookInfoState>().updateSelectedBookUuid(bookInfo);
       setState(() {
-        selectedBookInfo = bookInfo;
         isBookInfoLoading = false;
       });
     });
@@ -76,20 +86,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
   int startPage = 0;
 
   bool isBookSelected = false;
-  BookInfo selectedBookInfo = const BookInfo(
-    bookUuid: '',
-    isbn: '',
-    title: '',
-    authors: [],
-    publisher: '',
-    translators: [],
-    searchUrl: '',
-    thumbnail: '',
-    content: '',
-    publishedAt: '',
-    updatedAt: '',
-    score: 0,
-  );
 
   List<BookInfo> bookInfoList = [];
 
@@ -101,12 +97,11 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
         bookInfoList = value;
       });
     });
-
     if (widget.bookUuid != '') {
       setState(() {
         isBookSelected = true;
       });
-      getBookInfo(context, widget.bookUuid);
+      selectBook(context, widget.bookUuid);
     }
   }
 
@@ -296,10 +291,15 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                     ),
                                               InkWell(
                                                 onTap: () async {
-                                                  await getBookInfo(
-                                                      context,
-                                                      bookInfoList[index]
-                                                          .bookUuid);
+                                                  setState(() {
+                                                    isBookSelected = true;
+                                                  });
+                                                  context
+                                                      .read<
+                                                          SelectedBookInfoState>()
+                                                      .updateSelectedBookUuid(
+                                                        bookInfoList[index],
+                                                      );
                                                 },
                                                 splashColor: Colors.transparent,
                                                 highlightColor:
@@ -331,7 +331,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                 alignment: Alignment.topRight,
                                 children: [
                                   SelectedBook(
-                                    selectedBookInfo: selectedBookInfo,
                                     isLoading: isBookInfoLoading,
                                   ),
                                   Container(
@@ -340,20 +339,9 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                       onTap: () {
                                         setState(() {
                                           isBookSelected = false;
-                                          selectedBookInfo = const BookInfo(
-                                            bookUuid: '',
-                                            isbn: '',
-                                            title: '',
-                                            authors: [],
-                                            publisher: '',
-                                            translators: [],
-                                            searchUrl: '',
-                                            thumbnail: '',
-                                            content: '',
-                                            publishedAt: '',
-                                            updatedAt: '',
-                                            score: 0,
-                                          );
+                                          context
+                                              .read<SelectedBookInfoState>()
+                                              .removeSelectedBookUuid();
                                         });
                                       },
                                       splashColor: Colors.transparent,
@@ -636,16 +624,29 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                         } else {
                                           await setRecord(
                                             context,
-                                            selectedBookInfo.bookUuid,
+                                            context
+                                                .read<SelectedBookInfoState>()
+                                                .getSelectedBookInfo
+                                                .bookUuid,
                                             'PAGE',
                                             goalPage,
                                             startPage,
-                                          ).then((value) {
+                                          ).then((value) async {
                                             if (value != '') {
-                                              Navigator.pushNamed(
-                                                context,
-                                                RouteName.readTimer,
-                                                arguments: value,
+                                              await getRecordInfoByUuid(
+                                                      context, value)
+                                                  .then(
+                                                (value) {
+                                                  context
+                                                      .read<
+                                                          SelectedRecordInfoState>()
+                                                      .updateSelectedRecord(
+                                                          value);
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    RouteName.readTimer,
+                                                  );
+                                                },
                                               );
                                             } else {
                                               showModal(
@@ -796,6 +797,17 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                 ),
                                               ),
                                             ),
+                                            DropdownMenuItem(
+                                              value: 240,
+                                              child: Text(
+                                                '4시간',
+                                                style: TextStyles.textFieldStyle
+                                                    .copyWith(
+                                                  color: ColorSet.darkGrey,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                           validator: (value) {
                                             if (value == null) {
@@ -899,16 +911,40 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                         } else {
                                           await setRecord(
                                             context,
-                                            selectedBookInfo.bookUuid,
+                                            context
+                                                .read<SelectedBookInfoState>()
+                                                .getSelectedBookInfo
+                                                .bookUuid,
                                             'TIME',
                                             goalTime,
-                                            0,
-                                          ).then((value) {
-                                            Navigator.pushNamed(
-                                              context,
-                                              RouteName.readTimer,
-                                              arguments: value,
-                                            );
+                                            startPage,
+                                          ).then((value) async {
+                                            if (value != '') {
+                                              await getRecordInfoByUuid(
+                                                      context, value)
+                                                  .then(
+                                                (value) {
+                                                  context
+                                                      .read<
+                                                          SelectedRecordInfoState>()
+                                                      .updateSelectedRecord(
+                                                          value);
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    RouteName.readTimer,
+                                                  );
+                                                },
+                                              );
+                                            } else {
+                                              showModal(
+                                                context,
+                                                const RecordAlert(
+                                                  title: '기록을 시작할 수 없음',
+                                                  description: '다시 시도해주세요',
+                                                ),
+                                                false,
+                                              );
+                                            }
                                           });
                                         }
                                       } else {

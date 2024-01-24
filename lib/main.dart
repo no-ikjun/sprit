@@ -8,8 +8,9 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/firebase_options.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/navigation.dart';
+import 'package:sprit/providers/selected_book.dart';
+import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
-import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/read/record_setting_screen.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
@@ -38,6 +39,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserInfoState()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => FcmTokenState()),
+        ChangeNotifierProvider(create: (_) => SelectedBookInfoState()),
+        ChangeNotifierProvider(create: (_) => SelectedRecordInfoState()),
       ],
       child: const MyApp(),
     ),
@@ -79,11 +82,6 @@ class MyApp extends StatelessWidget {
               final String bookUuid = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => RecordSettingScreen(bookUuid: bookUuid),
-              );
-            case RouteName.readTimer:
-              final String recordUuid = settings.arguments as String;
-              return MaterialPageRoute(
-                builder: (context) => ReadTimerScreen(recordUuid: recordUuid),
               );
             default:
               return MaterialPageRoute(

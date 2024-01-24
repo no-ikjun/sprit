@@ -2,26 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/read/close_confirm.dart';
 import 'package:sprit/popups/read/end_page.dart';
+import 'package:sprit/providers/selected_book.dart';
+import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/screens/read/widgets/phrase_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/remove_glow.dart';
-
-Future<RecordInfo> getRecordInfoByUuid(
-  BuildContext context,
-  String recordUuid,
-) async {
-  return await RecordService.getRecordByRecordUuid(context, recordUuid);
-}
 
 Future<void> deleteRecordByUuid(
   BuildContext context,
@@ -30,16 +25,8 @@ Future<void> deleteRecordByUuid(
   return await RecordService.deleteRecord(context, recordUuid);
 }
 
-Future<BookInfo> getBookInfoByUuid(
-  BuildContext context,
-  String bookUuid,
-) async {
-  return await BookInfoService.getBookInfoByUuid(context, bookUuid);
-}
-
 class ReadTimerScreen extends StatefulWidget {
-  final String recordUuid;
-  const ReadTimerScreen({super.key, required this.recordUuid});
+  const ReadTimerScreen({super.key});
 
   @override
   State<ReadTimerScreen> createState() => _ReadTimerScreenState();
@@ -65,7 +52,10 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
         TextEditingController textarea = TextEditingController();
         return PhraseModal(
           textarea: textarea,
-          bookUuid: selectedBookInfo.bookUuid,
+          bookUuid: context
+              .read<SelectedBookInfoState>()
+              .getSelectedBookInfo
+              .bookUuid,
         );
       },
     );
@@ -73,58 +63,10 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   bool isBookInfoLoading = false;
 
-  Future<void> getRecordInfo(BuildContext context, String recordUuid) async {
-    await getRecordInfoByUuid(context, recordUuid).then((recordInfo) {
-      setState(() {
-        selectedRecordInfo = recordInfo;
-      });
-      getBookInfo(context, recordInfo.bookUuid);
-    });
-  }
-
-  Future<void> getBookInfo(BuildContext context, String bookUuid) async {
-    setState(() {
-      isBookInfoLoading = true;
-    });
-    await getBookInfoByUuid(context, bookUuid).then((bookInfo) {
-      setState(() {
-        selectedBookInfo = bookInfo;
-        isBookInfoLoading = false;
-      });
-    });
-  }
-
   Timer? _timer;
   int _elapsedSeconds = 0;
   bool _isRunning = true;
   DateTime? _lastPausedTime;
-
-  RecordInfo selectedRecordInfo = const RecordInfo(
-    recordUuid: '',
-    bookUuid: '',
-    userUuid: '',
-    goalType: '',
-    goalScale: 0,
-    start: '',
-    end: '',
-    goalAchieved: false,
-    createdAt: '',
-  );
-
-  BookInfo selectedBookInfo = const BookInfo(
-    bookUuid: '',
-    isbn: '',
-    title: '',
-    authors: [],
-    publisher: '',
-    translators: [],
-    searchUrl: '',
-    thumbnail: '',
-    content: '',
-    publishedAt: '',
-    updatedAt: '',
-    score: 0,
-  );
 
   //문구 관련 상태 관리
   String phrase = '';
@@ -135,7 +77,6 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadTimerState();
-    getRecordInfo(context, widget.recordUuid);
   }
 
   @override
@@ -222,6 +163,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   @override
   Widget build(BuildContext context) {
+    final RecordInfo selectedRecordInfo =
+        context.read<SelectedRecordInfoState>().getSelectedRecordInfo;
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -243,7 +186,6 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                   child: Column(
                     children: [
                       SelectedBook(
-                        selectedBookInfo: selectedBookInfo,
                         padding: 10,
                         isLoading: isBookInfoLoading,
                       ),
@@ -418,8 +360,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                 }, onRightPressed: () async {
                                   await deleteRecordByUuid(
                                     context,
-                                    widget.recordUuid,
+                                    selectedRecordInfo.recordUuid,
                                   );
+                                  context
+                                      .read<SelectedRecordInfoState>()
+                                      .removeSelectedRecord();
                                   SharedPreferences.getInstance().then(
                                     (prefs) {
                                       prefs.remove('elapsedSeconds');

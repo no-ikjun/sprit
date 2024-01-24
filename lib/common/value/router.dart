@@ -5,6 +5,7 @@ import 'package:sprit/screens/login/sign_up_screen.dart';
 import 'package:sprit/screens/notification/ment_setting_screen.dart';
 import 'package:sprit/screens/notification/notification_screen.dart';
 import 'package:sprit/screens/notification/time_setting_screen.dart';
+import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
@@ -32,4 +33,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.notification: (context) => const NotificationScreen(),
   RouteName.timeSetting: (context) => const TimeSettingScreen(),
   RouteName.mentSetting: (context) => const MentSettingScreen(),
+  RouteName.readTimer: (context) => const ReadTimerScreen(),
 };

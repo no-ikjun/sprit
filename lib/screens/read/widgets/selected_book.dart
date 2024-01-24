@@ -1,25 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
-import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 
 class SelectedBook extends StatelessWidget {
   const SelectedBook({
     super.key,
-    required this.selectedBookInfo,
     this.padding = 15,
     required this.isLoading,
   });
 
-  final BookInfo selectedBookInfo;
   final double padding;
   final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
+    final selectedBookInfo =
+        context.watch<SelectedBookInfoState>().getSelectedBookInfo;
     return Container(
       width: Scaler.width(0.85, context),
       padding: EdgeInsets.all(padding),
