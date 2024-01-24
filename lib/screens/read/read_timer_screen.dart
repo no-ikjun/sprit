@@ -10,6 +10,7 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/read/close_confirm.dart';
+import 'package:sprit/popups/read/end_page.dart';
 import 'package:sprit/screens/read/widgets/phrase_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -454,28 +455,42 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           const SizedBox(
                             width: 10,
                           ),
-                          Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: ColorSet.primary,
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: ColorSet.primary.withOpacity(0.3),
-                                  offset: const Offset(0, 4),
-                                  blurRadius: 4,
-                                  spreadRadius: 0,
+                          InkWell(
+                            onTap: () {
+                              if (selectedRecordInfo.goalType == 'TIME') {
+                              } else {
+                                showModal(
+                                  context,
+                                  EndPage(
+                                    recordUuid: selectedRecordInfo.recordUuid,
+                                  ),
+                                  false,
+                                );
+                              }
+                            },
+                            child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: ColorSet.primary,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: ColorSet.primary.withOpacity(0.3),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 4,
+                                    spreadRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  '저장 및 독서 종료',
+                                  style: TextStyles.timerEndingButtonStyle,
+                                  textAlign: TextAlign.center,
                                 ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                            ),
-                            child: const Center(
-                              child: Text(
-                                '저장 및 독서 종료',
-                                style: TextStyles.timerEndingButtonStyle,
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
