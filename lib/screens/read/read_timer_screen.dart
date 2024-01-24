@@ -10,11 +10,10 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/read/close_confirm.dart';
+import 'package:sprit/screens/read/widgets/phrase_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
-import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
-import 'package:sprit/widgets/switch_button.dart';
 
 Future<RecordInfo> getRecordInfoByUuid(
   BuildContext context,
@@ -37,133 +36,6 @@ Future<BookInfo> getBookInfoByUuid(
   return await BookInfoService.getBookInfoByUuid(context, bookUuid);
 }
 
-void _showBottomModal(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
-    builder: (context) {
-      TextEditingController textarea = TextEditingController();
-      return Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: SingleChildScrollView(
-          child: SafeArea(
-            maintainBottomViewPadding: true,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(
-                  height: 8,
-                ),
-                Container(
-                  width: 60,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: ColorSet.superLightGrey,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  '문구 작성',
-                  style: TextStyles.timerBottomSheetTitleStyle,
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                const Text(
-                  '기억하고 싶은 문구를 작성해주세요',
-                  style: TextStyles.timerBottomSheetDescriptionStyle,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                SizedBox(
-                  width: Scaler.width(0.8, context),
-                  child: TextField(
-                    controller: textarea,
-                    autofocus: true,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 5,
-                    decoration: const InputDecoration(
-                      hintText: "예) 선택. 집중. 몰입 대상을 정하자.",
-                      hintStyle: TextStyles.timerBottomSheetHintTextStyle,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: ColorSet.lightGrey,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: ColorSet.lightGrey,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                SizedBox(
-                  width: Scaler.width(0.8, context),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('리마인드 알림 받기',
-                              style:
-                                  TextStyles.timerBottomSheetReminderTextStyle),
-                          Text(
-                            '150자 이내의 문구만 알림으로 받을 수 있어요',
-                            style: TextStyles.timerBottomSheetReminderMentStyle,
-                          ),
-                        ],
-                      ),
-                      CustomSwitch(onToggle: () {}, switchValue: true),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                CustomButton(
-                  onPressed: () {},
-                  width: Scaler.width(0.8, context),
-                  height: 45,
-                  child: const Text(
-                    '저장하기',
-                    style: TextStyles.loginButtonStyle,
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
-
 class ReadTimerScreen extends StatefulWidget {
   final String recordUuid;
   const ReadTimerScreen({super.key, required this.recordUuid});
@@ -174,6 +46,30 @@ class ReadTimerScreen extends StatefulWidget {
 
 class _ReadTimerScreenState extends State<ReadTimerScreen>
     with WidgetsBindingObserver {
+  void _showBottomModal(
+    BuildContext context,
+    String phrase,
+    bool remind,
+    Function onPhraseChanged,
+    Function onRemindChanged,
+    Function onSubmitted,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      builder: (context) {
+        TextEditingController textarea = TextEditingController();
+        return PhraseModal(
+          textarea: textarea,
+          bookUuid: selectedBookInfo.bookUuid,
+        );
+      },
+    );
+  }
+
   bool isBookInfoLoading = false;
 
   Future<void> getRecordInfo(BuildContext context, String recordUuid) async {
@@ -228,6 +124,10 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     updatedAt: '',
     score: 0,
   );
+
+  //문구 관련 상태 관리
+  String phrase = '';
+  bool remind = true;
 
   @override
   void initState() {
@@ -443,7 +343,25 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                           InkWell(
                             onTap: () {
-                              _showBottomModal(context);
+                              _showBottomModal(context, phrase, remind,
+                                  (value) {
+                                setState(() {
+                                  phrase = value;
+                                });
+                              }, () {
+                                debugPrint('리마인드 알림 변경');
+                                setState(() {
+                                  remind = !remind;
+                                });
+                              }, () async {
+                                if (phrase.length > 150) {
+                                  setState(() {
+                                    remind = false;
+                                  });
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              });
                             },
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,

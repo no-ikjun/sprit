@@ -56,7 +56,7 @@ class PhraseService {
         },
       );
       if (response.statusCode == 201) {
-        return response.data['phrase_uuid'] as String;
+        return response.data as String;
       } else {
         debugPrint('문구 등록 실패');
         return '';
