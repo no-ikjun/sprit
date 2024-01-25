@@ -262,7 +262,7 @@ class RecordService {
         },
       );
       if (response.statusCode == 200) {
-        return response.data as int;
+        return int.parse(response.data);
       } else {
         debugPrint('마지막 페이지 불러오기 실패');
         return 0;
