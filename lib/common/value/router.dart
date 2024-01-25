@@ -5,6 +5,7 @@ import 'package:sprit/screens/login/sign_up_screen.dart';
 import 'package:sprit/screens/notification/ment_setting_screen.dart';
 import 'package:sprit/screens/notification/notification_screen.dart';
 import 'package:sprit/screens/notification/time_setting_screen.dart';
+import 'package:sprit/screens/read/read_complete_screen.dart';
 import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
@@ -22,6 +23,7 @@ class RouteName {
   static const review = "/review";
   static const recordSetting = "/recordSetting";
   static const readTimer = "/readTimer";
+  static const readComplete = "/readComplete";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -34,4 +36,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.timeSetting: (context) => const TimeSettingScreen(),
   RouteName.mentSetting: (context) => const MentSettingScreen(),
   RouteName.readTimer: (context) => const ReadTimerScreen(),
+  RouteName.readComplete: (context) => const ReadCompleteScreen(),
 };

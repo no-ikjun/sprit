@@ -11,6 +11,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/read/close_confirm.dart';
 import 'package:sprit/popups/read/end_page.dart';
+import 'package:sprit/popups/read/end_time.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/screens/read/widgets/phrase_modal.dart';
@@ -403,6 +404,12 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           InkWell(
                             onTap: () {
                               if (selectedRecordInfo.goalType == 'TIME') {
+                                showModal(
+                                    context,
+                                    EndTime(
+                                      time: _elapsedSeconds,
+                                    ),
+                                    false);
                               } else {
                                 showModal(
                                   context,
@@ -413,6 +420,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                 );
                               }
                             },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
                             child: Container(
                               height: 60,
                               decoration: BoxDecoration(

@@ -6,9 +6,24 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<bool> updateRecord(
-    BuildContext context, String recordUuid, int endPage) async {
+Future<bool> stopRecord(
+  BuildContext context,
+  String recordUuid,
+  int endPage,
+) async {
   return await RecordService.stopRecord(context, recordUuid, endPage);
+}
+
+Future<bool> updateGoalAchieved(
+  BuildContext context,
+  String recordUuid,
+  bool isAchieved,
+) async {
+  return await RecordService.updateGoalAchieved(
+    context,
+    recordUuid,
+    isAchieved,
+  );
 }
 
 class EndPage extends StatefulWidget {
@@ -131,7 +146,8 @@ class _EndPageState extends State<EndPage> {
                 width: Scaler.width(0.8, context) * 0.5 - 5,
                 height: 50,
                 onPressed: () {
-                  updateRecord(context, widget.recordUuid, endPage);
+                  //TODO: 시작 페이지와 이전 기록 마지막 페이지 가져오고 그 결과로 validation 체크
+                  stopRecord(context, widget.recordUuid, endPage);
                   Navigator.pop(context);
                 },
                 child: const Text('독서 종료', style: TextStyles.buttonLabelStyle),

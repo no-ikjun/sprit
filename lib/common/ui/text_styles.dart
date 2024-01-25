@@ -486,4 +486,11 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle endReadingTimeStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 30,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

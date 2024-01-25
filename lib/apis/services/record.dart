@@ -164,6 +164,32 @@ class RecordService {
     }
   }
 
+  static Future<bool> updateGoalAchieved(
+    BuildContext context,
+    String recordUuid,
+    bool goalAchieved,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/record/goal-achieved',
+        queryParameters: {
+          'record_uuid': recordUuid,
+          'goal_achieved': goalAchieved,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        debugPrint('목표 달성 여부 업데이트 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('목표 달성 여부 업데이트 실패: $e');
+      return false;
+    }
+  }
+
   static Future<RecordInfo> getNotEndedRecord(BuildContext context) async {
     final dio = await authDio(context);
     RecordInfo recordInfo = const RecordInfo(
