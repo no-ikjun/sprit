@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 Future<bool> stopRecord(
@@ -26,6 +29,10 @@ Future<bool> updateGoalAchieved(
   );
 }
 
+Future<int> getLastPage(BuildContext context, String bookUuid) async {
+  return await RecordService.getLastPage(context, bookUuid);
+}
+
 class EndPage extends StatefulWidget {
   const EndPage({
     super.key,
@@ -39,7 +46,40 @@ class EndPage extends StatefulWidget {
 }
 
 class _EndPageState extends State<EndPage> {
+  int lastPage = 0;
   int endPage = 0;
+
+  Future<void> updateGoalAchieved(
+    BuildContext context,
+    String recordUuid,
+    int goalScale,
+    int startPage,
+    int endPage,
+  ) async {
+    bool isAchieved = false;
+    if (goalScale <= endPage - startPage) {
+      isAchieved = true;
+    }
+    await RecordService.updateGoalAchieved(
+      context,
+      recordUuid,
+      isAchieved,
+    ).then((value) {
+      if (value) {
+        stopRecord(context, recordUuid, endPage);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLastPage(context, widget.recordUuid).then((value) {
+      setState(() {
+        lastPage = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +165,10 @@ class _EndPageState extends State<EndPage> {
           ],
         ),
         const SizedBox(
+          height: 15,
+        ),
+        Text('총 $lastPage쪽을 읽으셨습니다.'),
+        const SizedBox(
           height: 22,
         ),
         SizedBox(
@@ -146,9 +190,29 @@ class _EndPageState extends State<EndPage> {
                 width: Scaler.width(0.8, context) * 0.5 - 5,
                 height: 50,
                 onPressed: () {
-                  //TODO: 시작 페이지와 이전 기록 마지막 페이지 가져오고 그 결과로 validation 체크
-                  stopRecord(context, widget.recordUuid, endPage);
+                  updateGoalAchieved(
+                    context,
+                    context
+                        .read<SelectedRecordInfoState>()
+                        .getSelectedRecordInfo
+                        .recordUuid,
+                    context
+                        .read<SelectedRecordInfoState>()
+                        .getSelectedRecordInfo
+                        .goalScale,
+                    context
+                        .read<SelectedRecordInfoState>()
+                        .getSelectedRecordInfo
+                        .pageStart,
+                    endPage,
+                  );
                   Navigator.pop(context);
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RouteName.readComplete,
+                    (route) => false,
+                  );
+                  //TODO: 끝나는 페이지 입력되었는지 확인하는 로직, 처음 시작할 때도 마지막 페이지 불러오기!
                 },
                 child: const Text('독서 종료', style: TextStyles.buttonLabelStyle),
               ),

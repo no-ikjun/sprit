@@ -7,6 +7,8 @@ class RecordInfo {
   final String userUuid;
   final String goalType;
   final int goalScale;
+  final int pageStart;
+  final int pageEnd;
   final String start;
   final String? end;
   final bool goalAchieved;
@@ -17,6 +19,8 @@ class RecordInfo {
     required this.userUuid,
     required this.goalType,
     required this.goalScale,
+    required this.pageStart,
+    required this.pageEnd,
     required this.start,
     this.end,
     required this.goalAchieved,
@@ -30,6 +34,8 @@ class RecordInfo {
       userUuid: json['user_uuid'] as String,
       goalType: json['goal_type'] as String,
       goalScale: json['goal_scale'] as int,
+      pageStart: json['page_start'] as int,
+      pageEnd: json['page_end'] as int,
       start: json['start'] as String,
       end: json['end'] as String?,
       goalAchieved: json['goal_achieved'] as bool,
@@ -44,6 +50,8 @@ class RecordInfo {
       'user_uuid': userUuid,
       'goal_type': goalType,
       'goal_scale': goalScale,
+      'page_start': pageStart,
+      'page_end': pageEnd,
       'start': start,
       'end': end,
       'goal_achieved': goalAchieved,
@@ -115,6 +123,8 @@ class RecordService {
       userUuid: '',
       goalType: '',
       goalScale: 0,
+      pageStart: 0,
+      pageEnd: 0,
       start: '',
       end: '',
       goalAchieved: false,
@@ -198,6 +208,8 @@ class RecordService {
       userUuid: '',
       goalType: '',
       goalScale: 0,
+      pageStart: 0,
+      pageEnd: 0,
       start: '',
       end: '',
       goalAchieved: false,
@@ -262,6 +274,7 @@ class RecordService {
         },
       );
       if (response.statusCode == 200) {
+        debugPrint(response.data);
         return int.parse(response.data);
       } else {
         debugPrint('마지막 페이지 불러오기 실패');
