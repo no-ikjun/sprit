@@ -69,6 +69,8 @@ class _EndPageState extends State<EndPage> {
         stopRecord(context, recordUuid, endPage);
       }
     });
+    context.read<SelectedRecordInfoState>().updateEndPage(endPage);
+    context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
   }
 
   @override

@@ -76,6 +76,7 @@ class _EndTimeState extends State<EndTime> {
         stopRecord(context, recordUuid);
       }
     });
+    context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
   }
 
   double _value = 1;

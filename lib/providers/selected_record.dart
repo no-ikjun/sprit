@@ -23,6 +23,40 @@ class SelectedRecordInfoState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateIsAchieved(bool isAchieved) {
+    _selectedRecord = RecordInfo(
+      recordUuid: _selectedRecord.recordUuid,
+      bookUuid: _selectedRecord.bookUuid,
+      userUuid: _selectedRecord.userUuid,
+      goalType: _selectedRecord.goalType,
+      goalScale: _selectedRecord.goalScale,
+      pageStart: _selectedRecord.pageStart,
+      pageEnd: _selectedRecord.pageEnd,
+      start: _selectedRecord.start,
+      end: _selectedRecord.end,
+      goalAchieved: isAchieved,
+      createdAt: _selectedRecord.createdAt,
+    );
+    notifyListeners();
+  }
+
+  void updateEndPage(int endPage) {
+    _selectedRecord = RecordInfo(
+      recordUuid: _selectedRecord.recordUuid,
+      bookUuid: _selectedRecord.bookUuid,
+      userUuid: _selectedRecord.userUuid,
+      goalType: _selectedRecord.goalType,
+      goalScale: _selectedRecord.goalScale,
+      pageStart: _selectedRecord.pageStart,
+      pageEnd: endPage,
+      start: _selectedRecord.start,
+      end: _selectedRecord.end,
+      goalAchieved: _selectedRecord.goalAchieved,
+      createdAt: _selectedRecord.createdAt,
+    );
+    notifyListeners();
+  }
+
   void removeSelectedRecord() {
     _selectedRecord = const RecordInfo(
       recordUuid: '',
