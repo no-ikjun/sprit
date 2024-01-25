@@ -212,29 +212,30 @@ class _EndPageState extends State<EndPage> {
                 width: Scaler.width(0.8, context) * 0.5 - 5,
                 height: 50,
                 onPressed: () {
-                  updateGoalAchieved(
-                    context,
-                    context
-                        .read<SelectedRecordInfoState>()
-                        .getSelectedRecordInfo
-                        .recordUuid,
-                    context
-                        .read<SelectedRecordInfoState>()
-                        .getSelectedRecordInfo
-                        .goalScale,
-                    context
-                        .read<SelectedRecordInfoState>()
-                        .getSelectedRecordInfo
-                        .pageStart,
-                    endPage,
-                  );
-                  Navigator.pop(context);
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    RouteName.readComplete,
-                    (route) => false,
-                  );
-                  //TODO: 끝나는 페이지 입력되었는지 확인하는 로직, 처음 시작할 때도 마지막 페이지 불러오기!
+                  if (endPage != 0) {
+                    updateGoalAchieved(
+                      context,
+                      context
+                          .read<SelectedRecordInfoState>()
+                          .getSelectedRecordInfo
+                          .recordUuid,
+                      context
+                          .read<SelectedRecordInfoState>()
+                          .getSelectedRecordInfo
+                          .goalScale,
+                      context
+                          .read<SelectedRecordInfoState>()
+                          .getSelectedRecordInfo
+                          .pageStart,
+                      endPage,
+                    );
+                    Navigator.pop(context);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      RouteName.readComplete,
+                      (route) => false,
+                    );
+                  }
                 },
                 child: const Text('독서 종료', style: TextStyles.buttonLabelStyle),
               ),
