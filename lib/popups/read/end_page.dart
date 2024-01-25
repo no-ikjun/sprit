@@ -74,7 +74,10 @@ class _EndPageState extends State<EndPage> {
   @override
   void initState() {
     super.initState();
-    getLastPage(context, widget.recordUuid).then((value) {
+    getLastPage(
+      context,
+      context.read<SelectedRecordInfoState>().getSelectedRecordInfo.bookUuid,
+    ).then((value) {
       setState(() {
         lastPage = value;
       });
@@ -122,6 +125,12 @@ class _EndPageState extends State<EndPage> {
                   fontSize: 16,
                 ),
                 onChanged: (value) {
+                  if (value == '') {
+                    setState(() {
+                      endPage = 0;
+                    });
+                    return;
+                  }
                   setState(() {
                     endPage = int.parse(value);
                   });
@@ -164,13 +173,24 @@ class _EndPageState extends State<EndPage> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 15,
-        ),
-        Text('총 $lastPage쪽을 읽으셨습니다.'),
-        const SizedBox(
-          height: 22,
-        ),
+        (lastPage != 0 && lastPage > endPage && endPage != 0)
+            ? const SizedBox(
+                height: 10,
+              )
+            : const SizedBox(
+                height: 20,
+              ),
+        (lastPage != 0 && lastPage > endPage && endPage != 0)
+            ? Text(
+                '저번에 $lastPage쪽까지 읽지 않으셨나요?',
+                style: TextStyles.endReadingPageValidationStyle,
+              )
+            : Container(),
+        (lastPage != 0 && lastPage > endPage && endPage != 0)
+            ? const SizedBox(
+                height: 12,
+              )
+            : Container(),
         SizedBox(
           width: Scaler.width(0.85, context),
           child: Row(

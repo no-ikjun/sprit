@@ -493,4 +493,11 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle endReadingPageValidationStyle = TextStyle(
+    color: Colors.red,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }
