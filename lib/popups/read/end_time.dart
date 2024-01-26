@@ -74,9 +74,9 @@ class _EndTimeState extends State<EndTime> {
     ).then((value) {
       if (value) {
         stopRecord(context, recordUuid);
+        context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
       }
     });
-    context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
   }
 
   double _value = 1;
@@ -144,8 +144,8 @@ class _EndTimeState extends State<EndTime> {
               CustomButton(
                 width: Scaler.width(0.8, context) * 0.5 - 5,
                 height: 50,
-                onPressed: () {
-                  updateTimeGoalAchieved(
+                onPressed: () async {
+                  await updateTimeGoalAchieved(
                     context,
                     context
                         .read<SelectedRecordInfoState>()

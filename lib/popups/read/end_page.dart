@@ -29,8 +29,12 @@ Future<bool> updateGoalAchieved(
   );
 }
 
-Future<int> getLastPage(BuildContext context, String bookUuid) async {
-  return await RecordService.getLastPage(context, bookUuid);
+Future<int> getLastPage(
+  BuildContext context,
+  String bookUuid,
+  bool isBeforeRecord,
+) async {
+  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
 }
 
 class EndPage extends StatefulWidget {
@@ -67,10 +71,11 @@ class _EndPageState extends State<EndPage> {
     ).then((value) {
       if (value) {
         stopRecord(context, recordUuid, endPage);
+        debugPrint(isAchieved.toString());
+        context.read<SelectedRecordInfoState>().updateEndPage(endPage);
+        context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
       }
     });
-    context.read<SelectedRecordInfoState>().updateEndPage(endPage);
-    context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
   }
 
   @override
@@ -79,6 +84,7 @@ class _EndPageState extends State<EndPage> {
     getLastPage(
       context,
       context.read<SelectedRecordInfoState>().getSelectedRecordInfo.bookUuid,
+      false,
     ).then((value) {
       setState(() {
         lastPage = value;
@@ -211,9 +217,9 @@ class _EndPageState extends State<EndPage> {
               CustomButton(
                 width: Scaler.width(0.8, context) * 0.5 - 5,
                 height: 50,
-                onPressed: () {
+                onPressed: () async {
                   if (endPage != 0) {
-                    updateGoalAchieved(
+                    await updateGoalAchieved(
                       context,
                       context
                           .read<SelectedRecordInfoState>()
