@@ -93,4 +93,54 @@ class BookLibraryService {
     }
     return beforeBookLibrary;
   }
+
+  static Future<bool> deleteBookLibrary(
+    BuildContext context,
+    String bookUuid,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.delete(
+        '/book-library/delete',
+        queryParameters: {
+          'book_uuid': bookUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        debugPrint('도서 정보 삭제 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('도서 정보 삭제 실패 $e');
+      return false;
+    }
+  }
+
+  static Future<bool> updateBookLibrary(
+    BuildContext context,
+    String bookUuid,
+    String state,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.put(
+        '/book-library/update',
+        data: {
+          'book_uuid': bookUuid,
+          'state': state,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        debugPrint('도서 정보 수정 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('도서 정보 수정 실패 $e');
+      return false;
+    }
+  }
 }
