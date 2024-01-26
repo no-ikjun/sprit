@@ -55,6 +55,14 @@ Future<List<BookInfo>> getBookList(BuildContext context, String state) async {
   return await BookLibraryService.getBookLibrary(context, state);
 }
 
+Future<bool> updateBookLibrary(
+  BuildContext context,
+  String bookUuid,
+  String state,
+) async {
+  return await BookLibraryService.updateBookLibrary(context, bookUuid, state);
+}
+
 class RecordSettingScreen extends StatefulWidget {
   final String bookUuid;
   const RecordSettingScreen({super.key, required this.bookUuid});
@@ -646,6 +654,15 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                     context,
                                                     RouteName.readTimer,
                                                   );
+                                                  updateBookLibrary(
+                                                    context,
+                                                    context
+                                                        .read<
+                                                            SelectedBookInfoState>()
+                                                        .getSelectedBookInfo
+                                                        .bookUuid,
+                                                    'READING',
+                                                  );
                                                 },
                                               );
                                             } else {
@@ -932,6 +949,15 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                   Navigator.pushNamed(
                                                     context,
                                                     RouteName.readTimer,
+                                                  );
+                                                  updateBookLibrary(
+                                                    context,
+                                                    context
+                                                        .read<
+                                                            SelectedBookInfoState>()
+                                                        .getSelectedBookInfo
+                                                        .bookUuid,
+                                                    'READING',
                                                   );
                                                 },
                                               );
