@@ -162,6 +162,7 @@ class _EndTimeState extends State<EndTime> {
                     context,
                     RouteName.readComplete,
                     (route) => false,
+                    arguments: (widget.time * _value).round(),
                   );
                 },
                 child: const Text('독서 종료', style: TextStyles.buttonLabelStyle),

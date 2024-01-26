@@ -57,7 +57,7 @@ class _EndPageState extends State<EndPage> {
     int endPage,
   ) async {
     bool isAchieved = false;
-    if (goalScale <= endPage - startPage) {
+    if (goalScale <= endPage - startPage + 1) {
       isAchieved = true;
     }
     await RecordService.updateGoalAchieved(
@@ -234,6 +234,12 @@ class _EndPageState extends State<EndPage> {
                       context,
                       RouteName.readComplete,
                       (route) => false,
+                      arguments: endPage -
+                          context
+                              .read<SelectedRecordInfoState>()
+                              .getSelectedRecordInfo
+                              .pageStart +
+                          1,
                     );
                   }
                 },

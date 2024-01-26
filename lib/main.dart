@@ -11,6 +11,7 @@ import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/read/read_complete_screen.dart';
 import 'package:sprit/screens/read/record_setting_screen.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
@@ -82,6 +83,12 @@ class MyApp extends StatelessWidget {
               final String bookUuid = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => RecordSettingScreen(bookUuid: bookUuid),
+              );
+            case RouteName.readComplete:
+              final int goalAmount = settings.arguments as int;
+              return MaterialPageRoute(
+                builder: (context) =>
+                    ReadCompleteScreen(goalAmount: goalAmount),
               );
             default:
               return MaterialPageRoute(

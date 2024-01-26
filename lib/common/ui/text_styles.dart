@@ -361,6 +361,20 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle readRecordDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle readRecordEndingTextButtonStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle readBookSelectButtonStyle = TextStyle(
     color: ColorSet.semiDarkGrey,
     fontSize: 14,
@@ -496,6 +510,34 @@ class TextStyles {
 
   static const TextStyle endReadingPageValidationStyle = TextStyle(
     color: Colors.red,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle shareModalDateStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle shareModalAmountStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 30,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle shareModalBookTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle shareModalBookAuthorStyle = TextStyle(
+    color: ColorSet.darkGrey,
     fontSize: 12,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
