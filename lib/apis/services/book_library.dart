@@ -125,7 +125,7 @@ class BookLibraryService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.put(
+      final response = await dio.patch(
         '/book-library/update',
         data: {
           'book_uuid': bookUuid,
