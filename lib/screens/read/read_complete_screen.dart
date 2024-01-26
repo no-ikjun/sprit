@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/screens/read/widgets/book_report_modal.dart';
@@ -11,6 +13,14 @@ import 'package:sprit/screens/read/widgets/record_share_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
+
+Future<void> updateBookLibraryState(
+  BuildContext context,
+  String bookUuid,
+  String state,
+) async {
+  await BookLibraryService.updateBookLibrary(context, bookUuid, state);
+}
 
 class ReadCompleteScreen extends StatefulWidget {
   final int goalAmount;
@@ -263,7 +273,22 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                     CustomButton(
                       width: Scaler.width(0.85, context) * 0.5 - 5,
                       height: 50,
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (ischecked) {
+                          await updateBookLibraryState(
+                            context,
+                            context
+                                .read<SelectedBookInfoState>()
+                                .getSelectedBookInfo
+                                .bookUuid,
+                            'AFTER',
+                          );
+                        }
+                        Navigator.pushReplacementNamed(
+                          context,
+                          RouteName.home,
+                        );
+                      },
                       child:
                           const Text('홈으로', style: TextStyles.buttonLabelStyle),
                     ),
