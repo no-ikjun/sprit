@@ -190,19 +190,19 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                         padding: 10,
                         isLoading: isBookInfoLoading,
                       ),
-                      const SizedBox(
-                        height: 25,
+                      SizedBox(
+                        height: Scaler.height(0.03, context),
                       ),
                       Text(
                         _isRunning ? '독서 기록 중 🔥' : '잠시 쉬는 중 😴',
                         style: TextStyles.readRecordTitleStyle,
                       ),
-                      const SizedBox(
-                        height: 25,
+                      SizedBox(
+                        height: Scaler.height(0.03, context),
                       ),
                       Container(
-                        width: Scaler.width(0.63, context),
-                        height: Scaler.width(0.63, context),
+                        width: Scaler.width(0.6, context),
+                        height: Scaler.width(0.6, context),
                         decoration: BoxDecoration(
                           color: ColorSet.white,
                           borderRadius: BorderRadius.circular(
@@ -264,7 +264,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                       _isRunning
                                           ? 'assets/images/pause_button.svg'
                                           : 'assets/images/play_button.svg',
-                                      width: Scaler.width(0.63, context) * 0.2,
+                                      width: Scaler.width(0.6, context) * 0.2,
                                     ),
                                   ),
                                 ],
@@ -273,8 +273,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 25,
+                      SizedBox(
+                        height: Scaler.height(0.03, context),
                       ),
                       Column(
                         children: [
@@ -346,8 +346,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 28,
+                      SizedBox(
+                        height: Scaler.height(0.03, context),
                       ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -381,13 +381,15 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             child: Container(
-                              height: 60,
+                              height: Scaler.height(0.07, context),
                               decoration: BoxDecoration(
                                 color: ColorSet.lightGrey,
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(
+                                  Scaler.height(0.035, context),
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 36,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Scaler.height(0.04, context),
                               ),
                               child: const Center(
                                 child: Text(
@@ -423,10 +425,12 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             child: Container(
-                              height: 60,
+                              height: Scaler.height(0.07, context),
                               decoration: BoxDecoration(
                                 color: ColorSet.primary,
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(
+                                  Scaler.height(0.035, context),
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: ColorSet.primary.withOpacity(0.3),
@@ -436,8 +440,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   ),
                                 ],
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Scaler.height(0.015, context),
                               ),
                               child: const Center(
                                 child: Text(
