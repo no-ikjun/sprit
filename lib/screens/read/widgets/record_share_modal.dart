@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,7 +31,10 @@ class _RecordShareModalState extends State<RecordShareModal> {
   Uint8List? _imageFile;
   ScreenshotController screenshotController = ScreenshotController();
 
-  void captureWidget() {
+  bool isImageLoading = false;
+
+  void captureWidget() async {
+    await Future.delayed(const Duration(milliseconds: 100));
     screenshotController.capture().then((value) {
       setState(() {
         _imageFile = value;
@@ -41,12 +45,19 @@ class _RecordShareModalState extends State<RecordShareModal> {
   }
 
   Future<void> saveImage(Uint8List image) async {
+    setState(() {
+      isImageLoading = true;
+    });
     try {
       final directory = await getTemporaryDirectory();
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
       final file = File('${directory.path}/$fileName');
       final result = await file.writeAsBytes(image);
-      await Share.shareXFiles([XFile(result.path)]);
+      await Share.shareXFiles([XFile(result.path)]).then((value) {
+        setState(() {
+          isImageLoading = false;
+        });
+      });
     } catch (error) {
       debugPrint('saveImageError: $error');
     }
@@ -97,91 +108,113 @@ class _RecordShareModalState extends State<RecordShareModal> {
                       width: 1,
                     ),
                   ),
-                  child: Column(
+                  child: Stack(
                     children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      const Image(
-                        image: AssetImage('assets/images/share_badge.png'),
-                        width: 160,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Text(
-                        '2024년 1월 26일',
-                        style: TextStyles.shareModalDateStyle,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        widget.amount,
-                        style: TextStyles.shareModalAmountStyle,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Column(
                         children: [
-                          BookThumbnail(
-                            imgUrl: bookInfo.thumbnail,
-                            width: 55.38,
-                            height: 80,
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          const Image(
+                            image: AssetImage('assets/images/share_badge.png'),
+                            width: 160,
                           ),
                           const SizedBox(
-                            width: 10,
+                            height: 10,
                           ),
-                          SizedBox(
-                            height: 80,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  bookInfo.title,
-                                  style: TextStyles.shareModalBookTitleStyle,
-                                ),
-                                Column(
+                          const Text(
+                            '2024년 1월 26일',
+                            style: TextStyles.shareModalDateStyle,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            widget.amount,
+                            style: TextStyles.shareModalAmountStyle,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              BookThumbnail(
+                                imgUrl: bookInfo.thumbnail,
+                                width: 55.38,
+                                height: 80,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              SizedBox(
+                                height: 80,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
+                                    Text(
+                                      bookInfo.title,
+                                      style:
+                                          TextStyles.shareModalBookTitleStyle,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '저자 ',
+                                              style: TextStyles
+                                                  .shareModalBookAuthorStyle
+                                                  .copyWith(
+                                                color: ColorSet.grey,
+                                              ),
+                                            ),
+                                            Text(
+                                              bookInfo.authors[0],
+                                              style: TextStyles
+                                                  .shareModalBookAuthorStyle,
+                                            ),
+                                          ],
+                                        ),
                                         Text(
-                                          '저자 ',
+                                          '${bookInfo.publisher} · ${(bookInfo.publishedAt.length > 9) ? bookInfo.publishedAt.substring(0, 10) : bookInfo.publishedAt}',
                                           style: TextStyles
                                               .shareModalBookAuthorStyle
                                               .copyWith(
                                             color: ColorSet.grey,
                                           ),
                                         ),
-                                        Text(
-                                          bookInfo.authors[0],
-                                          style: TextStyles
-                                              .shareModalBookAuthorStyle,
-                                        ),
                                       ],
-                                    ),
-                                    Text(
-                                      '${bookInfo.publisher} · ${(bookInfo.publishedAt.length > 9) ? bookInfo.publishedAt.substring(0, 10) : bookInfo.publishedAt}',
-                                      style: TextStyles
-                                          .shareModalBookAuthorStyle
-                                          .copyWith(
-                                        color: ColorSet.grey,
-                                      ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          )
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      isImageLoading
+                          ? const Column(
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                Center(
+                                  child: CupertinoActivityIndicator(
+                                    radius: 17,
+                                    animating: true,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
