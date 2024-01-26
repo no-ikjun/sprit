@@ -515,6 +515,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle shareModalBadgeStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 16,
+    fontWeight: FontWeight.w800,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle shareModalDateStyle = TextStyle(
     color: ColorSet.text,
     fontSize: 14,
