@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
@@ -110,6 +110,22 @@ class _RecordShareModalState extends State<RecordShareModal> {
                   ),
                   child: Stack(
                     children: [
+                      Positioned(
+                        bottom: -Scaler.width(0.1, context),
+                        left: -Scaler.width(0.15, context),
+                        child: Image.asset(
+                          'assets/images/share_background_01.png',
+                          width: Scaler.width(0.5, context),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: -Scaler.width(0.12, context),
+                        right: -Scaler.width(0.15, context),
+                        child: Image.asset(
+                          'assets/images/share_background_02.png',
+                          width: Scaler.width(0.7, context),
+                        ),
+                      ),
                       Column(
                         children: [
                           const SizedBox(
@@ -122,8 +138,8 @@ class _RecordShareModalState extends State<RecordShareModal> {
                           const SizedBox(
                             height: 10,
                           ),
-                          const Text(
-                            '2024년 1월 26일',
+                          Text(
+                            DateFormat('yyyy년 MM월 dd일').format(DateTime.now()),
                             style: TextStyles.shareModalDateStyle,
                           ),
                           const SizedBox(
@@ -154,10 +170,17 @@ class _RecordShareModalState extends State<RecordShareModal> {
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      bookInfo.title,
-                                      style:
-                                          TextStyles.shareModalBookTitleStyle,
+                                    Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            Scaler.width(0.8, context) - 87.38,
+                                      ),
+                                      child: Text(
+                                        bookInfo.title,
+                                        style:
+                                            TextStyles.shareModalBookTitleStyle,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                     Column(
                                       crossAxisAlignment:
