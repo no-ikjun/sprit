@@ -63,6 +63,14 @@ Future<bool> updateBookLibrary(
   return await BookLibraryService.updateBookLibrary(context, bookUuid, state);
 }
 
+Future<int> getLastPage(
+  BuildContext context,
+  String bookUuid,
+  bool isBeforeRecord,
+) async {
+  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
+}
+
 class RecordSettingScreen extends StatefulWidget {
   final String bookUuid;
   const RecordSettingScreen({super.key, required this.bookUuid});
@@ -72,18 +80,14 @@ class RecordSettingScreen extends StatefulWidget {
 }
 
 class _RecordSettingScreenState extends State<RecordSettingScreen> {
-  bool isBookInfoLoading = false;
+  bool isBookInfoLoading = true;
 
   Future<void> selectBook(BuildContext context, String bookUuid) async {
     setState(() {
       isBookSelected = true;
-      isBookInfoLoading = true;
     });
     await getBookInfoByUuid(context, bookUuid).then((bookInfo) {
       context.read<SelectedBookInfoState>().updateSelectedBookUuid(bookInfo);
-      setState(() {
-        isBookInfoLoading = false;
-      });
     });
   }
 
@@ -97,12 +101,15 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
 
   List<BookInfo> bookInfoList = [];
 
+  int lastPage = 0;
+
   @override
   void initState() {
     super.initState();
     getBookList(context, state).then((value) {
       setState(() {
         bookInfoList = value;
+        isBookInfoLoading = false;
       });
     });
     if (widget.bookUuid != '') {
@@ -110,6 +117,11 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
         isBookSelected = true;
       });
       selectBook(context, widget.bookUuid);
+      getLastPage(context, widget.bookUuid, true).then((value) {
+        setState(() {
+          lastPage = value;
+        });
+      });
     }
   }
 
@@ -166,11 +178,13 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             onTap: () async {
                                               setState(() {
                                                 state = 'READING';
+                                                isBookInfoLoading = true;
                                               });
                                               await getBookList(context, state)
                                                   .then((value) {
                                                 setState(() {
                                                   bookInfoList = value;
+                                                  isBookInfoLoading = false;
                                                 });
                                               });
                                             },
@@ -212,11 +226,13 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             onTap: () async {
                                               setState(() {
                                                 state = 'BEFORE';
+                                                isBookInfoLoading = true;
                                               });
                                               await getBookList(context, state)
                                                   .then((value) {
                                                 setState(() {
                                                   bookInfoList = value;
+                                                  isBookInfoLoading = false;
                                                 });
                                               });
                                             },
@@ -273,64 +289,96 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                  width: Scaler.width(1, context),
-                                  height: 150,
-                                  child: ScrollConfiguration(
-                                    behavior: RemoveGlow(),
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: bookInfoList.length,
-                                        itemBuilder: (context, index) {
-                                          return Row(
-                                            children: [
-                                              (index == 0)
-                                                  ? SizedBox(
-                                                      width: Scaler.width(
-                                                          0.075, context),
-                                                    )
-                                                  : const SizedBox(
-                                                      width: 0,
+                                bookInfoList.isEmpty && !isBookInfoLoading
+                                    ? Container(
+                                        width: Scaler.width(0.85, context),
+                                        height: 150,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          state == 'READING'
+                                              ? '읽는 중인 책이 없어요 🥲'
+                                              : '읽을 책목록이 비어있어요 😢',
+                                          style: TextStyles
+                                              .readBookSettingMentStyle
+                                              .copyWith(
+                                            color: ColorSet.semiDarkGrey,
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox(
+                                        width: Scaler.width(1, context),
+                                        height: 150,
+                                        child: ScrollConfiguration(
+                                          behavior: RemoveGlow(),
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: bookInfoList.length,
+                                              itemBuilder: (context, index) {
+                                                return Row(
+                                                  children: [
+                                                    (index == 0)
+                                                        ? SizedBox(
+                                                            width: Scaler.width(
+                                                                0.075, context),
+                                                          )
+                                                        : const SizedBox(
+                                                            width: 0,
+                                                          ),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        setState(() {
+                                                          isBookSelected = true;
+                                                        });
+                                                        context
+                                                            .read<
+                                                                SelectedBookInfoState>()
+                                                            .updateSelectedBookUuid(
+                                                              bookInfoList[
+                                                                  index],
+                                                            );
+                                                        getLastPage(
+                                                          context,
+                                                          bookInfoList[index]
+                                                              .bookUuid,
+                                                          true,
+                                                        ).then((value) {
+                                                          setState(() {
+                                                            lastPage = value;
+                                                          });
+                                                        });
+                                                      },
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      child: BookThumbnail(
+                                                          imgUrl: bookInfoList[
+                                                                  index]
+                                                              .thumbnail),
                                                     ),
-                                              InkWell(
-                                                onTap: () async {
-                                                  setState(() {
-                                                    isBookSelected = true;
-                                                  });
-                                                  context
-                                                      .read<
-                                                          SelectedBookInfoState>()
-                                                      .updateSelectedBookUuid(
-                                                        bookInfoList[index],
-                                                      );
-                                                },
-                                                splashColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                child: BookThumbnail(
-                                                    imgUrl: bookInfoList[index]
-                                                        .thumbnail),
-                                              ),
-                                              (index == bookInfoList.length - 1)
-                                                  ? SizedBox(
-                                                      width: Scaler.width(
-                                                          0.075, context),
-                                                    )
-                                                  : const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                            ],
-                                          );
-                                        },
+                                                    (index ==
+                                                            bookInfoList
+                                                                    .length -
+                                                                1)
+                                                        ? SizedBox(
+                                                            width: Scaler.width(
+                                                                0.075, context),
+                                                          )
+                                                        : const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                               ],
                             )
                           : SizedBox(
@@ -338,8 +386,8 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                               child: Stack(
                                 alignment: Alignment.topRight,
                                 children: [
-                                  SelectedBook(
-                                    isLoading: isBookInfoLoading,
+                                  const SelectedBook(
+                                    isLoading: false,
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(8),
@@ -347,6 +395,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                       onTap: () {
                                         setState(() {
                                           isBookSelected = false;
+                                          lastPage = 0;
                                           context
                                               .read<SelectedBookInfoState>()
                                               .removeSelectedBookUuid();
@@ -524,6 +573,10 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             fontSize: 16,
                                           ),
                                           onChanged: (value) => setState(() {
+                                            if (value == '') {
+                                              startPage = 0;
+                                              return;
+                                            }
                                             startPage = int.parse(value);
                                           }),
                                           decoration: InputDecoration(
@@ -572,7 +625,19 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                     ],
                                   ),
                                   const SizedBox(
-                                    height: 12,
+                                    height: 6,
+                                  ),
+                                  (lastPage != 0 &&
+                                          lastPage > startPage &&
+                                          startPage != 0)
+                                      ? Text(
+                                          '저번에 $lastPage쪽까지 읽지 않으셨나요?',
+                                          style: TextStyles
+                                              .endReadingPageValidationStyle,
+                                        )
+                                      : Container(),
+                                  const SizedBox(
+                                    height: 6,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
