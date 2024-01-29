@@ -62,6 +62,38 @@ class BookLibraryService {
     }
   }
 
+  static Future<BookLibraryInfo> findBookLibrary(
+    BuildContext context,
+    String bookUuid,
+  ) async {
+    BookLibraryInfo bookLibraryInfo = const BookLibraryInfo(
+      libraryRegisterUuid: '',
+      userUuid: '',
+      bookUuid: '',
+      state: '',
+      createdAt: '',
+      updatedAt: '',
+    );
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/book-library/find',
+        queryParameters: {
+          'book_uuid': bookUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+        var result = response.data;
+        bookLibraryInfo = BookLibraryInfo.fromJson(result);
+      } else {
+        debugPrint('도서 정보 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('도서 정보 조회 실패 $e');
+    }
+    return bookLibraryInfo;
+  }
+
   static Future<List<BookInfo>> getBookLibrary(
     BuildContext context,
     String state,

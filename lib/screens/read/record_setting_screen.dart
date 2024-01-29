@@ -60,6 +60,11 @@ Future<bool> updateBookLibrary(
   String bookUuid,
   String state,
 ) async {
+  final BookLibraryInfo bookLibraryInfo =
+      await BookLibraryService.findBookLibrary(context, bookUuid);
+  if (bookLibraryInfo.libraryRegisterUuid == '') {
+    return await BookLibraryService.setBookLibrary(context, bookUuid, state);
+  }
   return await BookLibraryService.updateBookLibrary(context, bookUuid, state);
 }
 
