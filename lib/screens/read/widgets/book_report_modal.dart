@@ -1,9 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/book_report.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/custom_button.dart';
+
+Future<bool> setBookReport(
+  BuildContext context,
+  String bookUuid,
+  String report,
+) async {
+  return await BookReportService.setNewBookReport(context, bookUuid, report);
+}
 
 class BookReportModal extends StatefulWidget {
   const BookReportModal({
@@ -25,21 +34,21 @@ class _BookReportModalState extends State<BookReportModal> {
   bool isLoading = false;
   bool isSubmitted = false;
 
-  Future<void> submitPhrase() async {
+  Future<void> submitBookReport() async {
     setState(() {
       isSubmitted = true;
       isLoading = true;
     });
-    // setPhrase(context, widget.bookUuid, phrase, remind).then((value) {
-    //   if (value != '') {
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //     Future.delayed(const Duration(milliseconds: 1000), () {
-    //       Navigator.pop(context);
-    //     });
-    //   }
-    // });
+    setBookReport(context, widget.bookUuid, bookReport).then((value) {
+      if (value != false) {
+        setState(() {
+          isLoading = false;
+        });
+        Future.delayed(const Duration(milliseconds: 800), () {
+          Navigator.pop(context);
+        });
+      }
+    });
   }
 
   @override
@@ -196,7 +205,7 @@ class _BookReportModalState extends State<BookReportModal> {
                     ),
                     CustomButton(
                       onPressed: () async {
-                        await submitPhrase();
+                        await submitBookReport();
                       },
                       width: Scaler.width(0.8, context),
                       height: 45,

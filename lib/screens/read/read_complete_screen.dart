@@ -5,7 +5,9 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/popups/read/review.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/screens/read/widgets/book_report_modal.dart';
@@ -288,6 +290,15 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                           context,
                           RouteName.home,
                         );
+                        if (ischecked) {
+                          showModal(context, const ReviewModal(), false);
+                        }
+                        context
+                            .read<SelectedRecordInfoState>()
+                            .removeSelectedRecord();
+                        context
+                            .read<SelectedRecordInfoState>()
+                            .removeSelectedRecord();
                       },
                       child:
                           const Text('홈으로', style: TextStyles.buttonLabelStyle),

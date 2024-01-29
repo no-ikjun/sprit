@@ -36,6 +36,34 @@ class ReviewInfo {
 }
 
 class ReviewService {
+  static Future<bool> setReview(
+    BuildContext context,
+    int score,
+    String bookUuid,
+    String content,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.post(
+        '/review',
+        data: {
+          'score': score,
+          'book_uuid': bookUuid,
+          'content': content,
+        },
+      );
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        debugPrint('리뷰 생성 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('리뷰 생성 실패 $e');
+      return false;
+    }
+  }
+
   Future<List<ReviewInfo>> getReviewByBookUuid(
       BuildContext context, String bookUuid) async {
     List<ReviewInfo> reviews = [];
