@@ -32,9 +32,8 @@ Future<bool> updateGoalAchieved(
 Future<int> getLastPage(
   BuildContext context,
   String bookUuid,
-  bool isBeforeRecord,
 ) async {
-  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
+  return await RecordService.getLastPage(context, bookUuid);
 }
 
 class EndPage extends StatefulWidget {
@@ -84,7 +83,6 @@ class _EndPageState extends State<EndPage> {
     getLastPage(
       context,
       context.read<SelectedRecordInfoState>().getSelectedRecordInfo.bookUuid,
-      false,
     ).then((value) {
       setState(() {
         lastPage = value;

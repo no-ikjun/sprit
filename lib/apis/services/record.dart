@@ -267,7 +267,6 @@ class RecordService {
   static Future<int> getLastPage(
     BuildContext context,
     String bookUuid,
-    bool isBeforeRecord,
   ) async {
     final dio = await authDio(context);
     try {
@@ -275,7 +274,6 @@ class RecordService {
         '/record/last-page',
         queryParameters: {
           'book_uuid': bookUuid,
-          'is_before_record': isBeforeRecord,
         },
       );
       if (response.statusCode == 200) {

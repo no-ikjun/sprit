@@ -66,9 +66,8 @@ Future<bool> updateBookLibrary(
 Future<int> getLastPage(
   BuildContext context,
   String bookUuid,
-  bool isBeforeRecord,
 ) async {
-  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
+  return await RecordService.getLastPage(context, bookUuid);
 }
 
 class RecordSettingScreen extends StatefulWidget {
@@ -117,7 +116,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
         isBookSelected = true;
       });
       selectBook(context, widget.bookUuid);
-      getLastPage(context, widget.bookUuid, true).then((value) {
+      getLastPage(context, widget.bookUuid).then((value) {
         setState(() {
           lastPage = value;
         });
@@ -345,7 +344,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                           context,
                                                           bookInfoList[index]
                                                               .bookUuid,
-                                                          true,
                                                         ).then((value) {
                                                           setState(() {
                                                             lastPage = value;

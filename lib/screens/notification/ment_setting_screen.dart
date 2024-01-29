@@ -2,12 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/notification/widgets/remind_ment.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
+
+Future<List<PhraseInfo>> getPhraseList(BuildContext context) async {
+  return await PhraseService.getAllPhrase(context);
+}
+
+Future<BookInfo> getBookInfo(BuildContext context, String bookUuid) async {
+  return await BookInfoService.getBookInfoByUuid(context, bookUuid);
+}
 
 class MentSettingScreen extends StatefulWidget {
   const MentSettingScreen({super.key});
@@ -17,6 +27,33 @@ class MentSettingScreen extends StatefulWidget {
 }
 
 class _MentSettingScreenState extends State<MentSettingScreen> {
+  List<PhraseInfo> phraseList = [];
+  List<BookInfo> bookInfoList = [];
+  List<bool> switchValueList = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    getPhraseList(context).then((value) async {
+      for (var element in value) {
+        await getBookInfo(context, element.bookUuid).then((value) {
+          bookInfoList.add(value);
+          setState(() {
+            switchValueList.add(element.remind);
+          });
+        });
+      }
+      setState(() {
+        phraseList = value;
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,23 +97,51 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          RemindMentWidget(
-                            title: '역행자',
-                            description: '선택. 집중. 몰입 대상을 정하자. "나는 ~ 한 사람이야.',
-                            switchValue: true,
-                            onToggle: () {},
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          RemindMentWidget(
-                            title: '돈의 심리학',
-                            description: '성공을 위한 비용을 기꺼이 지불하라',
-                            switchValue: true,
-                            onToggle: () {},
+                          SizedBox(
+                            width: Scaler.width(0.85, context),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: phraseList.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    RemindMentWidget(
+                                      title: bookInfoList[index].title,
+                                      description: phraseList[index].phrase,
+                                      switchValue: switchValueList[index],
+                                      onToggle: () async {
+                                        if (phraseList[index].phrase.length >
+                                            40) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                '40자 이하의 문구만 선택 가능합니다',
+                                              ),
+                                              backgroundColor: ColorSet.text,
+                                            ),
+                                          );
+                                        } else {
+                                          setState(() {
+                                            switchValueList[index] =
+                                                !switchValueList[index];
+                                          });
+                                          await PhraseService.updatePhrase(
+                                            context,
+                                            phraseList[index].phraseUuid,
+                                            switchValueList[index],
+                                          );
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -93,7 +158,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                   color: ColorSet.lightGrey,
                                   borderColor: ColorSet.lightGrey,
                                   child: const Text(
-                                    '모두 선택',
+                                    '모두 동의',
                                     style: TextStyles.loginButtonStyle,
                                   ),
                                 ),
