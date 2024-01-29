@@ -19,7 +19,8 @@ Future<Dio> authDio(BuildContext context) async {
     return handler.next(options);
   }, onError: (error, handler) async {
     debugPrint("authDio Error: ${error.response?.data.toString()}");
-    if (error.response?.statusCode == 401) {
+    if (error.response?.statusCode == 401 ||
+        error.response?.statusCode == 400) {
       await storage.deleteAll();
       Navigator.pushAndRemoveUntil(
         context,
