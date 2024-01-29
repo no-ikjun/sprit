@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sprit/apis/auth/apple_login.dart';
@@ -13,6 +14,7 @@ import 'package:sprit/apis/auth/local_login.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/text_input.dart';
@@ -43,6 +45,7 @@ Future<void> loginWithKaKao(BuildContext context) async {
       );
       final fcmToken = await FirebaseMessaging.instance.getToken();
       await registerFcmToken(context, fcmToken ?? '');
+      context.read<FcmTokenState>().updateFcmToken(fcmToken ?? '');
     } else {
       debugPrint('카카오 로그인 실패');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,6 +93,7 @@ Future<void> loginWithApple(
       );
       final fcmToken = await FirebaseMessaging.instance.getToken();
       await registerFcmToken(context, fcmToken ?? '');
+      context.read<FcmTokenState>().updateFcmToken(fcmToken ?? '');
     } else {
       debugPrint('애플 로그인 실패');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -244,6 +248,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             final fcmToken =
                                 await FirebaseMessaging.instance.getToken();
                             await registerFcmToken(context, fcmToken ?? '');
+                            context
+                                .read<FcmTokenState>()
+                                .updateFcmToken(fcmToken ?? '');
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               RouteName.home,
