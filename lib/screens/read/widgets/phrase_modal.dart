@@ -160,7 +160,7 @@ class _PhraseModalState extends State<PhraseModal> {
                       child: TextField(
                         controller: widget.textarea,
                         onChanged: (value) {
-                          if (value.length > 40) {
+                          if (value.length > 50) {
                             setState(() {
                               remind = false;
                             });
@@ -213,7 +213,7 @@ class _PhraseModalState extends State<PhraseModal> {
                                   style: TextStyles
                                       .timerBottomSheetReminderTextStyle),
                               Text(
-                                '40자 이내의 문구만 알림으로 받을 수 있어요',
+                                '50자 이내의 문구만 알림으로 받을 수 있어요',
                                 style: TextStyles
                                     .timerBottomSheetReminderMentStyle,
                               ),
@@ -221,7 +221,7 @@ class _PhraseModalState extends State<PhraseModal> {
                           ),
                           CustomSwitch(
                             onToggle: () {
-                              if (phrase.length <= 40) {
+                              if (phrase.length <= 50) {
                                 setState(() {
                                   remind = !remind;
                                 });

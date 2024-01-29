@@ -108,7 +108,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '40자 이내의 문구만 알림으로 설정할 수 있어요',
+                                  '50자 이내의 문구만 알림으로 받을 수 있어요',
                                   style: TextStyles
                                       .notificationTimeSettingDescriptionStyle,
                                 ),
@@ -152,7 +152,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                               if (phraseList[index]
                                                       .phrase
                                                       .length >
-                                                  40) {
+                                                  50) {
                                               } else {
                                                 setState(() {
                                                   switchValueList[index] =
@@ -185,7 +185,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                     for (var i = 0;
                                         i < phraseList.length;
                                         i++) {
-                                      if (phraseList[i].phrase.length <= 40) {
+                                      if (phraseList[i].phrase.length <= 50) {
                                         setState(() {
                                           switchValueList[i] = true;
                                         });
