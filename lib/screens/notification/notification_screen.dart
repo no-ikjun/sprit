@@ -54,17 +54,14 @@ Future<bool> updateMarketingAgreeInfo(
   );
 }
 
-Future<bool> updateTimeAgreeInfo(
-  BuildContext context,
-  String fcmToken,
-  bool agree01,
-  int time01,
-) async {
+Future<bool> updateTimeAgreeInfo(BuildContext context, String fcmToken,
+    bool agree01, int time01, bool agree02) async {
   return await NotificationService.updateTimeAgree(
     context,
     fcmToken,
     agree01,
     time01,
+    agree02,
   );
 }
 
@@ -108,6 +105,7 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   bool isLoading = false;
 
+  bool isWeeklyReportNotificationOn = false;
   bool isReadingTimeNotificationOn = false;
   int readingTime = 0;
   bool isReminderNotificationOn = false;
@@ -123,6 +121,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     });
     await getTimeAgreeInfo(context, fcmToken).then((value) {
       setState(() {
+        isWeeklyReportNotificationOn = value.agree02;
         isReadingTimeNotificationOn = value.agree01;
         readingTime = value.time01;
       });
@@ -204,6 +203,36 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 child: Column(
                                   children: [
                                     NotificationControlMenu(
+                                      title: '독서 리포트 알림',
+                                      description: '매주 독서 리포트를 알림으로 받아요',
+                                      switchValue: isWeeklyReportNotificationOn,
+                                      onClick: () async {
+                                        HapticFeedback.lightImpact();
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
+                                        final result =
+                                            await updateTimeAgreeInfo(
+                                          context,
+                                          fcmToken,
+                                          isReadingTimeNotificationOn,
+                                          readingTime,
+                                          !isWeeklyReportNotificationOn,
+                                        );
+                                        if (result == true) {
+                                          setState(() {
+                                            isWeeklyReportNotificationOn =
+                                                !isWeeklyReportNotificationOn;
+                                          });
+                                        }
+                                      },
+                                    ),
+                                    const Divider(
+                                      height: 2,
+                                      thickness: 2,
+                                      color: ColorSet.background,
+                                    ),
+                                    NotificationControlMenu(
                                       title: '독서 시간 알림',
                                       description:
                                           '매일 독서할 수 있도록 같은 시간에 알림을 받아요',
@@ -219,6 +248,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           fcmToken,
                                           !isReadingTimeNotificationOn,
                                           readingTime,
+                                          isWeeklyReportNotificationOn,
                                         );
                                         if (result == true) {
                                           setState(() {

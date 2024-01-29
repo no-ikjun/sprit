@@ -5,19 +5,23 @@ class TimeAgreeInfo {
   final String agreeUuid;
   final bool agree01;
   final int time01;
+  final bool agree02;
   const TimeAgreeInfo({
     required this.agreeUuid,
     required this.agree01,
     required this.time01,
+    required this.agree02,
   });
   TimeAgreeInfo.fromJson(Map<String, dynamic> json)
       : agreeUuid = json['agree_uuid'],
         agree01 = json['agree_01'],
-        time01 = json['time_01'];
+        time01 = json['time_01'],
+        agree02 = json['agree_02'];
   Map<String, dynamic> toJson() => {
         'agree_uuid': agreeUuid,
         'agree_01': agree01,
         'time_01': time01,
+        'agree_02': agree02,
       };
 }
 
@@ -95,6 +99,7 @@ class NotificationService {
       agreeUuid: '',
       agree01: false,
       time01: 0,
+      agree02: false,
     );
     final dio = await authDio(context);
     try {
@@ -173,12 +178,8 @@ class NotificationService {
     return questAgreeInfo;
   }
 
-  static Future<bool> updateTimeAgree(
-    BuildContext context,
-    String fcmToken,
-    bool agree01,
-    int time01,
-  ) async {
+  static Future<bool> updateTimeAgree(BuildContext context, String fcmToken,
+      bool agree01, int time01, bool agree02) async {
     final dio = await authDio(context);
     try {
       final response = await dio.patch(
@@ -187,6 +188,7 @@ class NotificationService {
           'fcm_token': fcmToken,
           'agree_01': agree01,
           'time_01': time01,
+          'agree_02': agree02,
         },
       );
       if (response.statusCode == 200) {
