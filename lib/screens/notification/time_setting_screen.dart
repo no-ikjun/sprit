@@ -2,10 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/notification.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
+
+Future<TimeAgreeInfo> getTimeAgreeInfo(BuildContext context) async {
+  return await NotificationService.getTimeAgreeInfo(context);
+}
+
+Future<bool> updateOnlyTime(BuildContext context, int time) async {
+  return await NotificationService.updateOnlyTime(context, time);
+}
 
 class TimeSettingScreen extends StatefulWidget {
   const TimeSettingScreen({super.key});
@@ -17,6 +26,33 @@ class TimeSettingScreen extends StatefulWidget {
 class _TimeSettingScreenState extends State<TimeSettingScreen> {
   int _selectedSectionIndex = 1;
   int _selectedTimeIndex = 0;
+
+  bool isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    getTimeAgreeInfo(context).then((value) {
+      setState(() {
+        if (value.time01 > 12) {
+          setState(() {
+            _selectedSectionIndex = 1;
+            _selectedTimeIndex = value.time01 - 13;
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            _selectedSectionIndex = 0;
+            _selectedTimeIndex = value.time01 - 1;
+            isLoading = false;
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,84 +93,95 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        width: Scaler.width(0.85, context),
-                        height: 170,
-                        decoration: BoxDecoration(
-                          color: ColorSet.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              offset: const Offset(0, 4),
-                              blurRadius: 30,
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: Scaler.width(0.80, context),
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: CupertinoColors.tertiarySystemFill,
-                                borderRadius: BorderRadius.circular(8),
+                      isLoading
+                          ? const SizedBox(
+                              height: 170,
+                              child: Center(
+                                child: CupertinoActivityIndicator(
+                                  radius: 17,
+                                  animating: true,
+                                ),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: Scaler.width(0.2, context),
-                                  height: 150,
-                                  child: CupertinoPicker(
-                                    scrollController:
-                                        FixedExtentScrollController(
-                                      initialItem: _selectedSectionIndex,
+                            )
+                          : Container(
+                              width: Scaler.width(0.85, context),
+                              height: 170,
+                              decoration: BoxDecoration(
+                                color: ColorSet.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 30,
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: Scaler.width(0.80, context),
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: CupertinoColors.tertiarySystemFill,
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    backgroundColor: Colors.transparent,
-                                    selectionOverlay: null,
-                                    itemExtent: 32.0,
-                                    onSelectedItemChanged: (int index) {
-                                      setState(() {
-                                        _selectedSectionIndex = index;
-                                      });
-                                    },
-                                    children: const <Widget>[
-                                      Center(child: Text('오전')),
-                                      Center(child: Text('오후')),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: Scaler.width(0.2, context),
+                                        height: 150,
+                                        child: CupertinoPicker(
+                                          scrollController:
+                                              FixedExtentScrollController(
+                                            initialItem: _selectedSectionIndex,
+                                          ),
+                                          backgroundColor: Colors.transparent,
+                                          selectionOverlay: null,
+                                          itemExtent: 32.0,
+                                          onSelectedItemChanged: (int index) {
+                                            setState(() {
+                                              _selectedSectionIndex = index;
+                                            });
+                                          },
+                                          children: const <Widget>[
+                                            Center(child: Text('오전')),
+                                            Center(child: Text('오후')),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: Scaler.width(0.25, context),
+                                        height: 150,
+                                        child: CupertinoPicker(
+                                          scrollController:
+                                              FixedExtentScrollController(
+                                            initialItem: _selectedTimeIndex,
+                                          ),
+                                          backgroundColor: Colors.transparent,
+                                          selectionOverlay: null,
+                                          itemExtent: 32.0,
+                                          onSelectedItemChanged: (int index) {
+                                            setState(() {
+                                              _selectedTimeIndex = index;
+                                            });
+                                          },
+                                          children: List<Widget>.generate(12,
+                                              (int index) {
+                                            return Center(
+                                                child:
+                                                    Text('${index + 1} : 00'));
+                                          }),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: Scaler.width(0.25, context),
-                                  height: 150,
-                                  child: CupertinoPicker(
-                                    scrollController:
-                                        FixedExtentScrollController(
-                                      initialItem: _selectedTimeIndex,
-                                    ),
-                                    backgroundColor: Colors.transparent,
-                                    selectionOverlay: null,
-                                    itemExtent: 32.0,
-                                    onSelectedItemChanged: (int index) {
-                                      setState(() {
-                                        _selectedTimeIndex = index;
-                                      });
-                                    },
-                                    children:
-                                        List<Widget>.generate(12, (int index) {
-                                      return Center(
-                                          child: Text('${index + 1} : 00'));
-                                    }),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
                       const SizedBox(
                         height: 25,
                       ),
@@ -144,7 +191,27 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                const time = 20;
+                                await updateOnlyTime(context, time)
+                                    .then((value) async {
+                                  if (value) {
+                                    setState(() {
+                                      _selectedSectionIndex = 1;
+                                      _selectedTimeIndex = 7;
+                                      isLoading = false;
+                                    });
+                                    await Future.delayed(
+                                            const Duration(milliseconds: 300))
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                    });
+                                  }
+                                });
+                              },
                               width: Scaler.width(0.85 * 0.4, context) - 5,
                               height: 45,
                               color: ColorSet.lightGrey,
@@ -155,7 +222,27 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                               ),
                             ),
                             CustomButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                final time = _selectedSectionIndex == 0
+                                    ? _selectedTimeIndex + 1
+                                    : _selectedTimeIndex + 13;
+                                await updateOnlyTime(context, time)
+                                    .then((value) async {
+                                  if (value) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    await Future.delayed(
+                                            const Duration(milliseconds: 300))
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                    });
+                                  }
+                                });
+                              },
                               width: Scaler.width(0.85 * 0.6, context) - 5,
                               height: 45,
                               child: const Text(

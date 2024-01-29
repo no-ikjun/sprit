@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:sprit/apis/auth_dio.dart';
+import 'package:sprit/providers/fcm_token.dart';
 
 class TimeAgreeInfo {
   final String agreeUuid;
@@ -93,8 +95,8 @@ class NotificationService {
 
   static Future<TimeAgreeInfo> getTimeAgreeInfo(
     BuildContext context,
-    String fcmToken,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     TimeAgreeInfo timeAgreeInfo = const TimeAgreeInfo(
       agreeUuid: '',
       agree01: false,
@@ -122,8 +124,8 @@ class NotificationService {
 
   static Future<RemindAgreeInfo> getRemindAgreeInfo(
     BuildContext context,
-    String fcmToken,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     RemindAgreeInfo remindAgreeInfo = const RemindAgreeInfo(
       agreeUuid: '',
       agree01: false,
@@ -150,8 +152,8 @@ class NotificationService {
 
   static Future<QuestAgreeInfo> getQuestAgreeInfo(
     BuildContext context,
-    String fcmToken,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     QuestAgreeInfo questAgreeInfo = const QuestAgreeInfo(
       agreeUuid: '',
       agree01: false,
@@ -178,8 +180,13 @@ class NotificationService {
     return questAgreeInfo;
   }
 
-  static Future<bool> updateTimeAgree(BuildContext context, String fcmToken,
-      bool agree01, int time01, bool agree02) async {
+  static Future<bool> updateTimeAgree(
+    BuildContext context,
+    bool agree01,
+    int time01,
+    bool agree02,
+  ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     final dio = await authDio(context);
     try {
       final response = await dio.patch(
@@ -203,12 +210,38 @@ class NotificationService {
     }
   }
 
+  static Future<bool> updateOnlyTime(
+    BuildContext context,
+    int time,
+  ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/notification/agree/time/only',
+        queryParameters: {
+          'fcm_token': fcmToken,
+          'time_01': time,
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        debugPrint('시간 알림 동의 정보 수정 실패');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('시간 알림 동의 정보 수정 실패 $e');
+      return false;
+    }
+  }
+
   static Future<bool> updateRemindAgree(
     BuildContext context,
-    String fcmToken,
     bool agree01,
     int time01,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     final dio = await authDio(context);
     try {
       final response = await dio.patch(
@@ -233,11 +266,11 @@ class NotificationService {
 
   static Future<bool> updateQuestAgree(
     BuildContext context,
-    String fcmToken,
     bool agree01,
     bool agree02,
     bool agree03,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     final dio = await authDio(context);
     try {
       final response = await dio.patch(
@@ -263,8 +296,8 @@ class NotificationService {
 
   static Future<bool> getMarketingAgree(
     BuildContext context,
-    String fcmToken,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     final dio = await authDio(context);
     try {
       final response = await dio.get(
@@ -287,9 +320,9 @@ class NotificationService {
 
   static Future<bool> updateMarketingAgree(
     BuildContext context,
-    String fcmToken,
     bool marketingAgree,
   ) async {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     final dio = await authDio(context);
     try {
       final response = await dio.patch(

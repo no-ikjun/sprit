@@ -17,8 +17,6 @@ class MentSettingScreen extends StatefulWidget {
 }
 
 class _MentSettingScreenState extends State<MentSettingScreen> {
-  final int _selectedSectionIndex = 1;
-  final int _selectedTimeIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
