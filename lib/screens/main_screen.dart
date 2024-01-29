@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/screens/home/home_screen.dart';
@@ -41,6 +42,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    AmplitudeService().logEvent('Sign Up');
   }
 
   @override
