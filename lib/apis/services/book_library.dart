@@ -86,10 +86,10 @@ class BookLibraryService {
         var result = response.data;
         bookLibraryInfo = BookLibraryInfo.fromJson(result);
       } else {
-        debugPrint('도서 정보 조회 실패');
+        debugPrint('도서 등록 정보 조회 실패');
       }
     } catch (e) {
-      debugPrint('도서 정보 조회 실패 $e');
+      debugPrint('도서 등록 정보 조회 실패 $e');
     }
     return bookLibraryInfo;
   }
@@ -118,10 +118,10 @@ class BookLibraryService {
           beforeBookLibrary.add(BookInfo.fromJson(book));
         }
       } else {
-        debugPrint('$state 도서 정보 조회 실패');
+        debugPrint('$state 도서 등록 정보 조회 실패 (상태별)');
       }
     } catch (e) {
-      debugPrint('$state 도서 정보 조회 실패 $e');
+      debugPrint('$state 도서 등록 정보 조회 실패 (상태별) $e');
     }
     return beforeBookLibrary;
   }
