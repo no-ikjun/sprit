@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -12,6 +13,7 @@ import 'package:sprit/apis/auth/local_login.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/screens/splash/splash_screen.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/text_input.dart';
 
@@ -39,6 +41,8 @@ Future<void> loginWithKaKao(BuildContext context) async {
         RouteName.home,
         (route) => false,
       );
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      await registerFcmToken(context, fcmToken ?? '');
     } else {
       debugPrint('카카오 로그인 실패');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,6 +88,8 @@ Future<void> loginWithApple(
         RouteName.home,
         (route) => false,
       );
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      await registerFcmToken(context, fcmToken ?? '');
     } else {
       debugPrint('애플 로그인 실패');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -235,6 +241,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               key: "access_token",
                               value: loginResult,
                             );
+                            final fcmToken =
+                                await FirebaseMessaging.instance.getToken();
+                            await registerFcmToken(context, fcmToken ?? '');
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               RouteName.home,
