@@ -142,7 +142,7 @@ class _PhraseModalState extends State<PhraseModal> {
                       height: 20,
                     ),
                     const Text(
-                      '문구 작성',
+                      '문구 (스크랩) 작성',
                       style: TextStyles.timerBottomSheetTitleStyle,
                     ),
                     const SizedBox(
