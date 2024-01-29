@@ -30,10 +30,8 @@ Future<bool> updateGoalAchieved(
 }
 
 Future<int> getLastPage(
-  BuildContext context,
-  String bookUuid,
-) async {
-  return await RecordService.getLastPage(context, bookUuid);
+    BuildContext context, String bookUuid, bool isBeforeRecord) async {
+  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
 }
 
 class EndPage extends StatefulWidget {
@@ -83,6 +81,7 @@ class _EndPageState extends State<EndPage> {
     getLastPage(
       context,
       context.read<SelectedRecordInfoState>().getSelectedRecordInfo.bookUuid,
+      false,
     ).then((value) {
       setState(() {
         lastPage = value;
@@ -188,7 +187,7 @@ class _EndPageState extends State<EndPage> {
               ),
         (lastPage != 0 && lastPage > endPage && endPage != 0)
             ? Text(
-                '저번에 $lastPage쪽까지 읽지 않으셨나요?',
+                '$lastPage쪽부터 읽지 않으셨나요?',
                 style: TextStyles.endReadingPageValidationStyle,
               )
             : Container(),
