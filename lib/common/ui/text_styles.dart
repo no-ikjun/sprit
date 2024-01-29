@@ -305,6 +305,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle notificationTimeSettingDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle notificationTimeSettingInformationStyle = TextStyle(
     color: ColorSet.grey,
     fontSize: 14,

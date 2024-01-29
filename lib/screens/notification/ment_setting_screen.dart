@@ -12,6 +12,7 @@ import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
 Future<List<PhraseInfo>> getPhraseList(BuildContext context) async {
+  await Future.delayed(const Duration(milliseconds: 500));
   return await PhraseService.getAllPhrase(context);
 }
 
@@ -32,13 +33,11 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
   List<bool> switchValueList = [];
   bool isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> setValues() async {
     setState(() {
       isLoading = true;
     });
-    getPhraseList(context).then((value) async {
+    await getPhraseList(context).then((value) async {
       for (var element in value) {
         await getBookInfo(context, element.bookUuid).then((value) {
           bookInfoList.add(value);
@@ -52,6 +51,12 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
         isLoading = false;
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setValues();
   }
 
   @override
@@ -95,54 +100,75 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                             ),
                           ),
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           SizedBox(
                             width: Scaler.width(0.85, context),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: phraseList.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    RemindMentWidget(
-                                      title: bookInfoList[index].title,
-                                      description: phraseList[index].phrase,
-                                      switchValue: switchValueList[index],
-                                      onToggle: () async {
-                                        if (phraseList[index].phrase.length >
-                                            40) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                '40자 이하의 문구만 선택 가능합니다',
-                                              ),
-                                              backgroundColor: ColorSet.text,
-                                            ),
-                                          );
-                                        } else {
-                                          setState(() {
-                                            switchValueList[index] =
-                                                !switchValueList[index];
-                                          });
-                                          await PhraseService.updatePhrase(
-                                            context,
-                                            phraseList[index].phraseUuid,
-                                            switchValueList[index],
-                                          );
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                  ],
-                                );
-                              },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '40자 이내의 문구만 알림으로 설정할 수 있어요',
+                                  style: TextStyles
+                                      .notificationTimeSettingDescriptionStyle,
+                                ),
+                              ],
                             ),
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          isLoading
+                              ? const Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    CupertinoActivityIndicator(
+                                      radius: 15,
+                                      animating: true,
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(
+                                  width: Scaler.width(0.85, context),
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: phraseList.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          RemindMentWidget(
+                                            title: bookInfoList[index].title,
+                                            description:
+                                                phraseList[index].phrase,
+                                            switchValue: switchValueList[index],
+                                            onToggle: () async {
+                                              if (phraseList[index]
+                                                      .phrase
+                                                      .length >
+                                                  40) {
+                                              } else {
+                                                setState(() {
+                                                  switchValueList[index] =
+                                                      !switchValueList[index];
+                                                });
+                                              }
+                                            },
+                                          ),
+                                          const SizedBox(
+                                            height: 8,
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -152,7 +178,37 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    for (var i = 0;
+                                        i < phraseList.length;
+                                        i++) {
+                                      if (phraseList[i].phrase.length <= 40) {
+                                        setState(() {
+                                          switchValueList[i] = true;
+                                        });
+                                      }
+                                    }
+                                    for (var i = 0;
+                                        i < phraseList.length;
+                                        i++) {
+                                      await PhraseService.updatePhrase(
+                                        context,
+                                        phraseList[i].phraseUuid,
+                                        switchValueList[i],
+                                      );
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    await Future.delayed(
+                                            const Duration(milliseconds: 300))
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                    });
+                                  },
                                   width: Scaler.width(0.85 * 0.4, context) - 5,
                                   height: 45,
                                   color: ColorSet.lightGrey,
@@ -163,7 +219,28 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                   ),
                                 ),
                                 CustomButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    for (var i = 0;
+                                        i < phraseList.length;
+                                        i++) {
+                                      await PhraseService.updatePhrase(
+                                        context,
+                                        phraseList[i].phraseUuid,
+                                        switchValueList[i],
+                                      );
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    await Future.delayed(
+                                            const Duration(milliseconds: 300))
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                    });
+                                  },
                                   width: Scaler.width(0.85 * 0.6, context) - 5,
                                   height: 45,
                                   child: const Text(
