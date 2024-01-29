@@ -134,9 +134,9 @@ class PhraseService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.put(
+      final response = await dio.patch(
         '/phrase/remind',
-        data: {
+        queryParameters: {
           'phrase_uuid': phraseUuid,
           'remind': remind,
         },
