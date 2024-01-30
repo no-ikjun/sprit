@@ -556,4 +556,81 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle myLibraryTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibrarySubTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryWarningStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookMarkStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookMarkPageStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryShowMoreStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryMyBookStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookAuthorStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookRecordCountStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookRecordStateStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

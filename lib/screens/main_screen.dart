@@ -5,6 +5,7 @@ import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/screens/home/home_screen.dart';
+import 'package:sprit/screens/library/my_library_screen.dart';
 import 'package:sprit/screens/quest/quest_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -23,10 +24,7 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const HomePage();
       case 1:
-        return const CustomAppBar(
-          onlyLabel: true,
-          label: '내 서재',
-        );
+        return const MyLibraryScreen();
       case 2:
         return const QuestScreen();
       case 3:
