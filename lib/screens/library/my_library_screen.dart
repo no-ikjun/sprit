@@ -149,7 +149,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
               ],
             ),
             const SizedBox(
-              height: 30,
+              height: 35,
             ),
             Column(
               children: [
@@ -241,7 +241,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
               ],
             ),
             const SizedBox(
-              height: 30,
+              height: 35,
             ),
             Column(
               children: [
@@ -291,7 +291,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
               ],
             ),
             const SizedBox(
-              height: 30,
+              height: 35,
             ),
             Column(
               children: [
@@ -350,7 +350,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
               ],
             ),
             const SizedBox(
-              height: 30,
+              height: 35,
             ),
           ],
         ),
