@@ -2,6 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:sprit/apis/auth_dio.dart';
 import 'package:sprit/apis/services/book.dart';
 
+class BookMarkCallback {
+  final List<BookMarkInfo> bookMarkInfoList;
+  final bool moreAvailable;
+
+  BookMarkCallback({
+    required this.bookMarkInfoList,
+    required this.moreAvailable,
+  });
+}
+
 class BookLibraryInfo {
   final String libraryRegisterUuid;
   final String userUuid;
@@ -32,6 +42,46 @@ class BookLibraryInfo {
         'state': state,
         'created_at': createdAt,
         'updated_at': updatedAt,
+      };
+}
+
+class BookMarkInfo {
+  final String bookUuid;
+  final String thumbnail;
+  final int lastPage;
+  const BookMarkInfo({
+    required this.bookUuid,
+    required this.thumbnail,
+    required this.lastPage,
+  });
+
+  BookMarkInfo.fromJson(Map<String, dynamic> json)
+      : bookUuid = json['book_uuid'],
+        thumbnail = json['thumbnail'],
+        lastPage = json['last_page'];
+
+  Map<String, dynamic> toJson() => {
+        'book_uuid': bookUuid,
+        'thumbnail': thumbnail,
+        'last_page': lastPage,
+      };
+}
+
+class BookMarkResponse {
+  final List<dynamic> bookMarkInfo;
+  final bool moreAvailable;
+  const BookMarkResponse({
+    required this.bookMarkInfo,
+    required this.moreAvailable,
+  });
+
+  BookMarkResponse.fromJson(Map<String, dynamic> json)
+      : bookMarkInfo = json['book_marks'],
+        moreAvailable = json['more_available'];
+
+  Map<String, dynamic> toJson() => {
+        'book_marks': bookMarkInfo,
+        'more_available': moreAvailable,
       };
 }
 
@@ -174,5 +224,37 @@ class BookLibraryService {
       debugPrint('도서 정보 수정 실패 $e');
       return false;
     }
+  }
+
+  static Future<BookMarkCallback> getBookMark(
+    BuildContext context,
+    int page,
+  ) async {
+    List<BookMarkInfo> bookMarkInfoList = [];
+    bool moreAvailable = false;
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/book-library/bookmark',
+        queryParameters: {
+          'page': page.toString(),
+        },
+      );
+      if (response.statusCode == 200) {
+        var result = BookMarkResponse.fromJson(response.data);
+        moreAvailable = result.moreAvailable;
+        for (var book in result.bookMarkInfo) {
+          bookMarkInfoList.add(BookMarkInfo.fromJson(book));
+        }
+      } else {
+        debugPrint('북마크 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('북마크 조회 실패 $e');
+    }
+    return BookMarkCallback(
+      bookMarkInfoList: bookMarkInfoList,
+      moreAvailable: moreAvailable,
+    );
   }
 }

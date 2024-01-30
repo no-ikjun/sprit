@@ -2,11 +2,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/apis/services/book_report.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/screens/library/widgets/book_mark_widget.dart';
 import 'package:sprit/screens/library/widgets/my_book_info.dart';
-import 'package:sprit/widgets/book_thumbnail.dart';
+
+Future<BookMarkCallback> getBookMark(BuildContext context, int page) async {
+  return await BookLibraryService.getBookMark(context, page);
+}
 
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
@@ -16,8 +21,23 @@ class MyLibraryScreen extends StatefulWidget {
 }
 
 class _MyLibraryScreenState extends State<MyLibraryScreen> {
+  List<BookMarkInfo> bookMarkInfoList = [];
+  bool bookMarkMoreAvailable = false;
+
   List<BookReportInfo> bookReportInfoList = [];
   int reportCurrent = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getBookMark(context, 1).then((value) {
+      setState(() {
+        bookMarkInfoList = value.bookMarkInfoList;
+        bookMarkMoreAvailable = value.moreAvailable;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -80,94 +100,52 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                 ),
                 SizedBox(
                   width: Scaler.width(0.85, context),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            BookThumbnail(
-                              imgUrl: '',
-                              width: 100,
-                              height: 144.44,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              '마지막 기록',
-                              style: TextStyles.myLibraryBookMarkStyle,
-                            ),
-                            Text(
-                              '145쪽',
-                              style: TextStyles.myLibraryBookMarkPageStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            BookThumbnail(
-                              imgUrl: '',
-                              width: 100,
-                              height: 144.44,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              '마지막 기록',
-                              style: TextStyles.myLibraryBookMarkStyle,
-                            ),
-                            Text(
-                              '145쪽',
-                              style: TextStyles.myLibraryBookMarkPageStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            BookThumbnail(
-                              imgUrl: '',
-                              width: 100,
-                              height: 144.44,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              '마지막 기록',
-                              style: TextStyles.myLibraryBookMarkStyle,
-                            ),
-                            Text(
-                              '145쪽',
-                              style: TextStyles.myLibraryBookMarkPageStyle,
-                            ),
-                          ],
-                        ),
-                      ),
+                      bookMarkInfoList.isNotEmpty
+                          ? BookMarkWidget(
+                              bookUuid: bookMarkInfoList[0].bookUuid,
+                              thumbnail: bookMarkInfoList[0].thumbnail,
+                              lastPage: bookMarkInfoList[0].lastPage)
+                          : Container(),
+                      bookMarkInfoList.length > 1
+                          ? BookMarkWidget(
+                              bookUuid: bookMarkInfoList[1].bookUuid,
+                              thumbnail: bookMarkInfoList[1].thumbnail,
+                              lastPage: bookMarkInfoList[1].lastPage)
+                          : Container(),
+                      bookMarkInfoList.length > 2
+                          ? BookMarkWidget(
+                              bookUuid: bookMarkInfoList[2].bookUuid,
+                              thumbnail: bookMarkInfoList[2].thumbnail,
+                              lastPage: bookMarkInfoList[2].lastPage)
+                          : Container(),
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      '더보기',
-                      style: TextStyles.myLibraryShowMoreStyle,
-                    ),
-                    SvgPicture.asset(
-                      'assets/images/show_more_grey.svg',
-                      width: 21,
-                    )
-                  ],
-                ),
+                bookMarkMoreAvailable
+                    ? Column(
+                        children: [
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                '더보기',
+                                style: TextStyles.myLibraryShowMoreStyle,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/show_more_grey.svg',
+                                width: 21,
+                              )
+                            ],
+                          ),
+                        ],
+                      )
+                    : Container(),
               ],
             ),
             const SizedBox(
