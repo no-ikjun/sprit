@@ -633,4 +633,39 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle myLibraryPhraseTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryPhraseDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookReportTitleStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookReportDateStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookReportStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
 }
