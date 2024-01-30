@@ -15,6 +15,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
 import 'package:sprit/screens/search/search_screen.dart';
+import 'package:sprit/widgets/ad_template.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/loader.dart';
@@ -147,6 +148,7 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: Column(
             children: [
+              const NativeAdWidget(),
               const SizedBox(
                 height: 10,
               ),
