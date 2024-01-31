@@ -133,56 +133,37 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                 SizedBox(
                   width: Scaler.width(0.85, context),
                   child: Column(
-                      children: List.generate(
-                          ((bookMarkInfoList.length - 1) ~/ 3 + 1), (index) {
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(3, (index2) {
-                            index2 += index * 3;
-                            if (index2 < bookMarkInfoList.length) {
-                              return BookMarkWidget(
-                                bookUuid: bookMarkInfoList[index2].bookUuid,
-                                thumbnail: bookMarkInfoList[index2].thumbnail,
-                                lastPage: bookMarkInfoList[index2].lastPage,
-                              );
-                            } else {
-                              return Container();
-                            }
-                          }),
-                        ),
-                        index != ((bookMarkInfoList.length - 1) ~/ 3)
-                            ? const SizedBox(
-                                height: 12,
-                              )
-                            : Container(),
-                      ],
-                    );
-                  })
-
-                      // children: [
-                      //   bookMarkInfoList.isNotEmpty
-                      //       ? BookMarkWidget(
-                      //           bookUuid: bookMarkInfoList[0].bookUuid,
-                      //           thumbnail: bookMarkInfoList[0].thumbnail,
-                      //           lastPage: bookMarkInfoList[0].lastPage)
-                      //       : Container(),
-                      //   bookMarkInfoList.length > 1
-                      //       ? BookMarkWidget(
-                      //           bookUuid: bookMarkInfoList[1].bookUuid,
-                      //           thumbnail: bookMarkInfoList[1].thumbnail,
-                      //           lastPage: bookMarkInfoList[1].lastPage)
-                      //       : Container(),
-                      //   bookMarkInfoList.length > 2
-                      //       ? BookMarkWidget(
-                      //           bookUuid: bookMarkInfoList[2].bookUuid,
-                      //           thumbnail: bookMarkInfoList[2].thumbnail,
-                      //           lastPage: bookMarkInfoList[2].lastPage)
-                      //       : Container(),
-                      // ],
-
-                      ),
+                    children: List.generate(
+                      ((bookMarkInfoList.length - 1) ~/ 3 + 1),
+                      (index) {
+                        return Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(3, (index2) {
+                                index2 += index * 3;
+                                if (index2 < bookMarkInfoList.length) {
+                                  return BookMarkWidget(
+                                    bookUuid: bookMarkInfoList[index2].bookUuid,
+                                    thumbnail:
+                                        bookMarkInfoList[index2].thumbnail,
+                                    lastPage: bookMarkInfoList[index2].lastPage,
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                            ),
+                            index != ((bookMarkInfoList.length - 1) ~/ 3)
+                                ? const SizedBox(
+                                    height: 12,
+                                  )
+                                : Container(),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 bookMarkMoreAvailable
                     ? Column(
