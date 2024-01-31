@@ -668,4 +668,137 @@ class TextStyles {
     fontWeight: FontWeight.w400,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle analyticsTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsSubTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGrassTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGrassDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGrassTextStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGrassRankStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGrassRankDateStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphDateStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphTimeStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphIndicatorStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphDateIndicatorStyle = TextStyle(
+    color: ColorSet.lightGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphRecordMentStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphBookTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphBookAuthorStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsGraphBookTimeStyle = TextStyle(
+    color: ColorSet.lightGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsMonthlyReportTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsMonthlyReportDataStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsMonthlyReportAmountStyle = TextStyle(
+    color: ColorSet.green,
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle analyticsMonthlyReportMentStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

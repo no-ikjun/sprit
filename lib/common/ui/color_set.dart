@@ -13,6 +13,8 @@ class ColorSet {
   static const Color darkGrey = Color(0xFF474747);
   static const Color semiDarkGrey = Color(0xFF969696);
   static const Color border = Color(0xFFEEEEEE);
+  static const Color red = Color(0xFFFF5F5F);
+  static const Color green = Color(0xFF7AF45C);
 }
 
 class GrassColor {
