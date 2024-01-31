@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
-import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 
 class LibraryPhraseWidget extends StatelessWidget {
-  final PhraseInfo phraseInfo;
+  final String phraseUuid;
+  final String bookTitle;
+  final String phrase;
   const LibraryPhraseWidget({
     super.key,
-    required this.phraseInfo,
+    required this.phraseUuid,
+    required this.bookTitle,
+    required this.phrase,
   });
 
   @override
@@ -37,11 +40,11 @@ class LibraryPhraseWidget extends StatelessWidget {
             children: [
               SizedBox(
                 width: Scaler.width(0.85, context) - 30 - 42,
-                child: const Row(
+                child: Row(
                   children: [
                     Flexible(
                       child: Text(
-                        '역행자',
+                        bookTitle,
                         style: TextStyles.myLibraryPhraseTitleStyle,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -64,11 +67,11 @@ class LibraryPhraseWidget extends StatelessWidget {
           ),
           SizedBox(
             width: Scaler.width(0.85, context) - 24,
-            child: const Row(
+            child: Row(
               children: [
                 Flexible(
                   child: Text(
-                    '이 책의 핵심은 크게 나누면 두 가지로 나뉜다고 생각한다. 1. 인간의 어미얼미;나ㅓ린ㅁ아ㅓ',
+                    phrase,
                     style: TextStyles.myLibraryPhraseDescriptionStyle,
                     overflow: TextOverflow.clip,
                   ),
