@@ -649,15 +649,15 @@ class TextStyles {
   );
 
   static const TextStyle myLibraryBookReportTitleStyle = TextStyle(
-    color: ColorSet.grey,
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
     fontFamily: "IBMPlexSans",
   );
 
   static const TextStyle myLibraryBookReportDateStyle = TextStyle(
     color: ColorSet.semiDarkGrey,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
@@ -666,6 +666,14 @@ class TextStyles {
     color: ColorSet.darkGrey,
     fontSize: 14,
     fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+    height: 22 / 14,
+  );
+
+  static const TextStyle myLibraryBookReportButtonStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
 
