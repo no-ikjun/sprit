@@ -204,18 +204,22 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
+                  children: List.generate(
+                    bookReportInfoList.length,
+                    (index) => Container(
                       width: 8,
                       height: 8,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
-                        color: reportCurrent == 0
-                            ? ColorSet.lightGrey
-                            : ColorSet.lightGrey.withOpacity(0.3),
+                        color: reportCurrent == index
+                            ? ColorSet.primary
+                            : ColorSet.lightGrey,
                       ),
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               ],
             ),
