@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 
@@ -20,8 +21,8 @@ class BookMarkWidget extends StatelessWidget {
         children: [
           BookThumbnail(
             imgUrl: thumbnail,
-            width: 100,
-            height: 144.44,
+            width: Scaler.width(0.25, context),
+            height: Scaler.width(0.25, context) * 1.4444,
           ),
           const SizedBox(
             height: 5,

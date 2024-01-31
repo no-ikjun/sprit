@@ -78,7 +78,9 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                             lastPage: bookMarkInfoList[index2].lastPage,
                           );
                         } else {
-                          return Container();
+                          return SizedBox(
+                            width: Scaler.width(0.25, context),
+                          );
                         }
                       }),
                     ),
