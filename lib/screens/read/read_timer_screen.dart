@@ -407,11 +407,12 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             onTap: () {
                               if (selectedRecordInfo.goalType == 'TIME') {
                                 showModal(
-                                    context,
-                                    EndTime(
-                                      time: _elapsedSeconds,
-                                    ),
-                                    false);
+                                  context,
+                                  EndTime(
+                                    time: _elapsedSeconds,
+                                  ),
+                                  false,
+                                );
                               } else {
                                 showModal(
                                   context,
