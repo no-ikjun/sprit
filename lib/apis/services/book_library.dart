@@ -12,6 +12,55 @@ class BookMarkCallback {
   });
 }
 
+class BookLibraryByStateListCallback {
+  final List<BookLibraryByStateList> bookLibraryByStateList;
+  final bool moreAvailable;
+
+  BookLibraryByStateListCallback({
+    required this.bookLibraryByStateList,
+    required this.moreAvailable,
+  });
+}
+
+class BookLibraryByStateListResponse {
+  final List<dynamic> bookLibraryByStateList;
+  final bool moreAvailable;
+
+  BookLibraryByStateListResponse({
+    required this.bookLibraryByStateList,
+    required this.moreAvailable,
+  });
+
+  BookLibraryByStateListResponse.fromJson(Map<String, dynamic> json)
+      : bookLibraryByStateList = json['book_library_list'],
+        moreAvailable = json['more_available'];
+  Map<String, dynamic> toJson() => {
+        'book_library_list': bookLibraryByStateList,
+        'more_available': moreAvailable,
+      };
+}
+
+class BookLibraryByStateList {
+  final String bookUuid;
+  final int count;
+  final String state;
+  const BookLibraryByStateList({
+    required this.bookUuid,
+    required this.count,
+    required this.state,
+  });
+
+  BookLibraryByStateList.fromJson(Map<String, dynamic> json)
+      : bookUuid = json['book_uuid'],
+        count = json['count'],
+        state = json['state'];
+  Map<String, dynamic> toJson() => {
+        'book_uuid': bookUuid,
+        'count': count,
+        'state': state,
+      };
+}
+
 class BookLibraryInfo {
   final String libraryRegisterUuid;
   final String userUuid;
@@ -254,6 +303,41 @@ class BookLibraryService {
     }
     return BookMarkCallback(
       bookMarkInfoList: bookMarkInfoList,
+      moreAvailable: moreAvailable,
+    );
+  }
+
+  static Future<BookLibraryByStateListCallback> getBookLibraryByState(
+    BuildContext context,
+    List<String> stateList,
+    int page,
+  ) async {
+    List<BookLibraryByStateList> bookLibraryByStateListResult = [];
+    bool moreAvailable = false;
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/book-library/state-list',
+        data: {
+          'state_list': stateList,
+          'page': page.toString(),
+        },
+      );
+      if (response.statusCode == 200) {
+        var result = BookLibraryByStateListResponse.fromJson(response.data);
+        moreAvailable = result.moreAvailable;
+        for (var bookLibrary in result.bookLibraryByStateList) {
+          bookLibraryByStateListResult
+              .add(BookLibraryByStateList.fromJson(bookLibrary));
+        }
+      } else {
+        debugPrint('도서 등록 정보 조회 실패 (상태별)');
+      }
+    } catch (e) {
+      debugPrint('도서 등록 정보 조회 실패 (상태별) $e');
+    }
+    return BookLibraryByStateListCallback(
+      bookLibraryByStateList: bookLibraryByStateListResult,
       moreAvailable: moreAvailable,
     );
   }

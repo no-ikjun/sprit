@@ -13,6 +13,18 @@ Future<BookMarkCallback> getBookMark(BuildContext context, int page) async {
   return await BookLibraryService.getBookMark(context, page);
 }
 
+Future<BookLibraryByStateListCallback> getBookLibraryByState(
+  BuildContext context,
+  List<String> stateList,
+  int page,
+) async {
+  return await BookLibraryService.getBookLibraryByState(
+    context,
+    stateList,
+    page,
+  );
+}
+
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
 
@@ -23,19 +35,39 @@ class MyLibraryScreen extends StatefulWidget {
 class _MyLibraryScreenState extends State<MyLibraryScreen> {
   List<BookMarkInfo> bookMarkInfoList = [];
   bool bookMarkMoreAvailable = false;
+  int bookMarkCurrentPage = 1;
+
+  List<String> bookLibraryByStateListStateList = ["READING", "AFTER"];
+  List<BookLibraryByStateList> bookLibraryByStateList = [];
+  bool bookLibraryByStateListMoreAvailable = false;
+  int bookLibraryByStateListCurrentPage = 1;
 
   List<BookReportInfo> bookReportInfoList = [];
   int reportCurrent = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    getBookMark(context, 1).then((value) {
+  void _initialize() async {
+    await getBookMark(context, bookMarkCurrentPage).then((value) {
       setState(() {
         bookMarkInfoList = value.bookMarkInfoList;
         bookMarkMoreAvailable = value.moreAvailable;
       });
     });
+    await getBookLibraryByState(
+      context,
+      bookLibraryByStateListStateList,
+      bookLibraryByStateListCurrentPage,
+    ).then((value) {
+      setState(() {
+        bookLibraryByStateList = value.bookLibraryByStateList;
+        bookLibraryByStateListMoreAvailable = value.moreAvailable;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
   }
 
   @override
@@ -100,29 +132,57 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                 ),
                 SizedBox(
                   width: Scaler.width(0.85, context),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      bookMarkInfoList.isNotEmpty
-                          ? BookMarkWidget(
-                              bookUuid: bookMarkInfoList[0].bookUuid,
-                              thumbnail: bookMarkInfoList[0].thumbnail,
-                              lastPage: bookMarkInfoList[0].lastPage)
-                          : Container(),
-                      bookMarkInfoList.length > 1
-                          ? BookMarkWidget(
-                              bookUuid: bookMarkInfoList[1].bookUuid,
-                              thumbnail: bookMarkInfoList[1].thumbnail,
-                              lastPage: bookMarkInfoList[1].lastPage)
-                          : Container(),
-                      bookMarkInfoList.length > 2
-                          ? BookMarkWidget(
-                              bookUuid: bookMarkInfoList[2].bookUuid,
-                              thumbnail: bookMarkInfoList[2].thumbnail,
-                              lastPage: bookMarkInfoList[2].lastPage)
-                          : Container(),
-                    ],
-                  ),
+                  child: Column(
+                      children: List.generate(
+                          ((bookMarkInfoList.length - 1) ~/ 3 + 1), (index) {
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(3, (index2) {
+                            index2 += index * 3;
+                            if (index2 < bookMarkInfoList.length) {
+                              return BookMarkWidget(
+                                bookUuid: bookMarkInfoList[index2].bookUuid,
+                                thumbnail: bookMarkInfoList[index2].thumbnail,
+                                lastPage: bookMarkInfoList[index2].lastPage,
+                              );
+                            } else {
+                              return Container();
+                            }
+                          }),
+                        ),
+                        index != ((bookMarkInfoList.length - 1) ~/ 3)
+                            ? const SizedBox(
+                                height: 12,
+                              )
+                            : Container(),
+                      ],
+                    );
+                  })
+
+                      // children: [
+                      //   bookMarkInfoList.isNotEmpty
+                      //       ? BookMarkWidget(
+                      //           bookUuid: bookMarkInfoList[0].bookUuid,
+                      //           thumbnail: bookMarkInfoList[0].thumbnail,
+                      //           lastPage: bookMarkInfoList[0].lastPage)
+                      //       : Container(),
+                      //   bookMarkInfoList.length > 1
+                      //       ? BookMarkWidget(
+                      //           bookUuid: bookMarkInfoList[1].bookUuid,
+                      //           thumbnail: bookMarkInfoList[1].thumbnail,
+                      //           lastPage: bookMarkInfoList[1].lastPage)
+                      //       : Container(),
+                      //   bookMarkInfoList.length > 2
+                      //       ? BookMarkWidget(
+                      //           bookUuid: bookMarkInfoList[2].bookUuid,
+                      //           thumbnail: bookMarkInfoList[2].thumbnail,
+                      //           lastPage: bookMarkInfoList[2].lastPage)
+                      //       : Container(),
+                      // ],
+
+                      ),
                 ),
                 bookMarkMoreAvailable
                     ? Column(
@@ -130,18 +190,35 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                '더보기',
-                                style: TextStyles.myLibraryShowMoreStyle,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images/show_more_grey.svg',
-                                width: 21,
-                              )
-                            ],
+                          InkWell(
+                            onTap: () async {
+                              await getBookMark(
+                                context,
+                                bookMarkCurrentPage + 1,
+                              ).then((value) {
+                                setState(() {
+                                  bookMarkInfoList
+                                      .addAll(value.bookMarkInfoList);
+                                  bookMarkMoreAvailable = value.moreAvailable;
+                                  bookMarkCurrentPage++;
+                                });
+                              });
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  '더보기',
+                                  style: TextStyles.myLibraryShowMoreStyle,
+                                ),
+                                SvgPicture.asset(
+                                  'assets/images/show_more_grey.svg',
+                                  width: 21,
+                                )
+                              ],
+                            ),
                           ),
                         ],
                       )
@@ -198,43 +275,70 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                   ),
                   child: Column(
                     children: [
-                      const MyBookInfoWidget(
-                        bookUuid: 'BO03f10f-240108-fc15e250',
-                        count: 0,
-                        state: 'BEFORE',
+                      ListView.builder(
+                        itemCount: bookLibraryByStateList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              MyBookInfoWidget(
+                                bookUuid:
+                                    bookLibraryByStateList[index].bookUuid,
+                                count: bookLibraryByStateList[index].count,
+                                state: bookLibraryByStateList[index].state,
+                              ),
+                              index != bookLibraryByStateList.length - 1
+                                  ? const SizedBox(
+                                      height: 12,
+                                    )
+                                  : Container(),
+                            ],
+                          );
+                        },
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      const MyBookInfoWidget(
-                        bookUuid: 'BO03f10f-240108-fc15e250',
-                        count: 0,
-                        state: 'AFTER',
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      const MyBookInfoWidget(
-                        bookUuid: 'BO03f10f-240108-fc15e250',
-                        count: 0,
-                        state: 'READING',
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '더보기',
-                            style: TextStyles.myLibraryShowMoreStyle,
-                          ),
-                          SvgPicture.asset(
-                            'assets/images/show_more_grey.svg',
-                            width: 21,
-                          )
-                        ],
-                      ),
+                      bookLibraryByStateListMoreAvailable
+                          ? Column(
+                              children: [
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    await getBookLibraryByState(
+                                      context,
+                                      bookLibraryByStateListStateList,
+                                      bookLibraryByStateListCurrentPage + 1,
+                                    ).then((value) {
+                                      setState(() {
+                                        bookLibraryByStateList.addAll(
+                                            value.bookLibraryByStateList);
+                                        bookLibraryByStateListMoreAvailable =
+                                            value.moreAvailable;
+                                        bookLibraryByStateListCurrentPage++;
+                                      });
+                                    });
+                                  },
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        '더보기',
+                                        style:
+                                            TextStyles.myLibraryShowMoreStyle,
+                                      ),
+                                      SvgPicture.asset(
+                                        'assets/images/show_more_grey.svg',
+                                        width: 21,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
                     ],
                   ),
                 ),

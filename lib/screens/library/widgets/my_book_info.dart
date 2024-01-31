@@ -98,10 +98,12 @@ class _MyBookInfoWidgetState extends State<MyBookInfoWidget> {
                         Text(
                           bookInfo.title,
                           style: TextStyles.myLibraryBookTitleStyle,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          '${bookInfo.authors[0]} ${bookInfo.publisher.isNotEmpty ? '· ${bookInfo.publisher[0]}' : ''}',
+                          '${bookInfo.authors[0]} ${bookInfo.publisher.isNotEmpty ? '· ${bookInfo.publisher}' : ''}',
                           style: TextStyles.myLibraryBookAuthorStyle,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
