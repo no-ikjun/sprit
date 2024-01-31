@@ -3,19 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book_report.dart';
-import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/library/ordered_component/book_mark.dart';
 import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
-import 'package:sprit/screens/library/widgets/library_phrase_widget.dart';
-
-Future<PhraseLibraryListCallback> getPhraseForLibrary(
-  BuildContext context,
-  int page,
-) async {
-  return await PhraseService.getPhraseForLibrary(context, page);
-}
+import 'package:sprit/screens/library/ordered_component/phrase_info.dart';
 
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
@@ -25,22 +17,10 @@ class MyLibraryScreen extends StatefulWidget {
 }
 
 class _MyLibraryScreenState extends State<MyLibraryScreen> {
-  List<PhraseLibraryType> phraseInfoList = [];
-  bool phraseMoreAvailable = false;
-  int phraseCurrentPage = 1;
-
   List<BookReportInfo> bookReportInfoList = [];
   int reportCurrent = 0;
 
-  void _initialize() async {
-    await getPhraseForLibrary(context, phraseCurrentPage).then((value) {
-      debugPrint(value.phraseLibraryList.length.toString());
-      setState(() {
-        phraseInfoList = value.phraseLibraryList;
-        phraseMoreAvailable = value.moreAvailable;
-      });
-    });
-  }
+  void _initialize() async {}
 
   @override
   void initState() {
@@ -95,88 +75,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
             const SizedBox(
               height: 35,
             ),
-            Column(
-              children: [
-                SizedBox(
-                  width: Scaler.width(0.85, context),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        '저장된 문구 (스크랩)',
-                        style: TextStyles.myLibrarySubTitleStyle,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  width: Scaler.width(0.85, context),
-                  child: ListView.builder(
-                    itemCount: phraseInfoList.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          LibraryPhraseWidget(
-                            phraseUuid: phraseInfoList[index].phraseUuid,
-                            phrase: phraseInfoList[index].phrase,
-                            bookTitle: phraseInfoList[index].bookTitle,
-                          ),
-                          index != phraseInfoList.length - 1
-                              ? const SizedBox(
-                                  height: 8,
-                                )
-                              : Container(),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                phraseMoreAvailable
-                    ? Column(
-                        children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              await getPhraseForLibrary(
-                                context,
-                                phraseCurrentPage + 1,
-                              ).then((value) {
-                                setState(() {
-                                  phraseInfoList
-                                      .addAll(value.phraseLibraryList);
-                                  phraseMoreAvailable = value.moreAvailable;
-                                  phraseCurrentPage++;
-                                });
-                              });
-                            },
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '더보기',
-                                  style: TextStyles.myLibraryShowMoreStyle,
-                                ),
-                                SvgPicture.asset(
-                                  'assets/images/arrow_right.svg',
-                                  width: 12,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container(),
-              ],
-            ),
+            const MyPhraseComponent(),
             const SizedBox(
               height: 35,
             ),
