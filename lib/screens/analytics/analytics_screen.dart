@@ -4,7 +4,6 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
-import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/toggle_button.dart';
 
 class AnalyticsScreen extends StatefulWidget {
