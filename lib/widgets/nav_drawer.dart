@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key});
@@ -12,12 +13,6 @@ class NavDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: Scaler.width(0.66, context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          bottomLeft: Radius.circular(15),
-        ),
-      ),
       elevation: 0,
       backgroundColor: ColorSet.white,
       child: ListView(
@@ -58,7 +53,11 @@ class NavDrawer extends StatelessWidget {
                   InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
-                    onTap: () {},
+                    onTap: () {
+                      Uri url = Uri.parse(
+                          "https://ikjun.notion.site/SPRIT-c9a608de7a82409fbc673c6ce7b7cfa8?pvs=4");
+                      launchUrl(url);
+                    },
                     child: Stack(
                       alignment: Alignment.topLeft,
                       children: [
@@ -80,29 +79,29 @@ class NavDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 23,
-                  ),
-                  InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: () {},
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/setting_icon.svg',
-                          width: 17,
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        const Text(
-                          '환경설정',
-                          style: TextStyles.navDrawerLabelStyle,
-                        ),
-                      ],
-                    ),
-                  ),
+                  // const SizedBox(
+                  //   height: 23,
+                  // ),
+                  // InkWell(
+                  //   highlightColor: Colors.transparent,
+                  //   splashColor: Colors.transparent,
+                  //   onTap: () {},
+                  //   child: Row(
+                  //     children: [
+                  //       SvgPicture.asset(
+                  //         'assets/images/setting_icon.svg',
+                  //         width: 17,
+                  //       ),
+                  //       const SizedBox(
+                  //         width: 15,
+                  //       ),
+                  //       const Text(
+                  //         '환경설정',
+                  //         style: TextStyles.navDrawerLabelStyle,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   const SizedBox(
                     height: 23,
                   ),
@@ -132,7 +131,17 @@ class NavDrawer extends StatelessWidget {
                   InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
-                    onTap: () {},
+                    onTap: () {
+                      Uri url = Uri(
+                        scheme: 'mailto',
+                        path: "sprit@ikjun.com",
+                        queryParameters: {
+                          'subject': 'SPRIT문의',
+                          'body': '',
+                        },
+                      );
+                      launchUrl(url);
+                    },
                     child: Row(
                       children: [
                         SvgPicture.asset(
