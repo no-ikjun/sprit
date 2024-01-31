@@ -9,6 +9,7 @@ class RecordInfo {
   final int goalScale;
   final int pageStart;
   final int pageEnd;
+  final int totalTime;
   final String start;
   final String? end;
   final bool goalAchieved;
@@ -21,6 +22,7 @@ class RecordInfo {
     required this.goalScale,
     required this.pageStart,
     required this.pageEnd,
+    required this.totalTime,
     required this.start,
     this.end,
     required this.goalAchieved,
@@ -36,6 +38,7 @@ class RecordInfo {
       goalScale: json['goal_scale'] as int,
       pageStart: json['page_start'] as int,
       pageEnd: json['page_end'] as int,
+      totalTime: json['total_time'] as int,
       start: json['start'] as String,
       end: json['end'] as String?,
       goalAchieved: json['goal_achieved'] as bool,
@@ -52,6 +55,7 @@ class RecordInfo {
       'goal_scale': goalScale,
       'page_start': pageStart,
       'page_end': pageEnd,
+      'total_time': totalTime,
       'start': start,
       'end': end,
       'goal_achieved': goalAchieved,
@@ -125,6 +129,7 @@ class RecordService {
       goalScale: 0,
       pageStart: 0,
       pageEnd: 0,
+      totalTime: 0,
       start: '',
       end: '',
       goalAchieved: false,
@@ -152,6 +157,7 @@ class RecordService {
     BuildContext context,
     String recordUuid,
     int pageEnd,
+    int totalTime,
   ) async {
     final dio = await authDio(context);
     try {
@@ -160,6 +166,7 @@ class RecordService {
         queryParameters: {
           'record_uuid': recordUuid,
           'page_end': pageEnd,
+          'total_time': totalTime,
         },
       );
       if (response.statusCode == 200) {
@@ -210,6 +217,7 @@ class RecordService {
       goalScale: 0,
       pageStart: 0,
       pageEnd: 0,
+      totalTime: 0,
       start: '',
       end: '',
       goalAchieved: false,

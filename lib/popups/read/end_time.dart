@@ -8,8 +8,12 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<bool> stopRecord(BuildContext context, String recordUuid) async {
-  return await RecordService.stopRecord(context, recordUuid, 0);
+Future<bool> stopRecord(
+  BuildContext context,
+  String recordUuid,
+  int totalTime,
+) async {
+  return await RecordService.stopRecord(context, recordUuid, 0, totalTime);
 }
 
 Future<bool> updateGoalAchieved(
@@ -73,7 +77,7 @@ class _EndTimeState extends State<EndTime> {
       isAchieved,
     ).then((value) {
       if (value) {
-        stopRecord(context, recordUuid);
+        stopRecord(context, recordUuid, time);
         context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
       }
     });

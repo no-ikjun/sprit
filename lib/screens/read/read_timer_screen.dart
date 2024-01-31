@@ -416,7 +416,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                 showModal(
                                   context,
                                   EndPage(
-                                    recordUuid: selectedRecordInfo.recordUuid,
+                                    time: _elapsedSeconds,
                                   ),
                                   false,
                                 );
