@@ -25,7 +25,6 @@ class _MyBookReportComponentState extends State<MyBookReportComponent> {
 
   void _initialize() async {
     await getBookReportByUserUuid(context).then((value) {
-      debugPrint(value.length.toString());
       setState(() {
         bookReportInfoList = value;
       });
