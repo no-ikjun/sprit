@@ -68,6 +68,7 @@ class _HomePageState extends State<HomePage> {
     final newBannerInfo = await getBannerInfo(context);
     final newPopularBookInfo = await getPopularBook(context, 1);
     setState(() {
+      currentPage = 1;
       bookInfo = readingBookInfo;
       bannerInfo = newBannerInfo;
       popularBookInfo = newPopularBookInfo['books'];
