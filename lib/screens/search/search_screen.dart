@@ -87,7 +87,7 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
+    if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent &&
         !isEnd) {
       _loadMoreData();
@@ -96,6 +96,7 @@ class _SearchScreenState extends State<SearchScreen>
 
   Future<void> _loadMoreData() async {
     if (isLoading) return;
+    if (isSearchDataLoading) return;
     currentPage++;
     setState(() {
       isSearchDataLoading = true;

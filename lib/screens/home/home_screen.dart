@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
   bool moreAvailable = false;
   int currentPage = 1;
   bool moreLoading = false;
+  bool isLoadingPopularBook = false;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -109,16 +110,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
+    if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent) {
       _loadMoreData();
     }
   }
 
   Future<void> _loadMoreData() async {
-    if (moreAvailable) {
+    if (moreAvailable && !isLoadingPopularBook) {
       setState(() {
         moreLoading = true;
+        isLoadingPopularBook = true;
       });
       await getPopularBook(context, currentPage + 1).then((value) {
         setState(() {
@@ -126,6 +128,7 @@ class _HomePageState extends State<HomePage> {
           moreAvailable = value['more_available'];
           currentPage++;
           moreLoading = false;
+          isLoadingPopularBook = false;
         });
       });
     }
