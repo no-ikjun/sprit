@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
+    if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       _loadMoreData();
     }
@@ -120,12 +120,13 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         moreLoading = true;
       });
-      final newPopularBookInfo = await getPopularBook(context, currentPage + 1);
-      setState(() {
-        popularBookInfo.addAll(newPopularBookInfo['books']);
-        moreAvailable = newPopularBookInfo['more_available'];
-        currentPage++;
-        moreLoading = false;
+      await getPopularBook(context, currentPage + 1).then((value) {
+        setState(() {
+          popularBookInfo.addAll(value['books']);
+          moreAvailable = value['more_available'];
+          currentPage++;
+          moreLoading = false;
+        });
       });
     }
   }
