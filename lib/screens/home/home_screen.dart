@@ -18,6 +18,7 @@ import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/loader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
   return await BookLibraryService.getBookLibrary(context, 'READING');
@@ -458,20 +459,28 @@ class _HomePageState extends State<HomePage> {
                             })
                           },
                         ),
-                        itemBuilder: (context, index, realIndex) => Container(
-                          width: Scaler.width(0.85, context),
-                          clipBehavior: Clip.hardEdge,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 0,
-                            vertical: 0,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.transparent,
-                          ),
-                          child: Image.network(
-                            bannerInfo[index].bannerUrl,
+                        itemBuilder: (context, index, realIndex) => InkWell(
+                          onTap: () {
+                            Uri url = Uri.parse(bannerInfo[index].clickUrl);
+                            launchUrl(url);
+                          },
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Container(
                             width: Scaler.width(0.85, context),
+                            clipBehavior: Clip.hardEdge,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 0,
+                              vertical: 0,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.transparent,
+                            ),
+                            child: Image.network(
+                              bannerInfo[index].bannerUrl,
+                              width: Scaler.width(0.85, context),
+                            ),
                           ),
                         ),
                       )
