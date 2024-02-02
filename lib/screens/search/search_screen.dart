@@ -303,7 +303,7 @@ class _SearchScreenState extends State<SearchScreen>
               ],
             ),
             isSearchDataLoading
-                ? const Loader(loadingTxt: '검색 로딩중...')
+                ? const Loader(loadingTxt: '검색 결과 로딩중...')
                 : isBookInfoLoading
                     ? const Loader()
                     : Container()
