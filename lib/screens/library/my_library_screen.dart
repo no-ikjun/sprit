@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/library/section_order.dart';
+import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/screens/library/ordered_component/book_mark.dart';
 import 'package:sprit/screens/library/ordered_component/book_report.dart';
 import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
@@ -43,7 +47,10 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                         style: TextStyles.myLibraryTitleStyle,
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          showModal(
+                              context, const LibrarySectionOrder(), false);
+                        },
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         child: SvgPicture.asset(
@@ -59,21 +66,26 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
             const SizedBox(
               height: 20,
             ),
-            const BookMarkComponent(),
-            const SizedBox(
-              height: 35,
-            ),
-            const MyBookInfoComponent(),
-            const SizedBox(
-              height: 35,
-            ),
-            const MyPhraseComponent(),
-            const SizedBox(
-              height: 35,
-            ),
-            const MyBookReportComponent(),
-            const SizedBox(
-              height: 35,
+            Column(
+              children: context
+                  .watch<LibrarySectionOrderState>()
+                  .getSectionOrder
+                  .map((section) {
+                    switch (section) {
+                      case LibrarySection.bookMark:
+                        return const BookMarkComponent();
+                      case LibrarySection.bookInfo:
+                        return const MyBookInfoComponent();
+                      case LibrarySection.phrase:
+                        return const MyPhraseComponent();
+                      case LibrarySection.report:
+                        return const MyBookReportComponent();
+                      default:
+                        return Container();
+                    }
+                  })
+                  .expand((widget) => [widget, const SizedBox(height: 35)])
+                  .toList(),
             ),
           ],
         ),

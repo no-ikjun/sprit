@@ -677,6 +677,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibrarySectionOrderMenuStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle analyticsTitleStyle = TextStyle(
     color: ColorSet.text,
     fontSize: 24,
