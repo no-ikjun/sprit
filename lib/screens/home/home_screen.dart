@@ -462,46 +462,16 @@ class _HomePageState extends State<HomePage> {
                           width: Scaler.width(0.85, context),
                           clipBehavior: Clip.hardEdge,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
+                            horizontal: 0,
                             vertical: 0,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Color(int.parse(
-                                bannerInfo[index].backgroundColor.toString(),
-                                radix: 16)),
+                            color: Colors.transparent,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    bannerInfo[index].title,
-                                    style: TextStyles.bannerTitleStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    bannerInfo[index].content,
-                                    style: TextStyles.bannerContentStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                ],
-                              ),
-                              (bannerInfo[index].iconUrl != '')
-                                  ? Image.network(
-                                      bannerInfo[index].iconUrl,
-                                      width: 55,
-                                      height: 55,
-                                    )
-                                  : Container(),
-                            ],
+                          child: Image.network(
+                            bannerInfo[index].bannerUrl,
+                            width: Scaler.width(0.85, context),
                           ),
                         ),
                       )
