@@ -173,13 +173,20 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
-                                            Text(
-                                              bookInfo.authors.join(', '),
-                                              style: TextStyles
-                                                  .bookDeatilAuthorStyle,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                            Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: Scaler.width(
+                                                        0.85, context) -
+                                                    30,
+                                              ),
+                                              child: Text(
+                                                bookInfo.authors.join(', '),
+                                                style: TextStyles
+                                                    .bookDeatilAuthorStyle,
+                                                textAlign: TextAlign.center,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
                                           ],
                                         ),
