@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/policy/logout.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NavDrawer extends StatelessWidget {
@@ -165,13 +166,7 @@ class NavDrawer extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () async {
-                      const storage = FlutterSecureStorage();
-                      storage.deleteAll();
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/login',
-                        (route) => false,
-                      );
+                      showModal(context, const LogoutConfirm(), false);
                     },
                     child: Row(
                       children: [
