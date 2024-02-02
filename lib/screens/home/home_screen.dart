@@ -64,16 +64,20 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
   Future<void> _onRefresh() async {
-    final readingBookInfo = await getReadingBookInfo(context);
-    updateUserInfo(context);
-    final newBannerInfo = await getBannerInfo(context);
-    final newPopularBookInfo = await getPopularBook(context, 1);
+    final results = await Future.wait([
+      getReadingBookInfo(context),
+      UserInfoService.getUserInfo(context),
+      getBannerInfo(context),
+      getPopularBook(context, 1),
+    ]);
     setState(() {
+      bookInfo = results[0] as List<BookInfo>;
+      context.read<UserInfoState>().updateUserInfo(results[1] as UserInfo);
+      bannerInfo = results[2] as List<BannerInfo>;
+      final popularBooksResult = results[3] as Map<String, dynamic>;
+      popularBookInfo = popularBooksResult['books'] as List<BookInfo>;
+      moreAvailable = popularBooksResult['more_available'] as bool;
       currentPage = 1;
-      bookInfo = readingBookInfo;
-      bannerInfo = newBannerInfo;
-      popularBookInfo = newPopularBookInfo['books'];
-      moreAvailable = newPopularBookInfo['more_available'];
     });
   }
 
@@ -81,23 +85,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    getReadingBookInfo(context).then((value) {
-      setState(() {
-        bookInfo = value;
-      });
-    });
-    updateUserInfo(context);
-    getBannerInfo(context).then((value) {
-      setState(() {
-        bannerInfo = value;
-      });
-    });
-    getPopularBook(context, 1).then((value) {
-      setState(() {
-        popularBookInfo = value['books'];
-        moreAvailable = value['more_available'];
-      });
-    });
+    _onRefresh();
   }
 
   void _onScroll() {
