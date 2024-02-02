@@ -48,9 +48,13 @@ class _BookReportContentState extends State<BookReportContent> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              bookTitle,
-              style: TextStyles.myLibraryBookReportTitleStyle,
+            SizedBox(
+              width: Scaler.width(0.5, context),
+              child: Text(
+                bookTitle,
+                style: TextStyles.myLibraryBookReportTitleStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Text(
               widget.createdAt.substring(0, 10),

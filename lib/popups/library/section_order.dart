@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,6 +80,12 @@ class _LibrarySectionOrderState extends State<LibrarySectionOrder> {
                   ),
                 ),
             ],
+            onReorderStart: (index) {
+              HapticFeedback.lightImpact();
+            },
+            onReorderEnd: (index) {
+              HapticFeedback.lightImpact();
+            },
             onReorder: (int oldIndex, int newIndex) async {
               final List<LibrarySection> sectionOrder =
                   context.read<LibrarySectionOrderState>().getSectionOrder;
