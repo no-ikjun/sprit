@@ -77,17 +77,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _showLoadingIndicator() {
-    setState(() {
-      _isLoading = true;
-    });
-    Future.delayed(const Duration(milliseconds: 700), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
