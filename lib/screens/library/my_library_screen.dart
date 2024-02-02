@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -93,8 +94,19 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
             ),
           );
         } else {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return const SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: CupertinoActivityIndicator(
+                      radius: 18,
+                      animating: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         }
       },
