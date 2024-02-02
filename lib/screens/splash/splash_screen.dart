@@ -9,6 +9,7 @@ import 'package:sprit/apis/services/notification.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/fcm_token.dart';
+import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/user_info.dart';
 
 Future<void> registerFcmToken(BuildContext context, String fcmToken) async {
@@ -26,12 +27,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(milliseconds: 2200), () async {
+    Timer(const Duration(milliseconds: 2100), () async {
+      final librarySectionOrderState = LibrarySectionOrderState();
+      await librarySectionOrderState.loadOrderFromPrefs();
+      //fcm token 관련
       final fcmToken = await FirebaseMessaging.instance.getToken();
       debugPrint('token: $fcmToken');
       if (fcmToken != null) {
         context.read<FcmTokenState>().updateFcmToken(fcmToken);
       }
+      //로그인 여부 확인
       const storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: "access_token");
       debugPrint(accessToken);

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/providers/library_section_order.dart';
@@ -59,9 +62,14 @@ class _LibrarySectionOrderState extends State<LibrarySectionOrder> {
                   selectedTileColor: Colors.transparent,
                   selectedColor: ColorSet.background,
                   enableFeedback: true,
+                  tileColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  selected: false,
                   key: Key('$section'),
                   title: Text(
-                    section.toString().split('.').last,
+                    getName(section),
                     style: TextStyles.myLibrarySectionOrderMenuStyle,
                   ),
                   trailing: const Icon(
@@ -71,10 +79,11 @@ class _LibrarySectionOrderState extends State<LibrarySectionOrder> {
                   ),
                 ),
             ],
-            onReorder: (int oldIndex, int newIndex) {
+            onReorder: (int oldIndex, int newIndex) async {
               final List<LibrarySection> sectionOrder =
                   context.read<LibrarySectionOrderState>().getSectionOrder;
-              setState(() {
+              final prefs = await SharedPreferences.getInstance();
+              setState(() async {
                 if (oldIndex < newIndex) {
                   newIndex -= 1;
                 }
@@ -83,6 +92,9 @@ class _LibrarySectionOrderState extends State<LibrarySectionOrder> {
                 context.read<LibrarySectionOrderState>().updateSectionOrder(
                       sectionOrder,
                     );
+                final orderString = json.encode(
+                    sectionOrder.map((item) => item.toString()).toList());
+                await prefs.setString('sectionOrder', orderString);
               });
             },
           ),
