@@ -297,4 +297,56 @@ class RecordService {
       return 0;
     }
   }
+
+  static Future<List<int>> getRecordCount(
+    BuildContext context,
+    int count,
+  ) async {
+    List<int> result = [];
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/record/record-count',
+        queryParameters: {
+          'count': count,
+        },
+      );
+      if (response.statusCode == 200) {
+        result = response.data.map<int>((e) => e as int).toList();
+      } else {
+        debugPrint('기록 수 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('기록 수 불러오기 실패: $e');
+    }
+    return result;
+  }
+
+  static Future<int> getDailyTotalTime(
+    BuildContext context,
+    int backDate,
+  ) async {
+    final dio = await authDio(context);
+    DateTime now = DateTime.now();
+    DateTime targetDate = now.subtract(Duration(days: backDate));
+    try {
+      final response = await dio.get(
+        '/record/daily-record',
+        queryParameters: {
+          'year': targetDate.year,
+          'month': targetDate.month,
+          'date': targetDate.day,
+        },
+      );
+      if (response.statusCode == 200) {
+        return int.parse(response.data);
+      } else {
+        debugPrint('일일 총 시간 불러오기 실패');
+        return 0;
+      }
+    } catch (e) {
+      debugPrint('일일 총 시간 불러오기 실패: $e');
+      return 0;
+    }
+  }
 }
