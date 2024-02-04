@@ -13,6 +13,7 @@ import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
@@ -473,7 +474,7 @@ class _HomePageState extends State<HomePage> {
                       width: 8,
                       height: 8,
                       margin: const EdgeInsets.symmetric(
-                        vertical: 10,
+                        vertical: 8,
                         horizontal: 3,
                       ),
                       decoration: BoxDecoration(
@@ -488,6 +489,10 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(
                 height: 12,
+              ),
+              const GrassWidget(),
+              const SizedBox(
+                height: 15,
               ),
               SizedBox(
                 width: Scaler.width(0.85, context),
