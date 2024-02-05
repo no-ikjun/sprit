@@ -66,25 +66,24 @@ class BookReportService {
   static Future<List<BookReportInfo>> getBookReportByUserUuid(
     BuildContext context,
   ) async {
+    List<BookReportInfo> bookReportList = [];
     final dio = await authDio(context);
     try {
       final response = await dio.get(
         '/book-report/user',
       );
       if (response.statusCode == 200) {
-        final List<dynamic> bookReportList = response.data as List<dynamic>;
-        return bookReportList
-            .map((bookReport) =>
-                BookReportInfo.fromJson(bookReport as Map<String, dynamic>))
-            .toList();
+        var result = response.data;
+        for (var bookReport in result) {
+          bookReportList.add(BookReportInfo.fromJson(bookReport));
+        }
       } else {
         debugPrint('독후감 조회 실패');
-        return [];
       }
     } catch (e) {
       debugPrint('독후감 조회 실패 $e');
-      return [];
     }
+    return bookReportList;
   }
 
   static Future<BookReportInfo> getBookReportByBookReportUuid(

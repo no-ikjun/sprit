@@ -1,6 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/auth_dio.dart';
 
+class PhraseLibraryListCallback {
+  final List<PhraseLibraryType> phraseLibraryList;
+  final bool moreAvailable;
+
+  PhraseLibraryListCallback({
+    required this.phraseLibraryList,
+    required this.moreAvailable,
+  });
+}
+
+class PhraseLibraryListType {
+  final List<dynamic> phraseLibraryList;
+  final bool moreAvailable;
+
+  PhraseLibraryListType({
+    required this.phraseLibraryList,
+    required this.moreAvailable,
+  });
+
+  PhraseLibraryListType.fromJson(Map<String, dynamic> json)
+      : phraseLibraryList = json['library_phrase_list'],
+        moreAvailable = json['more_available'];
+  Map<String, dynamic> toJson() => {
+        'library_phrase_list': phraseLibraryList,
+        'more_available': moreAvailable,
+      };
+}
+
+class PhraseLibraryType {
+  final String phraseUuid;
+  final String bookTitle;
+  final String phrase;
+  const PhraseLibraryType({
+    required this.phraseUuid,
+    required this.bookTitle,
+    required this.phrase,
+  });
+
+  factory PhraseLibraryType.fromJson(Map<String, dynamic> json) {
+    return PhraseLibraryType(
+      phraseUuid: json['phrase_uuid'] as String,
+      bookTitle: json['book_title'] as String,
+      phrase: json['phrase'] as String,
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'phrase_uuid': phraseUuid,
+      'book_title': bookTitle,
+      'phrase': phrase,
+    };
+  }
+}
+
 class PhraseInfo {
   final String phraseUuid;
   final String bookUuid;
@@ -175,5 +229,34 @@ class PhraseService {
       debugPrint('문구 삭제 실패 $e');
       return false;
     }
+  }
+
+  static Future<PhraseLibraryListCallback> getPhraseForLibrary(
+    BuildContext context,
+    int page,
+  ) async {
+    List<PhraseLibraryType> phraseLibraryList = [];
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/phrase/library',
+        queryParameters: {
+          'page': page,
+        },
+      );
+      if (response.statusCode == 200) {
+        for (final phraseLibrary in response.data['library_phrase_list']) {
+          phraseLibraryList.add(PhraseLibraryType.fromJson(phraseLibrary));
+        }
+      } else {
+        debugPrint('내 서재 문구 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('내 서재 문구 불러오기 실패 $e');
+    }
+    return PhraseLibraryListCallback(
+      phraseLibraryList: phraseLibraryList,
+      moreAvailable: false,
+    );
   }
 }

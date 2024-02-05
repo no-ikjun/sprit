@@ -3,35 +3,23 @@ import 'package:sprit/apis/auth_dio.dart';
 
 class BannerInfo {
   final String bannerUuid;
-  final String backgroundColor;
-  final String title;
-  final String content;
-  final String iconUrl;
+  final String bannerUrl;
   final String createdAt;
   final String clickUrl;
   const BannerInfo({
     required this.bannerUuid,
-    required this.backgroundColor,
-    required this.title,
-    required this.content,
-    required this.iconUrl,
+    required this.bannerUrl,
     required this.createdAt,
     required this.clickUrl,
   });
   BannerInfo.fromJson(Map<String, dynamic> json)
       : bannerUuid = json['banner_uuid'],
-        backgroundColor = json['background_color'],
-        title = json['title'],
-        content = json['content'],
-        iconUrl = json['icon_url'],
+        bannerUrl = json['banner_url'],
         createdAt = json['created_at'],
         clickUrl = json['click_url'];
   Map<String, dynamic> toJson() => {
         'banner_uuid': bannerUuid,
-        'background_color': backgroundColor,
-        'title': title,
-        'content': content,
-        'icon_url': iconUrl,
+        'banner_url': bannerUrl,
         'created_at': createdAt,
         'click_url': clickUrl,
       };

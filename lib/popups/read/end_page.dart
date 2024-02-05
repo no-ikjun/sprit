@@ -13,8 +13,14 @@ Future<bool> stopRecord(
   BuildContext context,
   String recordUuid,
   int endPage,
+  int totalTime,
 ) async {
-  return await RecordService.stopRecord(context, recordUuid, endPage);
+  return await RecordService.stopRecord(
+    context,
+    recordUuid,
+    endPage,
+    totalTime,
+  );
 }
 
 Future<bool> updateGoalAchieved(
@@ -37,10 +43,10 @@ Future<int> getLastPage(
 class EndPage extends StatefulWidget {
   const EndPage({
     super.key,
-    required this.recordUuid,
+    required this.time,
   });
 
-  final String recordUuid;
+  final int time;
 
   @override
   State<EndPage> createState() => _EndPageState();
@@ -67,7 +73,15 @@ class _EndPageState extends State<EndPage> {
       isAchieved,
     ).then((value) {
       if (value) {
-        stopRecord(context, recordUuid, endPage);
+        stopRecord(
+          context,
+          context
+              .read<SelectedRecordInfoState>()
+              .getSelectedRecordInfo
+              .recordUuid,
+          endPage,
+          widget.time,
+        );
         debugPrint(isAchieved.toString());
         context.read<SelectedRecordInfoState>().updateEndPage(endPage);
         context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);

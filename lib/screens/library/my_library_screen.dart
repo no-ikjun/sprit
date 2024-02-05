@@ -1,320 +1,115 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
-import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
-import 'package:sprit/widgets/book_thumbnail.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/library/section_order.dart';
+import 'package:sprit/providers/library_section_order.dart';
+import 'package:sprit/screens/library/ordered_component/book_mark.dart';
+import 'package:sprit/screens/library/ordered_component/book_report.dart';
+import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
+import 'package:sprit/screens/library/ordered_component/phrase_info.dart';
 
-class MyLibraryScreen extends StatelessWidget {
+class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
 
   @override
+  State<MyLibraryScreen> createState() => _MyLibraryScreenState();
+}
+
+class _MyLibraryScreenState extends State<MyLibraryScreen> {
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      maintainBottomViewPadding: true,
-      child: Expanded(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return FutureBuilder(
+      future: Provider.of<LibrarySectionOrderState>(context, listen: false)
+          .loadOrderFromPrefs(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return SafeArea(
+            maintainBottomViewPadding: true,
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  SizedBox(
-                    width: Scaler.width(0.85, context),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          '내 서재',
-                          style: TextStyles.myLibraryTitleStyle,
-                        ),
-                        InkWell(
-                          onTap: () {},
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          child: SvgPicture.asset(
-                            'assets/images/setting_gear.svg',
-                            width: 30,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Column(
-                children: [
-                  SizedBox(
-                    width: Scaler.width(0.85, context),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '어디까지 읽었는지 알려드려요 🔖',
-                          style: TextStyles.myLibrarySubTitleStyle,
-                        ),
-                        Text(
-                          '책갈피 기능을 사용하려면 페이지를 기준으로 독서를 기록해주세요',
-                          style: TextStyles.myLibraryWarningStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  SizedBox(
-                    width: Scaler.width(0.85, context),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          child: Column(
-                            children: [
-                              BookThumbnail(
-                                imgUrl: '',
-                                width: 100,
-                                height: 144.44,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                '마지막 기록',
-                                style: TextStyles.myLibraryBookMarkStyle,
-                              ),
-                              Text(
-                                '145쪽',
-                                style: TextStyles.myLibraryBookMarkPageStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          child: Column(
-                            children: [
-                              BookThumbnail(
-                                imgUrl: '',
-                                width: 100,
-                                height: 144.44,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                '마지막 기록',
-                                style: TextStyles.myLibraryBookMarkStyle,
-                              ),
-                              Text(
-                                '145쪽',
-                                style: TextStyles.myLibraryBookMarkPageStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          child: Column(
-                            children: [
-                              BookThumbnail(
-                                imgUrl: '',
-                                width: 100,
-                                height: 144.44,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                '마지막 기록',
-                                style: TextStyles.myLibraryBookMarkStyle,
-                              ),
-                              Text(
-                                '145쪽',
-                                style: TextStyles.myLibraryBookMarkPageStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(
                     height: 15,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        '더보기',
-                        style: TextStyles.myLibraryShowMoreStyle,
-                      ),
-                      SvgPicture.asset(
-                        'assets/images/show_more_grey.svg',
-                        width: 21,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Column(
-                children: [
-                  SizedBox(
-                    width: Scaler.width(0.85, context),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          '나의 책 정보',
-                          style: TextStyles.myLibrarySubTitleStyle,
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        const Text(
-                          '읽고 있는 책',
-                          style: TextStyles.myLibraryMyBookStyle,
-                        ),
-                        SvgPicture.asset(
-                          'assets/images/show_more_semi_dark_grey.svg',
-                          width: 21,
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    width: Scaler.width(0.85, context),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: ColorSet.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 4,
-                          offset: const Offset(0, 0),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
+                      SizedBox(
+                        width: Scaler.width(0.85, context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const BookThumbnail(
-                              imgUrl: '',
-                              width: 76.15,
-                              height: 110,
+                            const Text(
+                              '내 서재',
+                              style: TextStyles.myLibraryTitleStyle,
                             ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            SizedBox(
-                              width:
-                                  Scaler.width(0.85, context) - 30 - 76.15 - 15,
-                              height: 110,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  const Column(
-                                    children: [
-                                      Text(
-                                        '책 제목',
-                                        style:
-                                            TextStyles.myLibraryBookTitleStyle,
-                                      ),
-                                      Text(
-                                        '작가 출판사',
-                                        style:
-                                            TextStyles.myLibraryBookAuthorStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '독서 기록 0개',
-                                        style: TextStyles
-                                            .myLibraryBookRecordCountStyle,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: ColorSet.primaryLight,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            const Text(
-                                              '읽는 중',
-                                              style: TextStyles
-                                                  .myLibraryBookRecordStateStyle,
-                                            ),
-                                            const SizedBox(
-                                              width: 3,
-                                            ),
-                                            SvgPicture.asset(
-                                              'assets/images/show_more_white.svg',
-                                              width: 21,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                            InkWell(
+                              onTap: () {
+                                showModal(context, const LibrarySectionOrder(),
+                                    false);
+                              },
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: SvgPicture.asset(
+                                'assets/images/setting_gear.svg',
+                                width: 30,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              '더보기',
-                              style: TextStyles.myLibraryShowMoreStyle,
-                            ),
-                            SvgPicture.asset(
-                              'assets/images/show_more_grey.svg',
-                              width: 21,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Column(
+                    children: context
+                        .watch<LibrarySectionOrderState>()
+                        .getSectionOrder
+                        .map((section) {
+                          switch (section) {
+                            case LibrarySection.bookMark:
+                              return const BookMarkComponent();
+                            case LibrarySection.bookInfo:
+                              return const MyBookInfoComponent();
+                            case LibrarySection.phrase:
+                              return const MyPhraseComponent();
+                            case LibrarySection.report:
+                              return const MyBookReportComponent();
+                            default:
+                              return Container();
+                          }
+                        })
+                        .expand(
+                            (widget) => [widget, const SizedBox(height: 35)])
+                        .toList(),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 30,
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else {
+          return const SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: CupertinoActivityIndicator(
+                      radius: 18,
+                      animating: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

@@ -13,12 +13,14 @@ import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/ad_template.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/loader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
   return await BookLibraryService.getBookLibrary(context, 'READING');
@@ -59,30 +61,25 @@ class _HomePageState extends State<HomePage> {
   bool moreAvailable = false;
   int currentPage = 1;
   bool moreLoading = false;
+  bool isLoadingPopularBook = false;
 
   final ScrollController _scrollController = ScrollController();
 
   Future<void> _onRefresh() async {
-    final readingBookInfo = await getReadingBookInfo(context);
-    updateUserInfo(context);
-    final newBannerInfo = await getBannerInfo(context);
-    final newPopularBookInfo = await getPopularBook(context, 1);
+    final results = await Future.wait([
+      getReadingBookInfo(context),
+      UserInfoService.getUserInfo(context),
+      getBannerInfo(context),
+      getPopularBook(context, 1),
+    ]);
     setState(() {
-      bookInfo = readingBookInfo;
-      bannerInfo = newBannerInfo;
-      popularBookInfo = newPopularBookInfo['books'];
-      moreAvailable = newPopularBookInfo['more_available'];
-    });
-  }
-
-  void _showLoadingIndicator() {
-    setState(() {
-      _isLoading = true;
-    });
-    Future.delayed(const Duration(milliseconds: 700), () {
-      setState(() {
-        _isLoading = false;
-      });
+      bookInfo = results[0] as List<BookInfo>;
+      context.read<UserInfoState>().updateUserInfo(results[1] as UserInfo);
+      bannerInfo = results[2] as List<BannerInfo>;
+      final popularBooksResult = results[3] as Map<String, dynamic>;
+      popularBookInfo = popularBooksResult['books'] as List<BookInfo>;
+      moreAvailable = popularBooksResult['more_available'] as bool;
+      currentPage = 1;
     });
   }
 
@@ -90,43 +87,30 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    getReadingBookInfo(context).then((value) {
-      setState(() {
-        bookInfo = value;
-      });
-    });
-    updateUserInfo(context);
-    getBannerInfo(context).then((value) {
-      setState(() {
-        bannerInfo = value;
-      });
-    });
-    getPopularBook(context, 1).then((value) {
-      setState(() {
-        popularBookInfo = value['books'];
-        moreAvailable = value['more_available'];
-      });
-    });
+    _onRefresh();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
+    if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent) {
       _loadMoreData();
     }
   }
 
   Future<void> _loadMoreData() async {
-    if (moreAvailable) {
+    if (moreAvailable && !isLoadingPopularBook) {
       setState(() {
         moreLoading = true;
+        isLoadingPopularBook = true;
       });
-      final newPopularBookInfo = await getPopularBook(context, currentPage + 1);
-      setState(() {
-        popularBookInfo.addAll(newPopularBookInfo['books']);
-        moreAvailable = newPopularBookInfo['more_available'];
-        currentPage++;
-        moreLoading = false;
+      await getPopularBook(context, currentPage + 1).then((value) {
+        setState(() {
+          popularBookInfo.addAll(value['books']);
+          moreAvailable = value['more_available'];
+          currentPage++;
+          moreLoading = false;
+          isLoadingPopularBook = false;
+        });
       });
     }
   }
@@ -455,50 +439,28 @@ class _HomePageState extends State<HomePage> {
                             })
                           },
                         ),
-                        itemBuilder: (context, index, realIndex) => Container(
-                          width: Scaler.width(0.85, context),
-                          clipBehavior: Clip.hardEdge,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 0,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Color(int.parse(
-                                bannerInfo[index].backgroundColor.toString(),
-                                radix: 16)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    bannerInfo[index].title,
-                                    style: TextStyles.bannerTitleStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    bannerInfo[index].content,
-                                    style: TextStyles.bannerContentStyle,
-                                  ),
-                                  const SizedBox(
-                                    height: 3,
-                                  ),
-                                ],
-                              ),
-                              (bannerInfo[index].iconUrl != '')
-                                  ? Image.network(
-                                      bannerInfo[index].iconUrl,
-                                      width: 55,
-                                      height: 55,
-                                    )
-                                  : Container(),
-                            ],
+                        itemBuilder: (context, index, realIndex) => InkWell(
+                          onTap: () {
+                            Uri url = Uri.parse(bannerInfo[index].clickUrl);
+                            launchUrl(url);
+                          },
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Container(
+                            width: Scaler.width(0.85, context),
+                            clipBehavior: Clip.hardEdge,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 0,
+                              vertical: 0,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.transparent,
+                            ),
+                            child: Image.network(
+                              bannerInfo[index].bannerUrl,
+                              width: Scaler.width(0.85, context),
+                            ),
                           ),
                         ),
                       )
@@ -514,7 +476,7 @@ class _HomePageState extends State<HomePage> {
                       width: 8,
                       height: 8,
                       margin: const EdgeInsets.symmetric(
-                        vertical: 10,
+                        vertical: 8,
                         horizontal: 3,
                       ),
                       decoration: BoxDecoration(
@@ -529,6 +491,10 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(
                 height: 12,
+              ),
+              const GrassWidget(),
+              const SizedBox(
+                height: 15,
               ),
               SizedBox(
                 width: Scaler.width(0.85, context),
