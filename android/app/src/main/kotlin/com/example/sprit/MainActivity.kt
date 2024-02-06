@@ -1,6 +1,6 @@
 package com.example.sprit
-
-import com.codelab.flutter.admobinlineads.ListTileNativeAdFactory
+ 
+import com.example.sprit.ListTileNativeAdFactory
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin

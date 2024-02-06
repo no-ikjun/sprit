@@ -1,6 +1,7 @@
 include ':app'
 
 def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
+def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 def properties = new Properties()
 
 assert localPropertiesFile.exists()
@@ -10,7 +11,6 @@ def flutterSdkPath = properties.getProperty("flutter.sdk")
 assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
 apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"
 
-def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 def plugins = new Properties()
 def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
 if (pluginsFile.exists()) {

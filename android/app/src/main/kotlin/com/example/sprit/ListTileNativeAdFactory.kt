@@ -1,4 +1,4 @@
-package 패키지
+package com.example.sprit
  
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.honeybee.moor_train.R
+import com.example.sprit.R
 import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
  
 class ListTileNativeAdFactory(val context: Context) : GoogleMobileAdsPlugin.NativeAdFactory {
