@@ -189,6 +189,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isWeeklyReportNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        setState(() {
+                                          isWeeklyReportNotificationOn =
+                                              !isWeeklyReportNotificationOn;
+                                        });
                                         final result =
                                             await updateTimeAgreeInfo(
                                           context,
@@ -196,7 +200,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           readingTime,
                                           !isWeeklyReportNotificationOn,
                                         );
-                                        if (result == true) {
+                                        if (result == false) {
                                           setState(() {
                                             isWeeklyReportNotificationOn =
                                                 !isWeeklyReportNotificationOn;
@@ -216,6 +220,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isReadingTimeNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        setState(() {
+                                          isReadingTimeNotificationOn =
+                                              !isReadingTimeNotificationOn;
+                                        });
                                         final result =
                                             await updateTimeAgreeInfo(
                                           context,
@@ -223,7 +231,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           readingTime,
                                           isWeeklyReportNotificationOn,
                                         );
-                                        if (result == true) {
+                                        if (result == false) {
                                           setState(() {
                                             isReadingTimeNotificationOn =
                                                 !isReadingTimeNotificationOn;
@@ -282,13 +290,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isReminderNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        setState(() {
+                                          isReminderNotificationOn =
+                                              !isReminderNotificationOn;
+                                        });
                                         final result =
                                             await updateRemindAgreeInfo(
                                           context,
                                           !isReminderNotificationOn,
                                           reminderTime,
                                         );
-                                        if (result == true) {
+                                        if (result == false) {
                                           setState(() {
                                             isReminderNotificationOn =
                                                 !isReminderNotificationOn;
@@ -348,6 +360,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isNewQuestNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        setState(() {
+                                          isNewQuestNotificationOn =
+                                              !isNewQuestNotificationOn;
+                                        });
                                         final result =
                                             await updateQuestAgreeInfo(
                                           context,
@@ -355,7 +371,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
                                         );
-                                        if (result == true) {
+                                        if (result == false) {
                                           setState(() {
                                             isNewQuestNotificationOn =
                                                 !isNewQuestNotificationOn;
@@ -374,6 +390,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isQuestEndNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        setState(() {
+                                          isQuestEndNotificationOn =
+                                              !isQuestEndNotificationOn;
+                                        });
                                         final result =
                                             await updateQuestAgreeInfo(
                                           context,
@@ -381,7 +401,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           !isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
                                         );
-                                        if (result == true) {
+                                        if (result == false) {
                                           setState(() {
                                             isQuestEndNotificationOn =
                                                 !isQuestEndNotificationOn;
@@ -401,6 +421,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isQuestTimeNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        setState(() {
+                                          isQuestTimeNotificationOn =
+                                              !isQuestTimeNotificationOn;
+                                        });
                                         final result =
                                             await updateQuestAgreeInfo(
                                           context,
@@ -408,7 +432,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isQuestEndNotificationOn,
                                           !isQuestTimeNotificationOn,
                                         );
-                                        if (result == true) {
+                                        if (result == false) {
                                           setState(() {
                                             isQuestTimeNotificationOn =
                                                 !isQuestTimeNotificationOn;
