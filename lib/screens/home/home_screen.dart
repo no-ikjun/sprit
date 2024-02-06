@@ -16,10 +16,10 @@ import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
 import 'package:sprit/screens/search/search_screen.dart';
-import 'package:sprit/widgets/ad_template.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/loader.dart';
+import 'package:sprit/widgets/native_ad.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
@@ -132,7 +132,6 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(
           child: Column(
             children: [
-              const NativeAdWidget(),
               const SizedBox(
                 height: 10,
               ),
@@ -532,30 +531,45 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: [
                           ListView.builder(
-                            itemCount: popularBookInfo.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) => PopularBookWidget(
-                              bookInfo: popularBookInfo[index],
-                              onTap: () async {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                await showBookInfo(
-                                  context,
-                                  popularBookInfo[index]
-                                      .isbn
-                                      .trim()
-                                      .split(' ')[0],
-                                  popularBookInfo[index].isbn,
-                                ).then((value) {
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
-                                });
-                              },
-                            ),
-                          ),
+                              itemCount: popularBookInfo.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    index % 6 == 0 && index != 0
+                                        ? const Column(
+                                            children: [
+                                              NativeAdTemplate(),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                            ],
+                                          )
+                                        : Container(),
+                                    PopularBookWidget(
+                                      bookInfo: popularBookInfo[index],
+                                      onTap: () async {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+                                        await showBookInfo(
+                                          context,
+                                          popularBookInfo[index]
+                                              .isbn
+                                              .trim()
+                                              .split(' ')[0],
+                                          popularBookInfo[index].isbn,
+                                        ).then((value) {
+                                          setState(() {
+                                            _isLoading = false;
+                                          });
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                );
+                              }),
                           moreLoading
                               ? const SizedBox(
                                   height: 30,
