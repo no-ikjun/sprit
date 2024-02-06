@@ -537,7 +537,7 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (context, index) {
                                 return Column(
                                   children: [
-                                    index % 6 == 0 && index != 0
+                                    index % 9 == 0 && index != 0
                                         ? const Column(
                                             children: [
                                               NativeAdTemplate(),
