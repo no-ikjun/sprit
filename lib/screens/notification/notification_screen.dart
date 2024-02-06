@@ -106,31 +106,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
     setState(() {
       isLoading = true;
     });
-    await getTimeAgreeInfo(context).then((value) {
-      setState(() {
-        isWeeklyReportNotificationOn = value.agree02;
-        isReadingTimeNotificationOn = value.agree01;
-        readingTime = value.time01;
-      });
-      getRemindAgreeInfo(context).then((value) {
-        setState(() {
-          isReminderNotificationOn = value.agree01;
-          reminderTime = value.time01;
-        });
-        getQuestAgreeInfo(context).then((value) {
-          setState(() {
-            isNewQuestNotificationOn = value.agree01;
-            isQuestEndNotificationOn = value.agree02;
-            isQuestTimeNotificationOn = value.agree03;
-          });
-          getMarketingAgreeInfo(context).then((value) {
-            setState(() {
-              isMarketingNotificationOn = value;
-              isLoading = false;
-            });
-          });
-        });
-      });
+    final result = await Future.wait([
+      getTimeAgreeInfo(context),
+      getRemindAgreeInfo(context),
+      getQuestAgreeInfo(context),
+      getMarketingAgreeInfo(context),
+    ]);
+    setState(() {
+      TimeAgreeInfo timeAgreeInfo = result[0] as TimeAgreeInfo;
+      isWeeklyReportNotificationOn = timeAgreeInfo.agree02;
+      isReadingTimeNotificationOn = timeAgreeInfo.agree01;
+      readingTime = timeAgreeInfo.time01;
+      RemindAgreeInfo remindAgreeInfo = result[1] as RemindAgreeInfo;
+      isReminderNotificationOn = remindAgreeInfo.agree01;
+      reminderTime = remindAgreeInfo.time01;
+      QuestAgreeInfo questAgreeInfo = result[2] as QuestAgreeInfo;
+      isNewQuestNotificationOn = questAgreeInfo.agree01;
+      isQuestEndNotificationOn = questAgreeInfo.agree02;
+      isQuestTimeNotificationOn = questAgreeInfo.agree03;
+      isMarketingNotificationOn = result[3] as bool;
+      isLoading = false;
     });
   }
 
