@@ -578,6 +578,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibraryBookMarkEmptyStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle myLibraryBookMarkStyle = TextStyle(
     color: ColorSet.semiDarkGrey,
     fontSize: 14,

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book_library.dart';
+import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/screens/library/widgets/book_mark_widget.dart';
 
 Future<BookMarkCallback> getBookMark(BuildContext context, int page) async {
@@ -60,42 +62,104 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
         const SizedBox(
           height: 8,
         ),
-        SizedBox(
-          width: Scaler.width(0.85, context),
-          child: Column(
-            children: List.generate(
-              ((bookMarkInfoList.length - 1) ~/ 3 + 1),
-              (index) {
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(3, (index2) {
-                        index2 += index * 3;
-                        if (index2 < bookMarkInfoList.length) {
-                          return BookMarkWidget(
-                            bookUuid: bookMarkInfoList[index2].bookUuid,
-                            thumbnail: bookMarkInfoList[index2].thumbnail,
-                            lastPage: bookMarkInfoList[index2].lastPage,
+        bookMarkInfoList.isNotEmpty
+            ? SizedBox(
+                width: Scaler.width(0.85, context),
+                child: Column(
+                  children: List.generate(
+                    ((bookMarkInfoList.length - 1) ~/ 3 + 1),
+                    (index) {
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(3, (index2) {
+                              index2 += index * 3;
+                              if (index2 < bookMarkInfoList.length) {
+                                return BookMarkWidget(
+                                  bookUuid: bookMarkInfoList[index2].bookUuid,
+                                  thumbnail: bookMarkInfoList[index2].thumbnail,
+                                  lastPage: bookMarkInfoList[index2].lastPage,
+                                );
+                              } else {
+                                return SizedBox(
+                                  width: Scaler.width(0.25, context),
+                                );
+                              }
+                            }),
+                          ),
+                          index != ((bookMarkInfoList.length - 1) ~/ 3)
+                              ? const SizedBox(
+                                  height: 12,
+                                )
+                              : Container(),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              )
+            : SizedBox(
+                width: Scaler.width(0.85, context),
+                height: 100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '읽고있는 책이 없어요',
+                        style: TextStyles.myLibraryWarningStyle.copyWith(
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            RouteName.search,
                           );
-                        } else {
-                          return SizedBox(
-                            width: Scaler.width(0.25, context),
-                          );
-                        }
-                      }),
-                    ),
-                    index != ((bookMarkInfoList.length - 1) ~/ 3)
-                        ? const SizedBox(
-                            height: 12,
-                          )
-                        : Container(),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
+                        },
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ColorSet.white,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(0, 0),
+                                blurRadius: 4,
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '읽는 중인 책 등록하기 ',
+                                style: TextStyles.myLibraryBookMarkEmptyStyle,
+                              ),
+                              Icon(
+                                Icons.search,
+                                size: 16,
+                                color: ColorSet.darkGrey,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
         bookMarkMoreAvailable
             ? Column(
                 children: [
