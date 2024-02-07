@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
@@ -132,7 +133,42 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                   ),
                 ],
               )
-            : Container(),
+            : bookMarkInfoList.length > 3
+                ? Column(
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          setState(() {
+                            bookMarkInfoList = bookMarkInfoList.sublist(0, 3);
+                            bookMarkMoreAvailable = true;
+                            bookMarkCurrentPage = 1;
+                          });
+                        },
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              '숨기기',
+                              style: TextStyles.myLibraryShowMoreStyle,
+                            ),
+                            Transform.rotate(
+                              angle: 180 * math.pi / 180,
+                              child: SvgPicture.asset(
+                                'assets/images/show_more_grey.svg',
+                                width: 21,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
       ],
     );
   }
