@@ -30,3 +30,17 @@ getFormattedTime(int time) {
     return '(${(time / 3600).toStringAsFixed(1)}시간)';
   }
 }
+
+getRemainingTime(DateTime startDate) {
+  final now = DateTime.now();
+  final difference = startDate.difference(now);
+  final days = difference.inDays;
+  final hours = difference.inHours % 24;
+  final minutes = difference.inMinutes % 60;
+  final seconds = difference.inSeconds % 60;
+  if (days > 0) {
+    return '$days일 $hours시간 $minutes분';
+  } else {
+    return '$hours시간 $minutes분 $seconds초';
+  }
+}
