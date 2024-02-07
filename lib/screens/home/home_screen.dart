@@ -12,6 +12,8 @@ import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/book/home_book_select.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
@@ -23,6 +25,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
   return await BookLibraryService.getBookLibrary(context, 'READING');
+}
+
+Future<bool> deleteBook(BuildContext context, String bookUuid) async {
+  return await BookLibraryService.deleteBookLibrary(context, bookUuid);
 }
 
 void updateUserInfo(BuildContext context) async {
@@ -222,7 +228,24 @@ class _HomePageState extends State<HomePage> {
                                               width: 0,
                                             ),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          showModal(
+                                            context,
+                                            HomeBookSelect(
+                                              bookTitle: bookInfo[index].title,
+                                              bookUuid:
+                                                  bookInfo[index].bookUuid,
+                                              onDelete: () async {
+                                                await deleteBook(
+                                                  context,
+                                                  bookInfo[index].bookUuid,
+                                                );
+                                                _onRefresh();
+                                              },
+                                            ),
+                                            false,
+                                          );
+                                        },
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         child: BookThumbnail(
