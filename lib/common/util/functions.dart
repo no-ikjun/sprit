@@ -34,6 +34,9 @@ getFormattedTime(int time) {
 getRemainingTime(DateTime startDate) {
   final now = DateTime.now();
   final difference = startDate.difference(now);
+  if (difference.isNegative) {
+    return '0시간 0분 0초';
+  }
   final days = difference.inDays;
   final hours = difference.inHours % 24;
   final minutes = difference.inMinutes % 60;
