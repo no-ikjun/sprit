@@ -64,6 +64,29 @@ class RecordInfo {
   }
 }
 
+class MonthlyRecordInfo {
+  final int presentMonth;
+  final int pastMonth;
+  const MonthlyRecordInfo({
+    required this.presentMonth,
+    required this.pastMonth,
+  });
+
+  factory MonthlyRecordInfo.fromJson(Map<String, dynamic> json) {
+    return MonthlyRecordInfo(
+      presentMonth: json['present_month'] as int,
+      pastMonth: json['past_month'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'present_month': presentMonth,
+      'past_month': pastMonth,
+    };
+  }
+}
+
 class RecordService {
   static Future<String> setNewRecord(
     BuildContext context,
@@ -348,5 +371,36 @@ class RecordService {
       debugPrint('일일 총 시간 불러오기 실패: $e');
       return 0;
     }
+  }
+
+  static Future<MonthlyRecordInfo> getMonthlyRecord(
+    BuildContext context,
+    int year,
+    int month,
+    String kind,
+  ) async {
+    MonthlyRecordInfo result = const MonthlyRecordInfo(
+      presentMonth: 0,
+      pastMonth: 0,
+    );
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/record/monthly-count',
+        queryParameters: {
+          'year': year,
+          'month': month,
+          'kind': kind,
+        },
+      );
+      if (response.statusCode == 200) {
+        result = MonthlyRecordInfo.fromJson(response.data);
+      } else {
+        debugPrint('월별 기록 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('월별 기록 불러오기 실패: $e');
+    }
+    return result;
   }
 }

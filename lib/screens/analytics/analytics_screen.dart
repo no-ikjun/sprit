@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
+import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 import 'package:sprit/widgets/toggle_button.dart';
 
 class AnalyticsScreen extends StatefulWidget {
@@ -15,6 +17,10 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
+  MonthlyRecordInfo monthlyRecordCount = const MonthlyRecordInfo(
+    presentMonth: 0,
+    pastMonth: 0,
+  );
   @override
   void initState() {
     super.initState();
@@ -268,235 +274,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               children: [
                 SizedBox(
                   width: Scaler.width(0.85, context),
-                  child: const Text(
-                    '2024년 1월 독서 현황',
+                  child: Text(
+                    '${DateFormat('y년 M월').format(DateTime.now())} 독서 현황',
                     style: TextStyles.analyticsSubTitleStyle,
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: Scaler.width(0.85, context),
-              padding: const EdgeInsets.symmetric(
-                vertical: 15,
-                horizontal: 15,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 0,
-                    blurRadius: 4,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '독서 기록 수',
-                    style: TextStyles.analyticsMonthlyReportTitleStyle,
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        '34개',
-                        style: TextStyles.analyticsMonthlyReportDataStyle,
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Container(
-                        height: 24,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ColorSet.green.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/up_icon_green.svg',
-                              width: 18,
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            const Text(
-                              '20개 ',
-                              style:
-                                  TextStyles.analyticsMonthlyReportAmountStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Text(
-                    '저번 달에 비해 독서 기록을 20번 더 했어요 👏',
-                    style: TextStyles.analyticsMonthlyReportMentStyle,
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: Scaler.width(0.85, context),
-              padding: const EdgeInsets.symmetric(
-                vertical: 15,
-                horizontal: 15,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 0,
-                    blurRadius: 4,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '목표 달성 횟수',
-                    style: TextStyles.analyticsMonthlyReportTitleStyle,
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        '5회',
-                        style: TextStyles.analyticsMonthlyReportDataStyle,
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Container(
-                        height: 24,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ColorSet.red.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/down_icon_red.svg',
-                              width: 18,
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            Text(
-                              '3회 ',
-                              style: TextStyles
-                                  .analyticsMonthlyReportAmountStyle
-                                  .copyWith(
-                                color: ColorSet.red,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Text(
-                    '저번 달보다 독서 목표 달성 횟수가 3회 줄었어요 🥲',
-                    style: TextStyles.analyticsMonthlyReportMentStyle,
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: Scaler.width(0.85, context),
-              padding: const EdgeInsets.symmetric(
-                vertical: 15,
-                horizontal: 15,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 0,
-                    blurRadius: 4,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '읽은 책',
-                    style: TextStyles.analyticsMonthlyReportTitleStyle,
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        '3권',
-                        style: TextStyles.analyticsMonthlyReportDataStyle,
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Container(
-                        height: 24,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ColorSet.green.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/up_icon_green.svg',
-                              width: 18,
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            const Text(
-                              '1권 ',
-                              style:
-                                  TextStyles.analyticsMonthlyReportAmountStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Text(
-                    '저번 달보다 책을 1권 더 읽고있어요 👍',
-                    style: TextStyles.analyticsMonthlyReportMentStyle,
-                  )
-                ],
-              ),
-            ),
+            const MonthlyCount(kind: 'COUNT'),
+            const MonthlyCount(kind: 'GOAL'),
+            const MonthlyCount(kind: 'BOOK'),
             const SizedBox(
               height: 30,
             ),
