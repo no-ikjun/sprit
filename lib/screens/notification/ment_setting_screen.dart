@@ -12,7 +12,6 @@ import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
 Future<List<PhraseInfo>> getPhraseList(BuildContext context) async {
-  await Future.delayed(const Duration(milliseconds: 500));
   return await PhraseService.getAllPhrase(context);
 }
 
@@ -108,7 +107,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '50자 이내의 문구만 알림으로 받을 수 있어요',
+                                  '100자 이내의 문구만 알림으로 받을 수 있어요',
                                   style: TextStyles
                                       .notificationTimeSettingDescriptionStyle,
                                 ),
@@ -152,7 +151,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                               if (phraseList[index]
                                                       .phrase
                                                       .length >
-                                                  50) {
+                                                  100) {
                                               } else {
                                                 setState(() {
                                                   switchValueList[index] =

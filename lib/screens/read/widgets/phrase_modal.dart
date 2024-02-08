@@ -213,7 +213,7 @@ class _PhraseModalState extends State<PhraseModal> {
                                   style: TextStyles
                                       .timerBottomSheetReminderTextStyle),
                               Text(
-                                '50자 이내의 문구만 알림으로 받을 수 있어요',
+                                '100자 이내의 문구만 알림으로 받을 수 있어요',
                                 style: TextStyles
                                     .timerBottomSheetReminderMentStyle,
                               ),
@@ -221,7 +221,7 @@ class _PhraseModalState extends State<PhraseModal> {
                           ),
                           CustomSwitch(
                             onToggle: () {
-                              if (phrase.length <= 50) {
+                              if (phrase.length <= 100) {
                                 setState(() {
                                   remind = !remind;
                                 });
