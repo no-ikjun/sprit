@@ -149,7 +149,10 @@ class _MonthlyCountState extends State<MonthlyCount> {
                             horizontal: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: ColorSet.red.withOpacity(0.3),
+                            color: monthlyRecord.presentMonth >
+                                    monthlyRecord.pastMonth
+                                ? ColorSet.green.withOpacity(0.3)
+                                : ColorSet.red.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
