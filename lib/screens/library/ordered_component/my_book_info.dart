@@ -160,6 +160,28 @@ class _MyBookInfoComponentState extends State<MyBookInfoComponent> {
                               bookUuid: bookLibraryByStateList[index].bookUuid,
                               count: bookLibraryByStateList[index].count,
                               state: bookLibraryByStateList[index].state,
+                              callback: () {
+                                setState(() {
+                                  bookLibraryByStateList = [];
+                                  bookLibraryByStateListMoreAvailable = false;
+                                  bookLibraryByStateListCurrentPage = 1;
+                                });
+                                getBookLibraryByState(
+                                  context,
+                                  context
+                                      .read<LibraryBookListState>()
+                                      .getLibraryBookState,
+                                  bookLibraryByStateListCurrentPage,
+                                ).then((value) {
+                                  setState(() {
+                                    bookLibraryByStateList =
+                                        value.bookLibraryByStateList;
+                                    bookLibraryByStateListMoreAvailable =
+                                        value.moreAvailable;
+                                    bookLibraryByStateListCurrentPage = 1;
+                                  });
+                                });
+                              },
                             ),
                             index != bookLibraryByStateList.length - 1
                                 ? const SizedBox(
