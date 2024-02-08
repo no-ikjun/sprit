@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sprit/screens/home/profile_screen.dart';
 import 'package:sprit/screens/main_screen.dart';
 import 'package:sprit/screens/login/login_screen.dart';
 import 'package:sprit/screens/login/sign_up_screen.dart';
@@ -24,6 +25,7 @@ class RouteName {
   static const readTimer = "/readTimer";
   static const readComplete = "/readComplete";
   static const bookReport = "/bookReport";
+  static const profile = "/profile";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -36,4 +38,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.timeSetting: (context) => const TimeSettingScreen(),
   RouteName.mentSetting: (context) => const MentSettingScreen(),
   RouteName.readTimer: (context) => const ReadTimerScreen(),
+  RouteName.profile: (context) => const ProfileScreen(),
 };

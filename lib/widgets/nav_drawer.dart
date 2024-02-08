@@ -4,6 +4,7 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/policy/logout.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -109,7 +110,9 @@ class NavDrawer extends StatelessWidget {
                   InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, RouteName.profile);
+                    },
                     child: Row(
                       children: [
                         SvgPicture.asset(
