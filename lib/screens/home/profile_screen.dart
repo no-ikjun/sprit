@@ -9,6 +9,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/policy/change_nickname.dart';
 import 'package:sprit/popups/policy/change_password.dart';
+import 'package:sprit/popups/policy/delete_user.dart';
 import 'package:sprit/popups/policy/logout.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -310,7 +311,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                showModal(context, const DeleteUser(), false);
+              },
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               child: Row(
