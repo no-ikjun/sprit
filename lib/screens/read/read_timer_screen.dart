@@ -89,8 +89,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
       debugPrint('백그라운드 전환');
       _lastPausedTime = DateTime.now();
       _saveTimerState();
@@ -100,16 +100,23 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     }
   }
 
-  void _updateTimerAfterResume() {
+  void _updateTimerAfterResume() async {
+    final prefs = await SharedPreferences.getInstance();
     final currentTime = DateTime.now();
     if (_lastPausedTime != null) {
       final pauseDuration = currentTime.difference(_lastPausedTime!).inSeconds;
+      final wasRunning = prefs.getBool('isRunning') ?? true;
+      final newTime =
+          wasRunning ? _elapsedSeconds + pauseDuration : _elapsedSeconds;
       setState(() {
-        _elapsedSeconds += pauseDuration;
+        _elapsedSeconds = newTime;
+        _isRunning = wasRunning;
       });
+      if (_isRunning) {
+        _startTimer();
+      }
       _lastPausedTime = null;
     }
-    _loadTimerState();
   }
 
   void _startTimer() {
@@ -124,13 +131,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     setState(() {
       _isRunning = true;
     });
-    _saveTimerState();
   }
 
   void _stopTimer() {
     if (_timer != null) {
       _timer!.cancel();
-      _saveTimerState();
       setState(() {
         _isRunning = false;
       });
@@ -150,9 +155,20 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
   }
 
   void _saveTimerState() async {
+    _lastPausedTime = DateTime.now();
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('elapsedSeconds', _elapsedSeconds);
     prefs.setBool('isRunning', _isRunning);
+  }
+
+  void _resetTimer() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('elapsedSeconds');
+    prefs.remove('isRunning');
+    setState(() {
+      _elapsedSeconds = 0;
+      _isRunning = true;
+    });
   }
 
   String _formatTime(int seconds) {
@@ -366,12 +382,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   context
                                       .read<SelectedRecordInfoState>()
                                       .removeSelectedRecord();
-                                  SharedPreferences.getInstance().then(
-                                    (prefs) {
-                                      prefs.remove('elapsedSeconds');
-                                      prefs.remove('isRunning');
-                                    },
-                                  );
+                                  _stopTimer();
+                                  _resetTimer();
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 }),
@@ -422,6 +434,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   false,
                                 );
                               }
+                              _stopTimer();
+                              _resetTimer();
                             },
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
