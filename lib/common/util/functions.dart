@@ -62,3 +62,11 @@ getPastTime(String timeData) {
     return '방금 전';
   }
 }
+
+getFormattedDateTime(String timeData) {
+  final time = DateTime.parse(timeData);
+  final year = time.year;
+  final month = time.month;
+  final day = time.day;
+  return '$year년 $month월 $day일';
+}

@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:marquee/marquee.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/router.dart';
 
 class ActiveQuestsWidget extends StatefulWidget {
   const ActiveQuestsWidget({
@@ -214,15 +216,32 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                                           ),
                                         ],
                                       ),
-                                      const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '자세히 보기 >',
-                                            style: TextStyles.questButtonStyle,
-                                          ),
-                                        ],
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouteName.questDetail,
+                                            arguments: widget
+                                                .activeQuests[index].questUuid,
+                                          );
+                                        },
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              '자세히 보기',
+                                              style:
+                                                  TextStyles.questButtonStyle,
+                                            ),
+                                            SvgPicture.asset(
+                                              'assets/images/right_arrow_grey.svg',
+                                              width: 15,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),

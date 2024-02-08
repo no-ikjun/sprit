@@ -26,6 +26,7 @@ class RouteName {
   static const readComplete = "/readComplete";
   static const bookReport = "/bookReport";
   static const profile = "/profile";
+  static const questDetail = "/questDetail";
 }
 
 var namedRoutes = <String, WidgetBuilder>{

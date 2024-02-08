@@ -6,6 +6,7 @@ class QuestInfo {
   final String title;
   final String shortDescription;
   final String longDescription;
+  final String mission;
   final String iconUrl;
   final String thumbnailUrl;
   final String startDate;
@@ -19,6 +20,7 @@ class QuestInfo {
     required this.title,
     required this.shortDescription,
     required this.longDescription,
+    required this.mission,
     required this.iconUrl,
     required this.thumbnailUrl,
     required this.startDate,
@@ -33,6 +35,7 @@ class QuestInfo {
         title = json['title'],
         shortDescription = json['short_description'],
         longDescription = json['long_description'],
+        mission = json['mission'],
         iconUrl = json['icon_url'],
         thumbnailUrl = json['thumbnail_url'] ?? '',
         startDate = json['start_date'],
@@ -46,6 +49,7 @@ class QuestInfo {
         'title': title,
         'short_description': shortDescription,
         'long_description': longDescription,
+        'mission': mission,
         'icon_url': iconUrl,
         'thumbnail_url': thumbnailUrl,
         'start_date': startDate,
@@ -155,5 +159,43 @@ class QuestService {
       debugPrint('퀘스트 조회 실패 $e');
     }
     return quests;
+  }
+
+  static Future<QuestInfo> findQuestByUuid(
+    BuildContext context,
+    String questUuid,
+  ) async {
+    final dio = await authDio(context);
+    QuestInfo questInfo = const QuestInfo(
+      questUuid: '',
+      title: '',
+      shortDescription: '',
+      longDescription: '',
+      mission: '',
+      iconUrl: '',
+      thumbnailUrl: '',
+      startDate: '',
+      endDate: '',
+      limit: 0,
+      applyCount: 0,
+      isEnded: false,
+      createdAt: '',
+    );
+    try {
+      final response = await dio.get(
+        '/quest/find/',
+        queryParameters: {
+          'quest_uuid': questUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+        questInfo = QuestInfo.fromJson(response.data);
+      } else {
+        debugPrint('퀘스트 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('퀘스트 조회 실패 $e');
+    }
+    return questInfo;
   }
 }
