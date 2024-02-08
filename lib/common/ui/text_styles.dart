@@ -698,6 +698,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibraryBookReportTimeStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle analyticsTitleStyle = TextStyle(
     color: ColorSet.text,
     fontSize: 24,

@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 
 Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
@@ -79,7 +80,13 @@ class _BookReportContentState extends State<BookReportContent> {
           height: 2,
         ),
         InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RouteName.bookReport,
+              arguments: widget.reportUuid,
+            );
+          },
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Row(

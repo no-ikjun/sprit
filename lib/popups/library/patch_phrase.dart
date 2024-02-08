@@ -23,17 +23,17 @@ class PatchPhrase extends StatefulWidget {
 }
 
 class _PatchPhraseState extends State<PatchPhrase> {
-  late TextEditingController _controller; // TextEditingController 인스턴스 선언
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.phrase); // 컨트롤러 초기화
+    _controller = TextEditingController(text: widget.phrase);
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // 위젯이 dispose될 때 컨트롤러도 dispose
+    _controller.dispose();
     super.dispose();
   }
 

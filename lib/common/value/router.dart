@@ -23,6 +23,7 @@ class RouteName {
   static const recordSetting = "/recordSetting";
   static const readTimer = "/readTimer";
   static const readComplete = "/readComplete";
+  static const bookReport = "/bookReport";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
