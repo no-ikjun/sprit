@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sprit/apis/auth_dio.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/providers/library_book_state.dart';
 
 class BookMarkCallback {
   final List<BookMarkInfo> bookMarkInfoList;
@@ -309,17 +310,27 @@ class BookLibraryService {
 
   static Future<BookLibraryByStateListCallback> getBookLibraryByState(
     BuildContext context,
-    List<String> stateList,
+    List<LibraryBookState> stateList,
     int page,
   ) async {
     List<BookLibraryByStateList> bookLibraryByStateListResult = [];
     bool moreAvailable = false;
+    List<String> stateData = [];
+    for (var state in stateList) {
+      if (state == LibraryBookState.before) {
+        stateData.add("BEFORE");
+      } else if (state == LibraryBookState.reading) {
+        stateData.add("READING");
+      } else if (state == LibraryBookState.after) {
+        stateData.add("AFTER");
+      }
+    }
     final dio = await authDio(context);
     try {
       final response = await dio.get(
         '/book-library/state-list',
         data: {
-          'state_list': stateList,
+          'state_list': stateData,
           'page': page.toString(),
         },
       );

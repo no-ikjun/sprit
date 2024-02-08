@@ -691,6 +691,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibraryInfoStateStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle analyticsTitleStyle = TextStyle(
     color: ColorSet.text,
     fontSize: 24,

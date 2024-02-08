@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/firebase_options.dart';
 import 'package:sprit/providers/fcm_token.dart';
+import 'package:sprit/providers/library_book_state.dart';
 import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/selected_book.dart';
@@ -63,6 +64,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SelectedBookInfoState()),
         ChangeNotifierProvider(create: (_) => SelectedRecordInfoState()),
         ChangeNotifierProvider(create: (_) => LibrarySectionOrderState()),
+        ChangeNotifierProvider(create: (_) => LibraryBookListState()),
       ],
       child: const MyApp(),
     ),
