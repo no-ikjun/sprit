@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/library/patch_phrase.dart';
 
 class LibraryPhraseWidget extends StatelessWidget {
   final String phraseUuid;
   final String bookTitle;
   final String phrase;
+  final Function callback;
   const LibraryPhraseWidget({
     super.key,
     required this.phraseUuid,
     required this.bookTitle,
     required this.phrase,
+    required this.callback,
   });
 
   @override
@@ -53,11 +57,22 @@ class LibraryPhraseWidget extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  showModal(
+                    context,
+                    PatchPhrase(
+                      bookTitle: bookTitle,
+                      phrase: phrase,
+                      phraseUuid: phraseUuid,
+                      callback: callback,
+                    ),
+                    false,
+                  );
+                },
                 child: const Icon(
                   Icons.edit,
                   color: ColorSet.lightGrey,
-                  size: 24,
+                  size: 20,
                 ),
               ),
             ],

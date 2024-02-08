@@ -72,6 +72,22 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                     phraseUuid: phraseInfoList[index].phraseUuid,
                     phrase: phraseInfoList[index].phrase,
                     bookTitle: phraseInfoList[index].bookTitle,
+                    callback: () async {
+                      setState(() {
+                        phraseInfoList = [];
+                        phraseCurrentPage = 1;
+                        phraseMoreAvailable = false;
+                      });
+                      await getPhraseForLibrary(
+                        context,
+                        phraseCurrentPage,
+                      ).then((value) {
+                        setState(() {
+                          phraseInfoList = value.phraseLibraryList;
+                          phraseMoreAvailable = value.moreAvailable;
+                        });
+                      });
+                    },
                   ),
                   index != phraseInfoList.length - 1
                       ? const SizedBox(

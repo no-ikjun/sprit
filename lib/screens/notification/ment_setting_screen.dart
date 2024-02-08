@@ -194,7 +194,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                     for (var i = 0;
                                         i < phraseList.length;
                                         i++) {
-                                      await PhraseService.updatePhrase(
+                                      await PhraseService.updatePhraseRemind(
                                         context,
                                         phraseList[i].phraseUuid,
                                         switchValueList[i],
@@ -226,7 +226,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                     for (var i = 0;
                                         i < phraseList.length;
                                         i++) {
-                                      await PhraseService.updatePhrase(
+                                      await PhraseService.updatePhraseRemind(
                                         context,
                                         phraseList[i].phraseUuid,
                                         switchValueList[i],

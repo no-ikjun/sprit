@@ -121,6 +121,32 @@ class PhraseService {
     }
   }
 
+  static Future<void> updateOnlyPhrase(
+    BuildContext context,
+    String phraseUuid,
+    String phrase,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/phrase',
+        queryParameters: {
+          'phrase_uuid': phraseUuid,
+          'phrase': phrase,
+        },
+      );
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        debugPrint('문구 수정 실패');
+        return;
+      }
+    } catch (e) {
+      debugPrint('문구 수정 실패 $e');
+      return;
+    }
+  }
+
   static Future<List<PhraseInfo>> getAllPhrase(
     BuildContext context,
   ) async {
@@ -181,7 +207,7 @@ class PhraseService {
     }
   }
 
-  static Future<bool> updatePhrase(
+  static Future<bool> updatePhraseRemind(
     BuildContext context,
     String phraseUuid,
     bool remind,
