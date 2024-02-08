@@ -81,6 +81,11 @@ class _MyBookInfoComponentState extends State<MyBookInfoComponent> {
                               .read<LibraryBookListState>()
                               .getLibraryBookState,
                           callback: () async {
+                            setState(() {
+                              bookLibraryByStateList = [];
+                              bookLibraryByStateListMoreAvailable = false;
+                              bookLibraryByStateListCurrentPage = 1;
+                            });
                             await getBookLibraryByState(
                               context,
                               context
