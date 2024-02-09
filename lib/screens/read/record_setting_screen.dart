@@ -288,22 +288,32 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               ),
                                             ],
                                           ),
-                                          const Row(
-                                            children: [
-                                              Text(
-                                                '직접 검색',
-                                                style: TextStyles
-                                                    .readBookSearchButtonStyle,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Icon(
-                                                Icons.search,
-                                                size: 14,
-                                                color: ColorSet.darkGrey,
-                                              ),
-                                            ],
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                RouteName.search,
+                                              );
+                                            },
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            child: const Row(
+                                              children: [
+                                                Text(
+                                                  '직접 검색',
+                                                  style: TextStyles
+                                                      .readBookSearchButtonStyle,
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Icon(
+                                                  Icons.search,
+                                                  size: 14,
+                                                  color: ColorSet.darkGrey,
+                                                ),
+                                              ],
+                                            ),
                                           )
                                         ],
                                       ),
