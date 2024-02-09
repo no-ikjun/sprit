@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scaler/scaler.dart';
@@ -160,250 +161,278 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            toggleValue == 'week'
-                                ? getWeekFormat(backWeek)
-                                : getSelectedDayFormat(backWeek, selectedIndex),
-                            style: TextStyles.analyticsGraphDateStyle,
-                          ),
-                          Text(
-                            toggleValue == 'week'
-                                ? getFormattedTimeWithUnit(
-                                    dailyTotalTimes.reduce(
-                                        (value, element) => value + element))
-                                : getFormattedTimeWithUnit(
-                                    dailyTotalTimes[selectedIndex]),
-                            style: TextStyles.analyticsGraphTimeStyle,
-                          ),
-                        ],
+              child: bookRecordHistory.isEmpty
+                  ? SizedBox(
+                      width: Scaler.width(0.85, context),
+                      height: 200,
+                      child: const CupertinoActivityIndicator(
+                        radius: 15,
+                        animating: true,
                       ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: ColorSet.green,
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              const Text(
-                                '목표 달성 성공',
-                                style: TextStyles.analyticsGraphIndicatorStyle,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: ColorSet.red,
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              const Text(
-                                '목표 달성 실패',
-                                style: TextStyles.analyticsGraphIndicatorStyle,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 90,
-                        child: Row(
+                    )
+                  : Column(
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: List.generate(7, (index) {
-                            if (dailyTotalTimes.length <= index) {
-                              return SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.05598,
-                                height: 0,
-                              );
-                            }
-                            List<int> totalTimes = List.generate(7, (index) {
-                              if (index < bookRecordHistory.length) {
-                                return bookRecordHistory[index].fold(
-                                    0, (sum, record) => sum + record.totalTime);
-                              }
-                              return 0;
-                            });
-                            int maxTime = totalTimes.reduce(max);
-                            List<int> totalTimeTrue = List.filled(7, 0);
-                            List<int> totalTimeFalse = List.filled(7, 0);
-
-                            for (int i = 0; i < bookRecordHistory.length; i++) {
-                              for (var record in bookRecordHistory[i]) {
-                                if (record.goalAchieved) {
-                                  totalTimeTrue[i] += record.totalTime;
-                                }
-                                if (record.goalAchieved == false) {
-                                  totalTimeFalse[i] += record.totalTime;
-                                }
-                              }
-                            }
-
-                            (totalTimeTrue + totalTimeFalse).reduce(max);
-                            final double barHeightTrue =
-                                (totalTimeTrue[index] / maxTime) * 90;
-                            final double barHeightFalse =
-                                (totalTimeFalse[index] / maxTime) * 90;
-
-                            return InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = index;
-                                });
-                              },
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  // 목표 달성 실패 (false) 부분
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.05598,
-                                    height: barHeightFalse,
-                                    decoration: BoxDecoration(
-                                      color: (selectedIndex == index ||
-                                              toggleValue == 'week')
-                                          ? ColorSet.red
-                                          : ColorSet.superLightGrey,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: const Radius.circular(4),
-                                        topRight: const Radius.circular(4),
-                                        bottomLeft: barHeightTrue == 0
-                                            ? const Radius.circular(4)
-                                            : const Radius.circular(0),
-                                        bottomRight: barHeightTrue == 0
-                                            ? const Radius.circular(4)
-                                            : const Radius.circular(0),
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  toggleValue == 'week'
+                                      ? getWeekFormat(backWeek)
+                                      : getSelectedDayFormat(
+                                          backWeek, selectedIndex),
+                                  style: TextStyles.analyticsGraphDateStyle,
+                                ),
+                                Text(
+                                  toggleValue == 'week'
+                                      ? getFormattedTimeWithUnit(dailyTotalTimes
+                                          .reduce((value, element) =>
+                                              value + element))
+                                      : getFormattedTimeWithUnit(
+                                          dailyTotalTimes[selectedIndex]),
+                                  style: TextStyles.analyticsGraphTimeStyle,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: ColorSet.green,
+                                        borderRadius: BorderRadius.circular(3),
                                       ),
                                     ),
-                                  ),
-                                  // 목표 달성 성공 (true) 부분
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.05598,
-                                    height: barHeightTrue,
-                                    decoration: BoxDecoration(
-                                      color: (selectedIndex == index ||
-                                              toggleValue == 'week')
-                                          ? ColorSet.green
-                                          : ColorSet.superLightGrey,
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: const Radius.circular(4),
-                                        bottomRight: const Radius.circular(4),
-                                        topLeft: barHeightFalse == 0
-                                            ? const Radius.circular(4)
-                                            : const Radius.circular(0),
-                                        topRight: barHeightFalse == 0
-                                            ? const Radius.circular(4)
-                                            : const Radius.circular(0),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    const Text(
+                                      '목표 달성 성공',
+                                      style: TextStyles
+                                          .analyticsGraphIndicatorStyle,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: ColorSet.red,
+                                        borderRadius: BorderRadius.circular(3),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    const Text(
+                                      '목표 달성 실패',
+                                      style: TextStyles
+                                          .analyticsGraphIndicatorStyle,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      // 요일 표시
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:
-                            ["일", "월", "화", "수", "목", "금", "토"].map((day) {
-                          return SizedBox(
-                            width: Scaler.width(0.05598, context),
-                            child: Center(
-                              child: Text(
-                                day,
-                                style:
-                                    TextStyles.analyticsGraphDateIndicatorStyle,
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 90,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: List.generate(7, (index) {
+                                  if (dailyTotalTimes.length <= index) {
+                                    return SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.05598,
+                                      height: 0,
+                                    );
+                                  }
+                                  List<int> totalTimes =
+                                      List.generate(7, (index) {
+                                    if (index < bookRecordHistory.length) {
+                                      return bookRecordHistory[index].fold(
+                                          0,
+                                          (sum, record) =>
+                                              sum + record.totalTime);
+                                    }
+                                    return 0;
+                                  });
+                                  int maxTime = totalTimes.reduce(max);
+                                  List<int> totalTimeTrue = List.filled(7, 0);
+                                  List<int> totalTimeFalse = List.filled(7, 0);
+
+                                  for (int i = 0;
+                                      i < bookRecordHistory.length;
+                                      i++) {
+                                    for (var record in bookRecordHistory[i]) {
+                                      if (record.goalAchieved) {
+                                        totalTimeTrue[i] += record.totalTime;
+                                      }
+                                      if (record.goalAchieved == false) {
+                                        totalTimeFalse[i] += record.totalTime;
+                                      }
+                                    }
+                                  }
+
+                                  (totalTimeTrue + totalTimeFalse).reduce(max);
+                                  final double barHeightTrue =
+                                      (totalTimeTrue[index] / maxTime) * 90;
+                                  final double barHeightFalse =
+                                      (totalTimeFalse[index] / maxTime) * 90;
+
+                                  return InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedIndex = index;
+                                      });
+                                    },
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        // 목표 달성 실패 (false) 부분
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05598,
+                                          height: barHeightFalse,
+                                          decoration: BoxDecoration(
+                                            color: (selectedIndex == index ||
+                                                    toggleValue == 'week')
+                                                ? ColorSet.red
+                                                : ColorSet.superLightGrey,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: const Radius.circular(4),
+                                              topRight:
+                                                  const Radius.circular(4),
+                                              bottomLeft: barHeightTrue == 0
+                                                  ? const Radius.circular(4)
+                                                  : const Radius.circular(0),
+                                              bottomRight: barHeightTrue == 0
+                                                  ? const Radius.circular(4)
+                                                  : const Radius.circular(0),
+                                            ),
+                                          ),
+                                        ),
+                                        // 목표 달성 성공 (true) 부분
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05598,
+                                          height: barHeightTrue,
+                                          decoration: BoxDecoration(
+                                            color: (selectedIndex == index ||
+                                                    toggleValue == 'week')
+                                                ? ColorSet.green
+                                                : ColorSet.superLightGrey,
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft:
+                                                  const Radius.circular(4),
+                                              bottomRight:
+                                                  const Radius.circular(4),
+                                              topLeft: barHeightFalse == 0
+                                                  ? const Radius.circular(4)
+                                                  : const Radius.circular(0),
+                                              topRight: barHeightFalse == 0
+                                                  ? const Radius.circular(4)
+                                                  : const Radius.circular(0),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }),
                               ),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        '독서 기록',
-                        style: TextStyles.analyticsGraphRecordMentStyle,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  toggleValue == 'week'
-                      ? Column(
-                          children: bookRecordHistory
-                              .expand((dailyRecords) =>
-                                  dailyRecords.map((record) => GraphBookRecord(
-                                        key: ValueKey(record.bookUuid +
-                                            Random().nextInt(100).toString()),
-                                        bookUuid: record.bookUuid,
-                                        totalTime: record.totalTime,
-                                        goalAchieved: record.goalAchieved,
-                                        dailyTotalTime: dailyTotalTimes.reduce(
-                                            (value, element) =>
-                                                value + element),
-                                      )))
-                              .toList(),
-                        )
-                      : Column(
-                          children:
-                              bookRecordHistory[selectedIndex].map((record) {
-                            return GraphBookRecord(
-                              key: ValueKey(record.bookUuid +
-                                  Random().nextInt(100).toString()),
-                              bookUuid: record.bookUuid,
-                              totalTime: record.totalTime,
-                              goalAchieved: record.goalAchieved,
-                              dailyTotalTime: dailyTotalTimes[selectedIndex],
-                            );
-                          }).toList(),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            // 요일 표시
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: ["일", "월", "화", "수", "목", "금", "토"]
+                                  .map((day) {
+                                return SizedBox(
+                                  width: Scaler.width(0.05598, context),
+                                  child: Center(
+                                    child: Text(
+                                      day,
+                                      style: TextStyles
+                                          .analyticsGraphDateIndicatorStyle,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
                         ),
-                ],
-              ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              '독서 기록',
+                              style: TextStyles.analyticsGraphRecordMentStyle,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        toggleValue == 'week'
+                            ? Column(
+                                children: bookRecordHistory
+                                    .expand((dailyRecords) => dailyRecords
+                                        .map((record) => GraphBookRecord(
+                                              key: ValueKey(record.bookUuid +
+                                                  Random()
+                                                      .nextInt(100)
+                                                      .toString()),
+                                              bookUuid: record.bookUuid,
+                                              totalTime: record.totalTime,
+                                              goalAchieved: record.goalAchieved,
+                                              dailyTotalTime: dailyTotalTimes
+                                                  .reduce((value, element) =>
+                                                      value + element),
+                                            )))
+                                    .toList(),
+                              )
+                            : Column(
+                                children: bookRecordHistory[selectedIndex]
+                                    .map((record) {
+                                  return GraphBookRecord(
+                                    key: ValueKey(record.bookUuid +
+                                        Random().nextInt(100).toString()),
+                                    bookUuid: record.bookUuid,
+                                    totalTime: record.totalTime,
+                                    goalAchieved: record.goalAchieved,
+                                    dailyTotalTime:
+                                        dailyTotalTimes[selectedIndex],
+                                  );
+                                }).toList(),
+                              ),
+                      ],
+                    ),
             ),
             const SizedBox(
               height: 30,
