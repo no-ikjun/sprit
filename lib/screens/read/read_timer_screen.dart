@@ -162,7 +162,6 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
           Navigator.pop(context);
         });
       }
-      debugPrint(elapsedSeconds.toString());
       setState(() {
         _elapsedSeconds = elapsedSeconds.abs();
       });
