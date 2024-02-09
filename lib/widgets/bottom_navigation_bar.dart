@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
@@ -37,6 +39,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
+                  AmplitudeService().logEvent(AmplitudeEvent.menuHomeClick);
                   widget.onItemTapped(0);
                 },
                 splashColor: Colors.transparent,
@@ -70,6 +73,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
+                  AmplitudeService().logEvent(AmplitudeEvent.menuLibraryClick);
                   widget.onItemTapped(1);
                 },
                 splashColor: Colors.transparent,
@@ -104,6 +108,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
+                  AmplitudeService().logEvent(AmplitudeEvent.menuQuestClick);
                   widget.onItemTapped(2);
                 },
                 splashColor: Colors.transparent,
@@ -137,6 +142,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
+                  AmplitudeService()
+                      .logEvent(AmplitudeEvent.menuAnalyticsClick);
                   widget.onItemTapped(3);
                 },
                 splashColor: Colors.transparent,
@@ -174,6 +181,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             child: InkWell(
               borderRadius: BorderRadius.circular(30),
               onTap: () {
+                AmplitudeService().logEvent(AmplitudeEvent.menuRecordClick);
                 Navigator.pushNamed(
                   context,
                   RouteName.recordSetting,
