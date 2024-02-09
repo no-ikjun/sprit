@@ -233,6 +233,7 @@ class QuestService {
         '/quest/apply',
         queryParameters: {
           'quest_uuid': questUuid,
+          'phone_number': phoneNumber,
         },
       );
       if (response.statusCode == 201) {
