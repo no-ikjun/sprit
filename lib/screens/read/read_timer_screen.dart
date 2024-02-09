@@ -159,6 +159,7 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
           context.read<SelectedRecordInfoState>().removeSelectedRecord();
           _stopTimer();
           _resetTimer();
+          prefs.remove('recordCreated');
           Navigator.pop(context);
         });
       }
@@ -457,8 +458,6 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   false,
                                 );
                               }
-                              _stopTimer();
-                              _resetTimer();
                             },
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,

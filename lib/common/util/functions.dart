@@ -31,6 +31,17 @@ getFormattedTime(int time) {
   }
 }
 
+getFormattedTimeWithUnit(int time) {
+  if (time == 0) return '';
+  if (time < 60) return '$time초';
+  if (time < 3600) {
+    return '${(time / 60).floor()}분 ${time % 60 > 0 ? ' ${time % 60}초' : ''}';
+  }
+  if (time < 86400) {
+    return '${(time / 3600).floor()}시간 ${time % 60 > 0 ? ' ${((time % 3600) / 60).floor()}분' : ''}';
+  }
+}
+
 getRemainingTime(DateTime startDate) {
   final now = DateTime.now();
   final difference = startDate.difference(now);
@@ -68,5 +79,34 @@ getFormattedDateTime(String timeData) {
   final year = time.year;
   final month = time.month;
   final day = time.day;
+  return '$year년 $month월 $day일';
+}
+
+getWeekFormat(int backWeek) {
+  final now = DateTime.now();
+  int adjustForSundayStart = now.weekday % 7;
+  final startOfWeek =
+      now.subtract(Duration(days: adjustForSundayStart + 7 * backWeek));
+  final endOfWeek = startOfWeek.add(const Duration(days: 6));
+  if (backWeek == 0) {
+    return '이번주';
+  } else if (backWeek == -1) {
+    return '저번주';
+  } else {
+    String formattedStart = "${startOfWeek.month}월 ${startOfWeek.day}일";
+    String formattedEnd = "${endOfWeek.month}월 ${endOfWeek.day}일";
+    return "$formattedStart ~ $formattedEnd";
+  }
+}
+
+getSelectedDayFormat(int backWeek, int selectedIndex) {
+  final now = DateTime.now();
+  int adjustForSundayStart = now.weekday % 7;
+  final startOfWeek =
+      now.subtract(Duration(days: adjustForSundayStart + 7 * backWeek));
+  final selectedDay = startOfWeek.add(Duration(days: selectedIndex));
+  final year = selectedDay.year;
+  final month = selectedDay.month;
+  final day = selectedDay.day;
   return '$year년 $month월 $day일';
 }

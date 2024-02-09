@@ -6,6 +6,7 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
@@ -34,18 +35,34 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   int maxTime = 0;
   int selectedIndex = 0;
 
+  int backWeek = 0;
+
   @override
   void initState() {
     super.initState();
-    getBookRecordHistory(context, 0, DateTime.now().weekday).then((value) {
-      setState(() {
-        bookRecordHistory = value;
-        dailyTotalTimes = value.map((dayRecords) {
+    _loadData();
+  }
+
+  void _loadData() async {
+    final data =
+        await getBookRecordHistory(context, backWeek, DateTime.now().weekday);
+    setState(() {
+      if (backWeek == 0) {
+        bookRecordHistory = data;
+        dailyTotalTimes = data.map((dayRecords) {
           return dayRecords.fold(
               0, (int sum, record) => sum + record.totalTime);
         }).toList();
         maxTime = dailyTotalTimes.reduce(max);
-      });
+      } else {
+        // 이전 주의 데이터를 추가하는 경우
+        bookRecordHistory.insertAll(0, data);
+        dailyTotalTimes = data.map((dayRecords) {
+          return dayRecords.fold(
+              0, (int sum, record) => sum + record.totalTime);
+        }).toList();
+        maxTime = dailyTotalTimes.reduce(max);
+      }
     });
   }
 
@@ -148,15 +165,22 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '2024년 1월 30일',
+                            toggleValue == 'week'
+                                ? getWeekFormat(backWeek)
+                                : getSelectedDayFormat(backWeek, selectedIndex),
                             style: TextStyles.analyticsGraphDateStyle,
                           ),
                           Text(
-                            '10시간 23분',
+                            toggleValue == 'week'
+                                ? getFormattedTimeWithUnit(
+                                    dailyTotalTimes.reduce(
+                                        (value, element) => value + element))
+                                : getFormattedTimeWithUnit(
+                                    dailyTotalTimes[selectedIndex]),
                             style: TextStyles.analyticsGraphTimeStyle,
                           ),
                         ],
@@ -354,27 +378,29 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           children: bookRecordHistory
                               .expand((dailyRecords) =>
                                   dailyRecords.map((record) => GraphBookRecord(
+                                        key: ValueKey(record.bookUuid +
+                                            Random().nextInt(100).toString()),
                                         bookUuid: record.bookUuid,
                                         totalTime: record.totalTime,
                                         goalAchieved: record.goalAchieved,
-                                        dailyTotalTime: dailyTotalTimes,
+                                        dailyTotalTime: dailyTotalTimes.reduce(
+                                            (value, element) =>
+                                                value + element),
                                       )))
                               .toList(),
                         )
                       : Column(
-                          children: List.generate(
-                              bookRecordHistory[selectedIndex].length, (index) {
-                            for (var record
-                                in bookRecordHistory[selectedIndex]) {
-                              return GraphBookRecord(
-                                bookUuid: record.bookUuid,
-                                totalTime: record.totalTime,
-                                goalAchieved: record.goalAchieved,
-                                dailyTotalTime: dailyTotalTimes,
-                              );
-                            }
-                            return Container();
-                          }),
+                          children:
+                              bookRecordHistory[selectedIndex].map((record) {
+                            return GraphBookRecord(
+                              key: ValueKey(record.bookUuid +
+                                  Random().nextInt(100).toString()),
+                              bookUuid: record.bookUuid,
+                              totalTime: record.totalTime,
+                              goalAchieved: record.goalAchieved,
+                              dailyTotalTime: dailyTotalTimes[selectedIndex],
+                            );
+                          }).toList(),
                         ),
                 ],
               ),
