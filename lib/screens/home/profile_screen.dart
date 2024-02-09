@@ -126,7 +126,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 InkWell(
                                   onTap: () {
                                     AmplitudeService().logEvent(
-                                        AmplitudeEvent.profileChangeNickname);
+                                      AmplitudeEvent.profileChangeNickname,
+                                      context
+                                          .read<UserInfoState>()
+                                          .userInfo
+                                          .userUuid,
+                                    );
                                     showModal(
                                       context,
                                       ChangeNickname(
@@ -215,8 +220,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ? InkWell(
                                         onTap: () {
                                           AmplitudeService().logEvent(
-                                              AmplitudeEvent
-                                                  .profileChangePassword);
+                                            AmplitudeEvent
+                                                .profileChangePassword,
+                                            context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
+                                          );
                                           showModal(
                                             context,
                                             ChangePassword(callback: () {
@@ -302,8 +312,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           CustomButton(
                             onPressed: () {
-                              AmplitudeService()
-                                  .logEvent(AmplitudeEvent.profileLogoutClick);
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.profileLogoutClick,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                              );
                               showModal(context, const LogoutConfirm(), false);
                             },
                             width: Scaler.width(0.85, context),
@@ -321,7 +333,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             InkWell(
               onTap: () {
-                AmplitudeService().logEvent(AmplitudeEvent.profileDeleteClick);
+                AmplitudeService().logEvent(
+                  AmplitudeEvent.profileDeleteClick,
+                  context.read<UserInfoState>().userInfo.userUuid,
+                );
                 showModal(context, const DeleteUser(), false);
               },
               splashColor: Colors.transparent,

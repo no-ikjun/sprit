@@ -15,11 +15,9 @@ class AmplitudeService {
     _amplitude.init(dotenv.env["AMPLITUDE_API_KEY"]!);
   }
 
-  void logEvent(String eventName,
+  void logEvent(String eventName, String userUuid,
       {Map<String, dynamic>? eventProperties}) async {
-    _amplitude.logEvent(
-      kReleaseMode ? eventName : "DEV_LOG",
-      eventProperties: eventProperties,
-    );
+    _amplitude.logEvent(kReleaseMode ? eventName : "DEV_LOG",
+        eventProperties: {'user_uuid': userUuid, ...?eventProperties});
   }
 }

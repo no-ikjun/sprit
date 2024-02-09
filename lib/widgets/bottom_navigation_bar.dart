@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final int selectedIndex;
@@ -39,7 +41,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
-                  AmplitudeService().logEvent(AmplitudeEvent.menuHomeClick);
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.menuHomeClick,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   widget.onItemTapped(0);
                 },
                 splashColor: Colors.transparent,
@@ -73,7 +78,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
-                  AmplitudeService().logEvent(AmplitudeEvent.menuLibraryClick);
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.menuLibraryClick,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   widget.onItemTapped(1);
                 },
                 splashColor: Colors.transparent,
@@ -108,7 +116,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
-                  AmplitudeService().logEvent(AmplitudeEvent.menuQuestClick);
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.menuQuestClick,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   widget.onItemTapped(2);
                 },
                 splashColor: Colors.transparent,
@@ -142,8 +153,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
-                  AmplitudeService()
-                      .logEvent(AmplitudeEvent.menuAnalyticsClick);
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.menuAnalyticsClick,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   widget.onItemTapped(3);
                 },
                 splashColor: Colors.transparent,
@@ -181,7 +194,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             child: InkWell(
               borderRadius: BorderRadius.circular(30),
               onTap: () {
-                AmplitudeService().logEvent(AmplitudeEvent.menuRecordClick);
+                AmplitudeService().logEvent(
+                  AmplitudeEvent.menuRecordClick,
+                  context.read<UserInfoState>().userInfo.userUuid,
+                );
                 Navigator.pushNamed(
                   context,
                   RouteName.recordSetting,

@@ -62,8 +62,10 @@ class DeleteUser extends StatelessWidget {
                 color: ColorSet.red.withOpacity(0.7),
                 borderColor: ColorSet.red.withOpacity(0.2),
                 onPressed: () async {
-                  AmplitudeService()
-                      .logEvent(AmplitudeEvent.profileDeleteConfirm);
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.profileDeleteConfirm,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   //access token 삭제
                   const storage = FlutterSecureStorage();
                   storage.deleteAll();
