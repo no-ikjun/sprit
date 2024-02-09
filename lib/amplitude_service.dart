@@ -17,7 +17,9 @@ class AmplitudeService {
 
   void logEvent(String eventName,
       {Map<String, dynamic>? eventProperties}) async {
-    _amplitude.logEvent(kReleaseMode ? eventName : "DEV_LOG",
-        eventProperties: {'version': '1.0.0', ...?eventProperties});
+    _amplitude.logEvent(
+      kReleaseMode ? eventName : "DEV_LOG",
+      eventProperties: eventProperties,
+    );
   }
 }
