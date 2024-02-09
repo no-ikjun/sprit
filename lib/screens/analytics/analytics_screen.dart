@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scaler/scaler.dart';
@@ -9,6 +11,14 @@ import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 import 'package:sprit/widgets/toggle_button.dart';
 
+Future<List<List<BookRecordHistory>>> getBookRecordHistory(
+  BuildContext context,
+  int backWeek,
+  int weekday,
+) async {
+  return await RecordService.getWeeklyRecord(context, backWeek, weekday);
+}
+
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
 
@@ -17,13 +27,26 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  MonthlyRecordInfo monthlyRecordCount = const MonthlyRecordInfo(
-    presentMonth: 0,
-    pastMonth: 0,
-  );
+  String toggleValue = 'week';
+
+  List<List<BookRecordHistory>> bookRecordHistory = [];
+  List<int> dailyTotalTimes = [];
+  int maxTime = 0;
+  int selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
+    getBookRecordHistory(context, 0, DateTime.now().weekday).then((value) {
+      setState(() {
+        bookRecordHistory = value;
+        dailyTotalTimes = value.map((dayRecords) {
+          return dayRecords.fold(
+              0, (int sum, record) => sum + record.totalTime);
+        }).toList();
+        maxTime = dailyTotalTimes.reduce(max);
+      });
+    });
   }
 
   @override
@@ -80,8 +103,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               height: 40,
               padding: 3,
               radius: 8,
-              onLeftTap: () {},
-              onRightTap: () {},
+              onLeftTap: () {
+                setState(() {
+                  toggleValue = 'week';
+                });
+              },
+              onRightTap: () {
+                setState(() {
+                  toggleValue = 'day';
+                });
+              },
               leftText: const Text(
                 '일주일',
                 style: TextStyles.toggleButtonLabelStyle,
@@ -183,13 +214,99 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         height: 90,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: List.generate(7, (index) {
-                            return Container(
-                              width: Scaler.width(0.05598, context),
-                              height: 90,
-                              decoration: BoxDecoration(
-                                color: ColorSet.green,
-                                borderRadius: BorderRadius.circular(4),
+                            if (dailyTotalTimes.length <= index) {
+                              return SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.05598,
+                                height: 0,
+                              );
+                            }
+                            List<int> totalTimes = List.generate(7, (index) {
+                              if (index < bookRecordHistory.length) {
+                                return bookRecordHistory[index].fold(
+                                    0, (sum, record) => sum + record.totalTime);
+                              }
+                              return 0;
+                            });
+                            int maxTime = totalTimes.reduce(max);
+                            List<int> totalTimeTrue = List.filled(7, 0);
+                            List<int> totalTimeFalse = List.filled(7, 0);
+
+                            for (int i = 0; i < bookRecordHistory.length; i++) {
+                              for (var record in bookRecordHistory[i]) {
+                                if (record.goalAchieved) {
+                                  totalTimeTrue[i] += record.totalTime;
+                                }
+                                if (record.goalAchieved == false) {
+                                  totalTimeFalse[i] += record.totalTime;
+                                }
+                              }
+                            }
+
+                            (totalTimeTrue + totalTimeFalse).reduce(max);
+                            final double barHeightTrue =
+                                (totalTimeTrue[index] / maxTime) * 90;
+                            final double barHeightFalse =
+                                (totalTimeFalse[index] / maxTime) * 90;
+
+                            return InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedIndex = index;
+                                });
+                              },
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  // 목표 달성 실패 (false) 부분
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05598,
+                                    height: barHeightFalse,
+                                    decoration: BoxDecoration(
+                                      color: (selectedIndex == index ||
+                                              toggleValue == 'week')
+                                          ? ColorSet.red
+                                          : ColorSet.superLightGrey,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: const Radius.circular(4),
+                                        topRight: const Radius.circular(4),
+                                        bottomLeft: barHeightTrue == 0
+                                            ? const Radius.circular(4)
+                                            : const Radius.circular(0),
+                                        bottomRight: barHeightTrue == 0
+                                            ? const Radius.circular(4)
+                                            : const Radius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  // 목표 달성 성공 (true) 부분
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05598,
+                                    height: barHeightTrue,
+                                    decoration: BoxDecoration(
+                                      color: (selectedIndex == index ||
+                                              toggleValue == 'week')
+                                          ? ColorSet.green
+                                          : ColorSet.superLightGrey,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: const Radius.circular(4),
+                                        bottomRight: const Radius.circular(4),
+                                        topLeft: barHeightFalse == 0
+                                            ? const Radius.circular(4)
+                                            : const Radius.circular(0),
+                                        topRight: barHeightFalse == 0
+                                            ? const Radius.circular(4)
+                                            : const Radius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           }),
@@ -198,33 +315,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       const SizedBox(
                         height: 5,
                       ),
+                      // 요일 표시
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(7, (index) {
-                          String day = '';
-                          switch (index) {
-                            case 0:
-                              day = '일';
-                              break;
-                            case 1:
-                              day = '월';
-                              break;
-                            case 2:
-                              day = '화';
-                              break;
-                            case 3:
-                              day = '수';
-                              break;
-                            case 4:
-                              day = '목';
-                              break;
-                            case 5:
-                              day = '금';
-                              break;
-                            case 6:
-                              day = '토';
-                              break;
-                          }
+                        children:
+                            ["일", "월", "화", "수", "목", "금", "토"].map((day) {
                           return SizedBox(
                             width: Scaler.width(0.05598, context),
                             child: Center(
@@ -235,7 +330,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               ),
                             ),
                           );
-                        }),
+                        }).toList(),
                       ),
                     ],
                   ),
@@ -254,15 +349,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   const SizedBox(
                     height: 12,
                   ),
-                  const Column(
-                    children: [
-                      GraphBookRecord(),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      GraphBookRecord(),
-                    ],
-                  ),
+                  toggleValue == 'week'
+                      ? Column(
+                          children: bookRecordHistory
+                              .expand((dailyRecords) =>
+                                  dailyRecords.map((record) => GraphBookRecord(
+                                        bookUuid: record.bookUuid,
+                                        totalTime: record.totalTime,
+                                        goalAchieved: record.goalAchieved,
+                                        dailyTotalTime: dailyTotalTimes,
+                                      )))
+                              .toList(),
+                        )
+                      : Column(
+                          children: List.generate(
+                              bookRecordHistory[selectedIndex].length, (index) {
+                            for (var record
+                                in bookRecordHistory[selectedIndex]) {
+                              return GraphBookRecord(
+                                bookUuid: record.bookUuid,
+                                totalTime: record.totalTime,
+                                goalAchieved: record.goalAchieved,
+                                dailyTotalTime: dailyTotalTimes,
+                              );
+                            }
+                            return Container();
+                          }),
+                        ),
                 ],
               ),
             ),

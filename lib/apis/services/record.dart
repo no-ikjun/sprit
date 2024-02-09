@@ -87,6 +87,33 @@ class MonthlyRecordInfo {
   }
 }
 
+class BookRecordHistory {
+  final String bookUuid;
+  final bool goalAchieved;
+  final int totalTime;
+  const BookRecordHistory({
+    required this.bookUuid,
+    required this.goalAchieved,
+    required this.totalTime,
+  });
+
+  factory BookRecordHistory.fromJson(Map<String, dynamic> json) {
+    return BookRecordHistory(
+      bookUuid: json['book_uuid'] as String,
+      goalAchieved: json['goal_achieved'] as bool,
+      totalTime: json['total_time'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'book_uuid': bookUuid,
+      'is_achieved': goalAchieved,
+      'total_time': totalTime,
+    };
+  }
+}
+
 class RecordService {
   static Future<String> setNewRecord(
     BuildContext context,
@@ -400,6 +427,39 @@ class RecordService {
       }
     } catch (e) {
       debugPrint('월별 기록 불러오기 실패: $e');
+    }
+    return result;
+  }
+
+  static Future<List<List<BookRecordHistory>>> getWeeklyRecord(
+    BuildContext context,
+    int backWeek, //몇주 전인지
+    int weekday,
+  ) async {
+    List<List<BookRecordHistory>> result = [];
+    int count = weekday == 7 ? 1 : weekday + 1;
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/record/weekly-record',
+        queryParameters: {
+          'back_week': backWeek,
+          'count': count,
+        },
+      );
+      if (response.statusCode == 200) {
+        for (var records in response.data) {
+          List<BookRecordHistory> bookRecords = [];
+          for (var record in records) {
+            bookRecords.add(BookRecordHistory.fromJson(record));
+          }
+          result.add(bookRecords);
+        }
+      } else {
+        debugPrint('주별 기록 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('주별 기록 불러오기 실패: $e');
     }
     return result;
   }
