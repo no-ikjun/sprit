@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/banner.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
@@ -13,6 +14,7 @@ import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/book/home_book_select.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
@@ -186,6 +188,8 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 InkWell(
                                   onTap: () {
+                                    AmplitudeService().logEvent(
+                                        AmplitudeEvent.homeBookAddButton);
                                     Navigator.pushNamed(context, '/search');
                                   },
                                   splashColor: Colors.transparent,
@@ -229,6 +233,12 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                       InkWell(
                                         onTap: () {
+                                          AmplitudeService().logEvent(
+                                              AmplitudeEvent.homeReadingBook,
+                                              eventProperties: {
+                                                "book_uuid":
+                                                    bookInfo[index].bookUuid
+                                              });
                                           showModal(
                                             context,
                                             HomeBookSelect(
@@ -259,6 +269,9 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 InkWell(
                                                   onTap: () {
+                                                    AmplitudeService().logEvent(
+                                                        AmplitudeEvent
+                                                            .homeBookAddButton);
                                                     Navigator.pushNamed(
                                                         context, '/search');
                                                   },
@@ -310,6 +323,8 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     InkWell(
                       onTap: () {
+                        AmplitudeService()
+                            .logEvent(AmplitudeEvent.homeSearchButton);
                         Navigator.pushNamed(context, '/search');
                       },
                       splashColor: Colors.transparent,
@@ -374,6 +389,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     InkWell(
                       onTap: () {
+                        AmplitudeService()
+                            .logEvent(AmplitudeEvent.homeNotificationButton);
                         Navigator.pushNamed(context, '/notification');
                       },
                       splashColor: Colors.transparent,
@@ -462,6 +479,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                         itemBuilder: (context, index, realIndex) => InkWell(
                           onTap: () {
+                            AmplitudeService().logEvent(
+                                AmplitudeEvent.homeBannerClick,
+                                eventProperties: {
+                                  "banner_url": bannerInfo[index].clickUrl
+                                });
                             Uri url = Uri.parse(bannerInfo[index].clickUrl);
                             launchUrl(url);
                           },
@@ -559,6 +581,12 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, index) => PopularBookWidget(
                               bookInfo: popularBookInfo[index],
                               onTap: () async {
+                                AmplitudeService().logEvent(
+                                    AmplitudeEvent.homePopularBookClick,
+                                    eventProperties: {
+                                      "book_uuid":
+                                          popularBookInfo[index].bookUuid
+                                    });
                                 setState(() {
                                   _isLoading = true;
                                 });
@@ -630,6 +658,8 @@ class _HomePageState extends State<HomePage> {
                       width: 30,
                     ),
                     onPressed: () {
+                      AmplitudeService()
+                          .logEvent(AmplitudeEvent.homeHamburgerClick);
                       Scaffold.of(context).openEndDrawer();
                     },
                   ),
