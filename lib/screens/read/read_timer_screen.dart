@@ -144,10 +144,34 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   void _loadTimerState() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _elapsedSeconds = prefs.getInt('elapsedSeconds') ?? 0;
-      _isRunning = prefs.getBool('isRunning') ?? true;
-    });
+    if (prefs.getString('recordCreated') != null) {
+      final recordCreated = DateTime.parse(prefs.getString('recordCreated')!);
+      final now = DateTime.now().toUtc();
+      final elapsedSeconds = now.difference(recordCreated).inSeconds;
+      if (elapsedSeconds >= 24 * 60 * 60) {
+        await deleteRecordByUuid(
+          context,
+          context
+              .read<SelectedRecordInfoState>()
+              .getSelectedRecordInfo
+              .recordUuid,
+        ).then((value) {
+          context.read<SelectedRecordInfoState>().removeSelectedRecord();
+          _stopTimer();
+          _resetTimer();
+          Navigator.pop(context);
+        });
+      }
+      debugPrint(elapsedSeconds.toString());
+      setState(() {
+        _elapsedSeconds = elapsedSeconds.abs();
+      });
+    } else {
+      setState(() {
+        _elapsedSeconds = prefs.getInt('elapsedSeconds') ?? 0;
+        _isRunning = prefs.getBool('isRunning') ?? true;
+      });
+    }
 
     if (_isRunning && _timer == null) {
       _startTimer();

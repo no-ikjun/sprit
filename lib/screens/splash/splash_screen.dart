@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/notification.dart';
+import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/library_section_order.dart';
+import 'package:sprit/providers/selected_book.dart';
+import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
 
 Future<void> registerFcmToken(BuildContext context, String fcmToken) async {
@@ -44,6 +49,28 @@ class _SplashScreenState extends State<SplashScreen> {
         final userInfo = await UserInfoService.getUserInfo(context);
         context.read<UserInfoState>().updateUserInfo(userInfo!);
         await registerFcmToken(context, fcmToken ?? '');
+        RecordInfo ongoingRecord =
+            await RecordService.getNotEndedRecord(context);
+        if (ongoingRecord.recordUuid != '') {
+          context.read<SelectedRecordInfoState>().updateSelectedRecord(
+                ongoingRecord,
+              );
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('recordCreated', ongoingRecord.createdAt);
+          BookInfo bookInfo = await BookInfoService.getBookInfoByUuid(
+            context,
+            ongoingRecord.bookUuid,
+          );
+          context
+              .read<SelectedBookInfoState>()
+              .updateSelectedBookUuid(bookInfo);
+          Navigator.pushReplacementNamed(
+            context,
+            RouteName.readTimer,
+            arguments: ongoingRecord.recordUuid,
+          );
+          return;
+        }
         Navigator.pushReplacementNamed(context, RouteName.home);
         return;
       }
