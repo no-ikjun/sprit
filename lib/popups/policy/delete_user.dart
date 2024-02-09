@@ -3,9 +3,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/notification.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/user_info.dart';
@@ -60,6 +62,8 @@ class DeleteUser extends StatelessWidget {
                 color: ColorSet.red.withOpacity(0.7),
                 borderColor: ColorSet.red.withOpacity(0.2),
                 onPressed: () async {
+                  AmplitudeService()
+                      .logEvent(AmplitudeEvent.profileDeleteConfirm);
                   //access token 삭제
                   const storage = FlutterSecureStorage();
                   storage.deleteAll();

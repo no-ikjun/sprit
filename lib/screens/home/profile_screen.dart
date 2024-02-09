@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/policy/change_nickname.dart';
 import 'package:sprit/popups/policy/change_password.dart';
 import 'package:sprit/popups/policy/delete_user.dart';
@@ -123,6 +125,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 InkWell(
                                   onTap: () {
+                                    AmplitudeService().logEvent(
+                                        AmplitudeEvent.profileChangeNickname);
                                     showModal(
                                       context,
                                       ChangeNickname(
@@ -210,6 +214,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 userInfoAll.registerType == "LOCAL"
                                     ? InkWell(
                                         onTap: () {
+                                          AmplitudeService().logEvent(
+                                              AmplitudeEvent
+                                                  .profileChangePassword);
                                           showModal(
                                             context,
                                             ChangePassword(callback: () {
@@ -295,6 +302,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           CustomButton(
                             onPressed: () {
+                              AmplitudeService()
+                                  .logEvent(AmplitudeEvent.profileLogoutClick);
                               showModal(context, const LogoutConfirm(), false);
                             },
                             width: Scaler.width(0.85, context),
@@ -312,6 +321,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             InkWell(
               onTap: () {
+                AmplitudeService().logEvent(AmplitudeEvent.profileDeleteClick);
                 showModal(context, const DeleteUser(), false);
               },
               splashColor: Colors.transparent,

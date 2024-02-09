@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/policy/logout.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,6 +58,8 @@ class NavDrawer extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () {
+                      AmplitudeService()
+                          .logEvent(AmplitudeEvent.drawerNoticeClick);
                       Uri url = Uri.parse(
                           "https://ikjun.notion.site/SPRIT-c9a608de7a82409fbc673c6ce7b7cfa8?pvs=4");
                       launchUrl(url);
@@ -111,6 +115,8 @@ class NavDrawer extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () {
+                      AmplitudeService()
+                          .logEvent(AmplitudeEvent.drawerProfileClick);
                       Navigator.pushNamed(context, RouteName.profile);
                     },
                     child: Row(
@@ -136,6 +142,8 @@ class NavDrawer extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () {
+                      AmplitudeService()
+                          .logEvent(AmplitudeEvent.drawerQuestionClick);
                       Uri url = Uri(
                         scheme: 'mailto',
                         path: "sprit@ikjun.com",
@@ -169,6 +177,8 @@ class NavDrawer extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () async {
+                      AmplitudeService()
+                          .logEvent(AmplitudeEvent.drawerLogoutClick);
                       showModal(context, const LogoutConfirm(), false);
                     },
                     child: Row(
