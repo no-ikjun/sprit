@@ -3,18 +3,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/quest/after_end.dart';
+import 'package:sprit/popups/quest/already_applied.dart';
+import 'package:sprit/popups/quest/apply_phone.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 class QuestBottomInfo extends StatefulWidget {
   final String startDate;
   final int applyCount;
+  final String questUuid;
   const QuestBottomInfo({
     super.key,
     required this.startDate,
     required this.applyCount,
+    required this.questUuid,
   });
 
   @override
@@ -149,7 +155,30 @@ class _QuestBottomInfoState extends State<QuestBottomInfo> {
             height: 15,
           ),
           CustomButton(
-            onPressed: () {},
+            onPressed: () async {
+              QuestApplyInfo applyInfo =
+                  await QuestService.findQuestApply(context, widget.questUuid);
+              if (applyInfo.applyUuid == '') {
+                showModal(
+                  context,
+                  QuestApplyPhone(questUuid: widget.questUuid),
+                  false,
+                );
+              } else if (getRemainingTime(DateTime.parse(widget.startDate)) ==
+                  '0시간 0분 0초') {
+                showModal(
+                  context,
+                  const AfterEndQuest(),
+                  false,
+                );
+              } else {
+                showModal(
+                  context,
+                  const AlreadyAppliedQuest(),
+                  false,
+                );
+              }
+            },
             width: Scaler.width(0.85, context),
             height: 50,
             child: const Text(

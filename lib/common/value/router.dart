@@ -6,6 +6,7 @@ import 'package:sprit/screens/login/sign_up_screen.dart';
 import 'package:sprit/screens/notification/ment_setting_screen.dart';
 import 'package:sprit/screens/notification/notification_screen.dart';
 import 'package:sprit/screens/notification/time_setting_screen.dart';
+import 'package:sprit/screens/quest/my_quest_screen.dart';
 import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
@@ -27,6 +28,7 @@ class RouteName {
   static const bookReport = "/bookReport";
   static const profile = "/profile";
   static const questDetail = "/questDetail";
+  static const myQuest = "/myQuest";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -40,4 +42,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.mentSetting: (context) => const MentSettingScreen(),
   RouteName.readTimer: (context) => const ReadTimerScreen(),
   RouteName.profile: (context) => const ProfileScreen(),
+  RouteName.myQuest: (context) => const MyQuestScreen(),
 };

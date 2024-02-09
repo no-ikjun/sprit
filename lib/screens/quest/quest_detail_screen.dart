@@ -71,6 +71,7 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
         child: QuestBottomInfo(
           applyCount: questInfo.applyCount,
           startDate: questInfo.startDate,
+          questUuid: questInfo.questUuid,
         ),
       ),
       body: SafeArea(
@@ -243,7 +244,7 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                                           width: 6,
                                         ),
                                         Text(
-                                          '${DateTime.parse(questInfo.endDate).difference(DateTime.parse(questInfo.startDate)).inDays}일',
+                                          '${DateTime.parse(questInfo.endDate).difference(DateTime.parse(questInfo.startDate)).inDays + 1}일',
                                           style: TextStyles
                                               .questDetailScheduleStyle,
                                         ),

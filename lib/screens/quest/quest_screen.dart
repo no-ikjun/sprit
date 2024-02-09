@@ -12,6 +12,7 @@ import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/remove_glow.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
@@ -42,20 +43,15 @@ class _QuestScreenState extends State<QuestScreen> {
   List<QuestInfo> endedQuests = [];
 
   Future<void> _fetchQuests() async {
-    await getActiveQuests(context).then((value) {
-      setState(() {
-        activeQuests = value;
-      });
-      getMyActiveQuests(context).then((value) {
-        setState(() {
-          myActiveQuests = value;
-        });
-        getEndedQuest(context).then((value) {
-          setState(() {
-            endedQuests = value;
-          });
-        });
-      });
+    final results = await Future.wait([
+      getActiveQuests(context),
+      getMyActiveQuests(context),
+      getEndedQuest(context),
+    ]);
+    setState(() {
+      activeQuests = results[0] as List<QuestInfo>;
+      myActiveQuests = results[1] as List<AppliedQuestResponse>;
+      endedQuests = results[2] as List<QuestInfo>;
     });
   }
 
@@ -161,7 +157,8 @@ class _QuestScreenState extends State<QuestScreen> {
                   width: 30,
                 ),
                 onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
+                  Uri url = Uri.parse("https://forms.gle/w38fCpWv9UnnR9R88");
+                  launchUrl(url);
                 },
               ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/widgets/modal.dart';
 
@@ -63,7 +64,9 @@ getPastTime(String timeData) {
   final now = DateTime.now();
   final time = DateTime.parse(timeData);
   final difference = now.difference(time);
-  if (difference.inDays > 0) {
+  if (difference.inDays > 30) {
+    return '${difference.inDays ~/ 30}달 전';
+  } else if (difference.inDays > 0) {
     return '${difference.inDays}일 전';
   } else if (difference.inHours > 0) {
     return '${difference.inHours}시간 전';
@@ -71,6 +74,21 @@ getPastTime(String timeData) {
     return '${difference.inMinutes}분 전';
   } else {
     return '방금 전';
+  }
+}
+
+getGoingtime(String timeData) {
+  final now = DateTime.now();
+  final time = DateTime.parse(timeData);
+  final difference = now.difference(time);
+  if (difference.inDays > 0) {
+    return '${difference.inDays}일째';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours}시간째';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes}분째';
+  } else {
+    return '방금 시작';
   }
 }
 
@@ -109,4 +127,28 @@ getSelectedDayFormat(int backWeek, int selectedIndex) {
   final month = selectedDay.month;
   final day = selectedDay.day;
   return '$year년 $month월 $day일';
+}
+
+getQuestStatusMent(QuestApplyInfo questApplyInfo) {
+  if (questApplyInfo.state == 'APPLY') {
+    return '시작일';
+  } else if (questApplyInfo.state == 'SUCCESS' ||
+      questApplyInfo.state == 'FAIL' ||
+      questApplyInfo.state == 'CHECKING') {
+    return '종료일';
+  } else {
+    return '시작한지';
+  }
+}
+
+getQuestStatusData(QuestInfo questInfo, QuestApplyInfo questApplyInfo) {
+  if (questApplyInfo.state == 'APPLY') {
+    return questInfo.startDate.substring(0, 10);
+  } else if (questApplyInfo.state == 'SUCCESS' ||
+      questApplyInfo.state == 'FAIL' ||
+      questApplyInfo.state == 'CHECKING') {
+    return getPastTime(questInfo.endDate);
+  } else {
+    return getGoingtime(questInfo.startDate);
+  }
 }

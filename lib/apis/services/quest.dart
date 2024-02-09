@@ -66,12 +66,14 @@ class QuestApplyInfo {
   final String questUuid;
   final String userUuid;
   final String state;
+  final String phoneNumber;
   final String createdAt;
   const QuestApplyInfo({
     required this.applyUuid,
     required this.questUuid,
     required this.userUuid,
     required this.state,
+    required this.phoneNumber,
     required this.createdAt,
   });
   QuestApplyInfo.fromJson(Map<String, dynamic> json)
@@ -79,12 +81,14 @@ class QuestApplyInfo {
         questUuid = json['quest_uuid'],
         userUuid = json['user_uuid'],
         state = json['state'],
+        phoneNumber = json['phone_number'],
         createdAt = json['created_at'];
   Map<String, dynamic> toJson() => {
         'apply_uuid': applyUuid,
         'quest_uuid': questUuid,
         'user_uuid': userUuid,
         'state': state,
+        'phone_number': phoneNumber,
         'created_at': createdAt,
       };
 }
@@ -161,6 +165,25 @@ class QuestService {
     return quests;
   }
 
+  static Future<List<AppliedQuestResponse>> getMyAllQuests(
+      BuildContext context) async {
+    List<AppliedQuestResponse> quests = [];
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/quest/my/all');
+      if (response.statusCode == 200) {
+        for (final json in response.data) {
+          quests.add(AppliedQuestResponse.fromJson(json));
+        }
+      } else {
+        debugPrint('퀘스트 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('퀘스트 조회 실패 $e');
+    }
+    return quests;
+  }
+
   static Future<QuestInfo> findQuestByUuid(
     BuildContext context,
     String questUuid,
@@ -183,7 +206,7 @@ class QuestService {
     );
     try {
       final response = await dio.get(
-        '/quest/find/',
+        '/quest/find',
         queryParameters: {
           'quest_uuid': questUuid,
         },
@@ -197,5 +220,59 @@ class QuestService {
       debugPrint('퀘스트 조회 실패 $e');
     }
     return questInfo;
+  }
+
+  static Future<void> applyQuest(
+    BuildContext context,
+    String questUuid,
+    String phoneNumber,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.post(
+        '/quest/apply',
+        queryParameters: {
+          'quest_uuid': questUuid,
+        },
+      );
+      if (response.statusCode == 201) {
+        debugPrint('퀘스트 신청 성공');
+      } else {
+        debugPrint('퀘스트 신청 실패');
+      }
+    } catch (e) {
+      debugPrint('퀘스트 신청 실패 $e');
+    }
+  }
+
+  static Future<QuestApplyInfo> findQuestApply(
+    BuildContext context,
+    String questUuid,
+  ) async {
+    final dio = await authDio(context);
+    QuestApplyInfo questApplyInfo = const QuestApplyInfo(
+      applyUuid: '',
+      questUuid: '',
+      userUuid: '',
+      state: '',
+      phoneNumber: '',
+      createdAt: '',
+    );
+    try {
+      final response = await dio.get(
+        '/quest/find/apply',
+        queryParameters: {
+          'quest_uuid': questUuid,
+        },
+      );
+      if (response.statusCode == 200) {
+        questApplyInfo = QuestApplyInfo.fromJson(response.data);
+      } else {
+        debugPrint('퀘스트 신청 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('퀘스트 신청 조회 실패 $e');
+    }
+    return questApplyInfo;
   }
 }
