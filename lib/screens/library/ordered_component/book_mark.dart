@@ -1,11 +1,15 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/book_mark_widget.dart';
 
 Future<BookMarkCallback> getBookMark(BuildContext context, int page) async {
@@ -168,6 +172,10 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                   ),
                   InkWell(
                     onTap: () async {
+                      AmplitudeService().logEvent(
+                        AmplitudeEvent.libraryBookmarkShowMore,
+                        context.read<UserInfoState>().userInfo.userUuid,
+                      );
                       await getBookMark(
                         context,
                         bookMarkCurrentPage + 1,

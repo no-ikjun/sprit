@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/library/state_select.dart';
 import 'package:sprit/providers/library_book_state.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/my_book_info.dart';
 
 Future<BookLibraryByStateListCallback> getBookLibraryByState(
@@ -74,6 +77,9 @@ class _MyBookInfoComponentState extends State<MyBookInfoComponent> {
               ),
               InkWell(
                 onTap: () {
+                  AmplitudeService().logEvent(
+                      AmplitudeEvent.libraryMyBookChoiceButton,
+                      context.read<UserInfoState>().userInfo.userUuid);
                   showModal(
                       context,
                       LibraryStateSelect(
@@ -200,6 +206,13 @@ class _MyBookInfoComponentState extends State<MyBookInfoComponent> {
                               ),
                               InkWell(
                                 onTap: () async {
+                                  AmplitudeService().logEvent(
+                                    AmplitudeEvent.libraryMyBookShowMore,
+                                    context
+                                        .read<UserInfoState>()
+                                        .userInfo
+                                        .userUuid,
+                                  );
                                   await getBookLibraryByState(
                                     context,
                                     context

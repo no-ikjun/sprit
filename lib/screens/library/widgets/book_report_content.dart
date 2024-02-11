@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 
 Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
@@ -81,6 +85,14 @@ class _BookReportContentState extends State<BookReportContent> {
         ),
         InkWell(
           onTap: () {
+            AmplitudeService().logEvent(
+              AmplitudeEvent.libraryReportDetailClick,
+              context.read<UserInfoState>().userInfo.userUuid,
+              eventProperties: {
+                'bookReportUuid': widget.reportUuid,
+                'bookUuid': widget.bookUuid,
+              },
+            );
             Navigator.pushNamed(
               context,
               RouteName.bookReport,

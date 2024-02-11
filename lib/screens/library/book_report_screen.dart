@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_report.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/book_report_edit.dart';
 import 'package:sprit/screens/library/widgets/report_selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -140,6 +144,14 @@ class _BookReportScreenState extends State<BookReportScreen> {
                       ),
                       InkWell(
                         onTap: () {
+                          AmplitudeService().logEvent(
+                            AmplitudeEvent.libraryReportDetailEdit,
+                            context.read<UserInfoState>().userInfo.userUuid,
+                            eventProperties: {
+                              'bookReportUuid': bookReportInfo.bookReportUuid,
+                              'bookUuid': bookReportInfo.bookUuid,
+                            },
+                          );
                           _showBottomModal(
                             context,
                             bookReportInfo.report,

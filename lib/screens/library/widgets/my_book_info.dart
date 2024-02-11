@@ -1,12 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/library/book_state.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 
 Future<BookInfo> getBookInfo(
@@ -120,6 +125,15 @@ class _MyBookInfoWidgetState extends State<MyBookInfoWidget> {
                         ),
                         InkWell(
                           onTap: () {
+                            AmplitudeService().logEvent(
+                              AmplitudeEvent.libraryMyBookChoice,
+                              context.read<UserInfoState>().userInfo.userUuid,
+                              eventProperties: {
+                                'bookUuid': bookInfo.bookUuid,
+                                'bookTitle': bookInfo.title,
+                                'bookState': widget.state,
+                              },
+                            );
                             showModal(
                               context,
                               BookStateChange(

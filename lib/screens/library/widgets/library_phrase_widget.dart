@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/library/patch_phrase.dart';
+import 'package:sprit/providers/user_info.dart';
 
 class LibraryPhraseWidget extends StatelessWidget {
   final String phraseUuid;
@@ -58,6 +62,14 @@ class LibraryPhraseWidget extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.libraryPhraseShowMore,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                    eventProperties: {
+                      'bookTitle': bookTitle,
+                      'phrase': phrase,
+                    },
+                  );
                   showModal(
                     context,
                     PatchPhrase(

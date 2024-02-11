@@ -3,9 +3,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/providers/library_book_state.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 class LibraryStateSelect extends StatefulWidget {
@@ -197,6 +200,13 @@ class _LibraryStateSelectState extends State<LibraryStateSelect> {
             prefs.setString(
                 'bookState', bookLibraryByStateListStateList.toString());
             widget.callback();
+            AmplitudeService().logEvent(
+              AmplitudeEvent.libraryMyBookState,
+              context.read<UserInfoState>().userInfo.userUuid,
+              eventProperties: {
+                'state': bookLibraryByStateListStateList.toString(),
+              },
+            );
             Navigator.pop(context);
           },
           width: Scaler.width(0.85, context),
