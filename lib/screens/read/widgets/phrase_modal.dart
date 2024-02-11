@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/switch_button.dart';
 
@@ -237,6 +241,10 @@ class _PhraseModalState extends State<PhraseModal> {
                     ),
                     CustomButton(
                       onPressed: () async {
+                        AmplitudeService().logEvent(
+                          AmplitudeEvent.recordSavePhrase,
+                          context.read<UserInfoState>().userInfo.userUuid,
+                        );
                         await submitPhrase();
                       },
                       width: Scaler.width(0.8, context),

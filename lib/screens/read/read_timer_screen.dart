@@ -5,15 +5,18 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/read/close_confirm.dart';
 import 'package:sprit/popups/read/end_page.dart';
 import 'package:sprit/popups/read/end_time.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/read/widgets/phrase_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -293,8 +296,30 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   InkWell(
                                     onTap: () {
                                       if (_isRunning) {
+                                        AmplitudeService().logEvent(
+                                          AmplitudeEvent.recordPauseButton,
+                                          context
+                                              .read<UserInfoState>()
+                                              .userInfo
+                                              .userUuid,
+                                          eventProperties: {
+                                            'recordUuid':
+                                                selectedRecordInfo.recordUuid,
+                                          },
+                                        );
                                         _stopTimer();
                                       } else {
+                                        AmplitudeService().logEvent(
+                                          AmplitudeEvent.recordPlayButton,
+                                          context
+                                              .read<UserInfoState>()
+                                              .userInfo
+                                              .userUuid,
+                                          eventProperties: {
+                                            'recordUuid':
+                                                selectedRecordInfo.recordUuid,
+                                          },
+                                        );
                                         _startTimer();
                                       }
                                     },
@@ -327,13 +352,19 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                           InkWell(
                             onTap: () {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordAddPhraseButton,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  'recordUuid': selectedRecordInfo.recordUuid,
+                                },
+                              );
                               _showBottomModal(context, phrase, remind,
                                   (value) {
                                 setState(() {
                                   phrase = value;
                                 });
                               }, () {
-                                debugPrint('리마인드 알림 변경');
                                 setState(() {
                                   remind = !remind;
                                 });
@@ -394,6 +425,13 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                         children: [
                           InkWell(
                             onTap: () async {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordCloseButton,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  'recordUuid': selectedRecordInfo.recordUuid,
+                                },
+                              );
                               await showModal(
                                 context,
                                 CloseConfirm(onLeftPressed: () {
@@ -441,6 +479,10 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                           InkWell(
                             onTap: () {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordEndButton,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                              );
                               if (selectedRecordInfo.goalType == 'TIME') {
                                 showModal(
                                   context,
