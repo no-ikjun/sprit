@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/quest/widgets/small_quest_widget.dart';
 
 class MyQuestsWidget extends StatelessWidget {
@@ -87,6 +91,10 @@ class MyQuestsWidget extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
+              AmplitudeService().logEvent(
+                AmplitudeEvent.questShowAll,
+                context.read<UserInfoState>().userInfo.userUuid,
+              );
               Navigator.pushNamed(context, RouteName.myQuest);
             },
             splashColor: Colors.transparent,

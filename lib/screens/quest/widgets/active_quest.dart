@@ -4,12 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:marquee/marquee.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 
 class ActiveQuestsWidget extends StatefulWidget {
   const ActiveQuestsWidget({
@@ -218,6 +222,17 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                                       ),
                                       InkWell(
                                         onTap: () {
+                                          AmplitudeService().logEvent(
+                                            AmplitudeEvent.questDetailClick,
+                                            context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
+                                            eventProperties: {
+                                              'quest_uuid': widget
+                                                  .activeQuests[index].questUuid
+                                            },
+                                          );
                                           Navigator.pushNamed(
                                             context,
                                             RouteName.questDetail,

@@ -2,14 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/quest/after_end.dart';
 import 'package:sprit/popups/quest/already_applied.dart';
 import 'package:sprit/popups/quest/apply_phone.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 class QuestBottomInfo extends StatefulWidget {
@@ -159,6 +163,10 @@ class _QuestBottomInfoState extends State<QuestBottomInfo> {
               QuestApplyInfo applyInfo =
                   await QuestService.findQuestApply(context, widget.questUuid);
               if (applyInfo.applyUuid == '') {
+                AmplitudeService().logEvent(
+                  AmplitudeEvent.questApplyButton,
+                  context.read<UserInfoState>().userInfo.userUuid,
+                );
                 showModal(
                   context,
                   QuestApplyPhone(questUuid: widget.questUuid),
