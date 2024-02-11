@@ -616,15 +616,17 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () async {
                                         setState(() {
                                           AmplitudeService().logEvent(
-                                    AmplitudeEvent.homePopularBookClick,
-                                    context
-                                        .read<UserInfoState>()
-                                        .userInfo
-                                        .userUuid,
-                                    eventProperties: {
-                                      "book_uuid":
-                                          popularBookInfo[index].bookUuid
-                                    });
+                                              AmplitudeEvent
+                                                  .homePopularBookClick,
+                                              context
+                                                  .read<UserInfoState>()
+                                                  .userInfo
+                                                  .userUuid,
+                                              eventProperties: {
+                                                "book_uuid":
+                                                    popularBookInfo[index]
+                                                        .bookUuid
+                                              });
                                           _isLoading = true;
                                         });
                                         await showBookInfo(

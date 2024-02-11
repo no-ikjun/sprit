@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book.dart';
-import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';

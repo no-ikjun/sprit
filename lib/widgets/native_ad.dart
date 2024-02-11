@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -22,8 +24,12 @@ class _NativeTemplateExampleExampleState extends State<NativeAdTemplate> {
     // Create the ad objects and load ads.
     _nativeAd = NativeAd(
       adUnitId: kReleaseMode
-          ? dotenv.env['ADMOB_IOS_NATIVE_AD_UNIT_ID']!
-          : 'ca-app-pub-3940256099942544/3986624511',
+          ? Platform.isAndroid
+              ? dotenv.env['ADMOB_ANDROID_NATIVE_AD_UNIT_ID']!
+              : dotenv.env['ADMOB_IOS_NATIVE_AD_UNIT_ID']!
+          : Platform.isAndroid
+              ? 'ca-app-pub-3940256099942544/2247696110'
+              : 'ca-app-pub-3940256099942544/3986624511',
       factoryId: 'adFactoryExample',
       request: const AdRequest(),
       listener: NativeAdListener(
@@ -43,7 +49,7 @@ class _NativeTemplateExampleExampleState extends State<NativeAdTemplate> {
       nativeTemplateStyle: NativeTemplateStyle(
         templateType: TemplateType.small,
         cornerRadius: 8.0,
-        mainBackgroundColor: ColorSet.white,
+        mainBackgroundColor: Colors.transparent,
         callToActionTextStyle: NativeTemplateTextStyle(
           textColor: ColorSet.white,
           backgroundColor: ColorSet.primary,
@@ -82,14 +88,19 @@ class _NativeTemplateExampleExampleState extends State<NativeAdTemplate> {
   Widget build(BuildContext context) {
     return (_nativeAd != null && _nativeAdIsLoaded)
         ? ConstrainedBox(
-            constraints: const BoxConstraints(
+            constraints: BoxConstraints(
               minWidth: 320,
-              minHeight: 110,
+              minHeight: 90,
               maxWidth: 400,
-              maxHeight: 110,
+              maxHeight: Platform.isAndroid ? 90 : 110,
             ),
-            child: AdWidget(ad: _nativeAd!),
+            child: Container(
+              alignment: Alignment.center,
+              child: AdWidget(ad: _nativeAd!),
+            ),
           )
-        : Container();
+        : Container(
+            height: 110,
+          );
   }
 }

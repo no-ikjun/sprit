@@ -10,6 +10,7 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/screens/search/widgets/search_result.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/loader.dart';
+import 'package:sprit/widgets/native_ad.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
 Future<Map<String, dynamic>> searchBook(
@@ -274,25 +275,39 @@ class _SearchScreenState extends State<SearchScreen>
                                       shrinkWrap: true,
                                       itemCount: searchResult.length,
                                       itemBuilder: (context, index) {
-                                        return SearchResultWidget(
-                                          bookInfo: searchResult[index],
-                                          onTap: () async {
-                                            setState(() {
-                                              isBookInfoLoading = true;
-                                            });
-                                            await showBookInfo(
-                                              context,
-                                              searchResult[index]
-                                                  .isbn
-                                                  .trim()
-                                                  .split(' ')[0],
-                                              searchResult[index].isbn,
-                                            ).then((value) {
-                                              setState(() {
-                                                isBookInfoLoading = false;
-                                              });
-                                            });
-                                          },
+                                        return Column(
+                                          children: [
+                                            index % 9 == 0 && index != 0
+                                                ? const Column(
+                                                    children: [
+                                                      NativeAdTemplate(),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Container(),
+                                            SearchResultWidget(
+                                              bookInfo: searchResult[index],
+                                              onTap: () async {
+                                                setState(() {
+                                                  isBookInfoLoading = true;
+                                                });
+                                                await showBookInfo(
+                                                  context,
+                                                  searchResult[index]
+                                                      .isbn
+                                                      .trim()
+                                                      .split(' ')[0],
+                                                  searchResult[index].isbn,
+                                                ).then((value) {
+                                                  setState(() {
+                                                    isBookInfoLoading = false;
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                          ],
                                         );
                                       },
                                     ),
