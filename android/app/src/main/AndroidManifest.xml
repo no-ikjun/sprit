@@ -30,6 +30,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
+        <!--Admob App ID-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2222926756194557~2822044777"/>
         <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
         <activity 
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
