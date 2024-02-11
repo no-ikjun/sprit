@@ -3,11 +3,15 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
@@ -122,11 +126,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               padding: 3,
               radius: 8,
               onLeftTap: () {
+                AmplitudeService().logEvent(
+                  AmplitudeEvent.analyticsToggleValue,
+                  context.read<UserInfoState>().userInfo.userUuid,
+                  eventProperties: {
+                    'value': 'week',
+                  },
+                );
                 setState(() {
                   toggleValue = 'week';
                 });
               },
               onRightTap: () {
+                AmplitudeService().logEvent(
+                  AmplitudeEvent.analyticsToggleValue,
+                  context.read<UserInfoState>().userInfo.userUuid,
+                  eventProperties: {
+                    'value': 'day',
+                  },
+                );
                 setState(() {
                   toggleValue = 'day';
                 });
