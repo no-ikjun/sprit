@@ -1,8 +1,15 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_library.dart';
+import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/book_mark_widget.dart';
 
 Future<BookMarkCallback> getBookMark(BuildContext context, int page) async {
@@ -59,42 +66,104 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
         const SizedBox(
           height: 8,
         ),
-        SizedBox(
-          width: Scaler.width(0.85, context),
-          child: Column(
-            children: List.generate(
-              ((bookMarkInfoList.length - 1) ~/ 3 + 1),
-              (index) {
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(3, (index2) {
-                        index2 += index * 3;
-                        if (index2 < bookMarkInfoList.length) {
-                          return BookMarkWidget(
-                            bookUuid: bookMarkInfoList[index2].bookUuid,
-                            thumbnail: bookMarkInfoList[index2].thumbnail,
-                            lastPage: bookMarkInfoList[index2].lastPage,
+        bookMarkInfoList.isNotEmpty
+            ? SizedBox(
+                width: Scaler.width(0.85, context),
+                child: Column(
+                  children: List.generate(
+                    ((bookMarkInfoList.length - 1) ~/ 3 + 1),
+                    (index) {
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(3, (index2) {
+                              index2 += index * 3;
+                              if (index2 < bookMarkInfoList.length) {
+                                return BookMarkWidget(
+                                  bookUuid: bookMarkInfoList[index2].bookUuid,
+                                  thumbnail: bookMarkInfoList[index2].thumbnail,
+                                  lastPage: bookMarkInfoList[index2].lastPage,
+                                );
+                              } else {
+                                return SizedBox(
+                                  width: Scaler.width(0.25, context),
+                                );
+                              }
+                            }),
+                          ),
+                          index != ((bookMarkInfoList.length - 1) ~/ 3)
+                              ? const SizedBox(
+                                  height: 12,
+                                )
+                              : Container(),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              )
+            : SizedBox(
+                width: Scaler.width(0.85, context),
+                height: 100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '읽고있는 책이 없어요',
+                        style: TextStyles.myLibraryWarningStyle.copyWith(
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            RouteName.search,
                           );
-                        } else {
-                          return SizedBox(
-                            width: Scaler.width(0.25, context),
-                          );
-                        }
-                      }),
-                    ),
-                    index != ((bookMarkInfoList.length - 1) ~/ 3)
-                        ? const SizedBox(
-                            height: 12,
-                          )
-                        : Container(),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
+                        },
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ColorSet.white,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(0, 0),
+                                blurRadius: 4,
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '읽는 중인 책 등록하기 ',
+                                style: TextStyles.myLibraryBookMarkEmptyStyle,
+                              ),
+                              Icon(
+                                Icons.search,
+                                size: 16,
+                                color: ColorSet.darkGrey,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
         bookMarkMoreAvailable
             ? Column(
                 children: [
@@ -103,6 +172,10 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                   ),
                   InkWell(
                     onTap: () async {
+                      AmplitudeService().logEvent(
+                        AmplitudeEvent.libraryBookmarkShowMore,
+                        context.read<UserInfoState>().userInfo.userUuid,
+                      );
                       await getBookMark(
                         context,
                         bookMarkCurrentPage + 1,
@@ -132,7 +205,42 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                   ),
                 ],
               )
-            : Container(),
+            : bookMarkInfoList.length > 3
+                ? Column(
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          setState(() {
+                            bookMarkInfoList = bookMarkInfoList.sublist(0, 3);
+                            bookMarkMoreAvailable = true;
+                            bookMarkCurrentPage = 1;
+                          });
+                        },
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              '숨기기',
+                              style: TextStyles.myLibraryShowMoreStyle,
+                            ),
+                            Transform.rotate(
+                              angle: 180 * math.pi / 180,
+                              child: SvgPicture.asset(
+                                'assets/images/show_more_grey.svg',
+                                width: 21,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
       ],
     );
   }

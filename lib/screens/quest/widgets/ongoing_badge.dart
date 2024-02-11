@@ -4,19 +4,19 @@ import 'package:sprit/common/ui/text_styles.dart';
 
 class OngoingBadge extends StatelessWidget {
   final String state;
-  const OngoingBadge({Key? key, required this.state}) : super(key: key);
+  const OngoingBadge({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
     Color color = ColorSet.primary;
-    if (state == 'APPLY') {
+    if (state == 'APPLY' || state == 'CHECKING') {
       color = ColorSet.grey;
     } else if (state == 'ONGOING') {
       color = ColorSet.primary;
     } else if (state == 'SUCCESS') {
-      color = ColorSet.primary;
+      color = ColorSet.green;
     } else if (state == 'FAIL') {
-      color = ColorSet.grey;
+      color = ColorSet.red;
     }
     String text = '진행중';
     if (state == 'APPLY') {
@@ -27,6 +27,8 @@ class OngoingBadge extends StatelessWidget {
       text = '성공';
     } else if (state == 'FAIL') {
       text = '실패';
+    } else if (state == 'CHECKING') {
+      text = '검토중';
     }
     return Container(
       height: 16,

@@ -1,12 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:marquee/marquee.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 
-class ActiveQuestsWidget extends StatelessWidget {
+class ActiveQuestsWidget extends StatefulWidget {
   const ActiveQuestsWidget({
     super.key,
     required this.activeQuests,
@@ -17,8 +26,29 @@ class ActiveQuestsWidget extends StatelessWidget {
   final bool isLoading;
 
   @override
+  State<ActiveQuestsWidget> createState() => _ActiveQuestsWidgetState();
+}
+
+class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return activeQuests.isEmpty
+    return widget.activeQuests.isEmpty
         ? Column(
             children: [
               const SizedBox(
@@ -60,7 +90,7 @@ class ActiveQuestsWidget extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: activeQuests.length,
+                  itemCount: widget.activeQuests.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
@@ -86,7 +116,7 @@ class ActiveQuestsWidget extends StatelessWidget {
                           child: Column(
                             children: [
                               Image.network(
-                                activeQuests[index].thumbnailUrl,
+                                widget.activeQuests[index].thumbnailUrl,
                                 width: 180,
                                 height: 90,
                                 fit: BoxFit.cover,
@@ -118,12 +148,15 @@ class ActiveQuestsWidget extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          activeQuests[index].title.length > 12
+                                          widget.activeQuests[index].title
+                                                      .length >
+                                                  12
                                               ? SizedBox(
                                                   width: 156,
                                                   height: 20,
                                                   child: Marquee(
-                                                    text: activeQuests[index]
+                                                    text: widget
+                                                        .activeQuests[index]
                                                         .title,
                                                     style: TextStyles
                                                         .questWidgetTitleStyle,
@@ -157,7 +190,8 @@ class ActiveQuestsWidget extends StatelessWidget {
                                                       MainAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      activeQuests[index].title,
+                                                      widget.activeQuests[index]
+                                                          .title,
                                                       style: TextStyles
                                                           .questWidgetTitleStyle,
                                                     ),
@@ -170,29 +204,59 @@ class ActiveQuestsWidget extends StatelessWidget {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Text(
-                                            '마감까지',
+                                            '남은시간',
                                             style: TextStyles
                                                 .questWidgetDescriptionStyle
                                                 .copyWith(
                                               color: ColorSet.semiDarkGrey,
                                             ),
                                           ),
-                                          const Text(
-                                            '7일 14시간 4분',
+                                          Text(
+                                            getRemainingTime(DateTime.parse(
+                                                widget.activeQuests[index]
+                                                    .startDate)),
                                             style: TextStyles
                                                 .questWidgetDescriptionStyle,
                                           ),
                                         ],
                                       ),
-                                      const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '자세히 보기 >',
-                                            style: TextStyles.questButtonStyle,
-                                          ),
-                                        ],
+                                      InkWell(
+                                        onTap: () {
+                                          AmplitudeService().logEvent(
+                                            AmplitudeEvent.questDetailClick,
+                                            context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
+                                            eventProperties: {
+                                              'quest_uuid': widget
+                                                  .activeQuests[index].questUuid
+                                            },
+                                          );
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouteName.questDetail,
+                                            arguments: widget
+                                                .activeQuests[index].questUuid,
+                                          );
+                                        },
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              '자세히 보기',
+                                              style:
+                                                  TextStyles.questButtonStyle,
+                                            ),
+                                            SvgPicture.asset(
+                                              'assets/images/right_arrow_grey.svg',
+                                              width: 15,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -201,12 +265,12 @@ class ActiveQuestsWidget extends StatelessWidget {
                             ],
                           ),
                         ),
-                        (index != activeQuests.length - 1)
+                        (index != widget.activeQuests.length - 1)
                             ? const SizedBox(
                                 width: 11,
                               )
                             : Container(),
-                        (index == activeQuests.length - 1)
+                        (index == widget.activeQuests.length - 1)
                             ? SizedBox(width: Scaler.width(0.075, context))
                             : Container(),
                       ],

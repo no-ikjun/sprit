@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/review.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/providers/selected_book.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
@@ -252,6 +255,10 @@ class _ReviewModalState extends State<ReviewModal> {
           width: Scaler.width(0.85, context),
           height: 50,
           onPressed: () async {
+            AmplitudeService().logEvent(
+              AmplitudeEvent.recordReviewSaveButton,
+              context.read<UserInfoState>().userInfo.userUuid,
+            );
             await setReview(
               context,
               score,

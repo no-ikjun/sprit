@@ -5,15 +5,18 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/read/close_confirm.dart';
 import 'package:sprit/popups/read/end_page.dart';
 import 'package:sprit/popups/read/end_time.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/read/widgets/phrase_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -89,8 +92,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
       debugPrint('백그라운드 전환');
       _lastPausedTime = DateTime.now();
       _saveTimerState();
@@ -100,16 +103,23 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     }
   }
 
-  void _updateTimerAfterResume() {
+  void _updateTimerAfterResume() async {
+    final prefs = await SharedPreferences.getInstance();
     final currentTime = DateTime.now();
     if (_lastPausedTime != null) {
       final pauseDuration = currentTime.difference(_lastPausedTime!).inSeconds;
+      final wasRunning = prefs.getBool('isRunning') ?? true;
+      final newTime =
+          wasRunning ? _elapsedSeconds + pauseDuration : _elapsedSeconds;
       setState(() {
-        _elapsedSeconds += pauseDuration;
+        _elapsedSeconds = newTime;
+        _isRunning = wasRunning;
       });
+      if (_isRunning) {
+        _startTimer();
+      }
       _lastPausedTime = null;
     }
-    _loadTimerState();
   }
 
   void _startTimer() {
@@ -124,13 +134,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     setState(() {
       _isRunning = true;
     });
-    _saveTimerState();
   }
 
   void _stopTimer() {
     if (_timer != null) {
       _timer!.cancel();
-      _saveTimerState();
       setState(() {
         _isRunning = false;
       });
@@ -139,10 +147,34 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
 
   void _loadTimerState() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _elapsedSeconds = prefs.getInt('elapsedSeconds') ?? 0;
-      _isRunning = prefs.getBool('isRunning') ?? true;
-    });
+    if (prefs.getString('recordCreated') != null) {
+      final recordCreated = DateTime.parse(prefs.getString('recordCreated')!);
+      final now = DateTime.now().toUtc();
+      final elapsedSeconds = now.difference(recordCreated).inSeconds;
+      if (elapsedSeconds >= 24 * 60 * 60) {
+        await deleteRecordByUuid(
+          context,
+          context
+              .read<SelectedRecordInfoState>()
+              .getSelectedRecordInfo
+              .recordUuid,
+        ).then((value) {
+          context.read<SelectedRecordInfoState>().removeSelectedRecord();
+          _stopTimer();
+          _resetTimer();
+          prefs.remove('recordCreated');
+          Navigator.pop(context);
+        });
+      }
+      setState(() {
+        _elapsedSeconds = elapsedSeconds.abs();
+      });
+    } else {
+      setState(() {
+        _elapsedSeconds = prefs.getInt('elapsedSeconds') ?? 0;
+        _isRunning = prefs.getBool('isRunning') ?? true;
+      });
+    }
 
     if (_isRunning && _timer == null) {
       _startTimer();
@@ -150,9 +182,20 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
   }
 
   void _saveTimerState() async {
+    _lastPausedTime = DateTime.now();
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('elapsedSeconds', _elapsedSeconds);
     prefs.setBool('isRunning', _isRunning);
+  }
+
+  void _resetTimer() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('elapsedSeconds');
+    prefs.remove('isRunning');
+    setState(() {
+      _elapsedSeconds = 0;
+      _isRunning = true;
+    });
   }
 
   String _formatTime(int seconds) {
@@ -253,8 +296,30 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   InkWell(
                                     onTap: () {
                                       if (_isRunning) {
+                                        AmplitudeService().logEvent(
+                                          AmplitudeEvent.recordPauseButton,
+                                          context
+                                              .read<UserInfoState>()
+                                              .userInfo
+                                              .userUuid,
+                                          eventProperties: {
+                                            'recordUuid':
+                                                selectedRecordInfo.recordUuid,
+                                          },
+                                        );
                                         _stopTimer();
                                       } else {
+                                        AmplitudeService().logEvent(
+                                          AmplitudeEvent.recordPlayButton,
+                                          context
+                                              .read<UserInfoState>()
+                                              .userInfo
+                                              .userUuid,
+                                          eventProperties: {
+                                            'recordUuid':
+                                                selectedRecordInfo.recordUuid,
+                                          },
+                                        );
                                         _startTimer();
                                       }
                                     },
@@ -287,13 +352,19 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                           InkWell(
                             onTap: () {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordAddPhraseButton,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  'recordUuid': selectedRecordInfo.recordUuid,
+                                },
+                              );
                               _showBottomModal(context, phrase, remind,
                                   (value) {
                                 setState(() {
                                   phrase = value;
                                 });
                               }, () {
-                                debugPrint('리마인드 알림 변경');
                                 setState(() {
                                   remind = !remind;
                                 });
@@ -354,6 +425,13 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                         children: [
                           InkWell(
                             onTap: () async {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordCloseButton,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  'recordUuid': selectedRecordInfo.recordUuid,
+                                },
+                              );
                               await showModal(
                                 context,
                                 CloseConfirm(onLeftPressed: () {
@@ -366,12 +444,8 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   context
                                       .read<SelectedRecordInfoState>()
                                       .removeSelectedRecord();
-                                  SharedPreferences.getInstance().then(
-                                    (prefs) {
-                                      prefs.remove('elapsedSeconds');
-                                      prefs.remove('isRunning');
-                                    },
-                                  );
+                                  _stopTimer();
+                                  _resetTimer();
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 }),
@@ -405,6 +479,10 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                           ),
                           InkWell(
                             onTap: () {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordEndButton,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                              );
                               if (selectedRecordInfo.goalType == 'TIME') {
                                 showModal(
                                   context,

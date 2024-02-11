@@ -1,8 +1,13 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/library_phrase_widget.dart';
 
 Future<PhraseLibraryListCallback> getPhraseForLibrary(
@@ -71,6 +76,22 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                     phraseUuid: phraseInfoList[index].phraseUuid,
                     phrase: phraseInfoList[index].phrase,
                     bookTitle: phraseInfoList[index].bookTitle,
+                    callback: () async {
+                      setState(() {
+                        phraseInfoList = [];
+                        phraseCurrentPage = 1;
+                        phraseMoreAvailable = false;
+                      });
+                      await getPhraseForLibrary(
+                        context,
+                        phraseCurrentPage,
+                      ).then((value) {
+                        setState(() {
+                          phraseInfoList = value.phraseLibraryList;
+                          phraseMoreAvailable = value.moreAvailable;
+                        });
+                      });
+                    },
                   ),
                   index != phraseInfoList.length - 1
                       ? const SizedBox(
@@ -90,6 +111,10 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                   ),
                   InkWell(
                     onTap: () async {
+                      AmplitudeService().logEvent(
+                        AmplitudeEvent.libraryPhraseShowMore,
+                        context.read<UserInfoState>().userInfo.userUuid,
+                      );
                       await getPhraseForLibrary(
                         context,
                         phraseCurrentPage + 1,
@@ -119,7 +144,42 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                   ),
                 ],
               )
-            : Container(),
+            : phraseInfoList.length > 3
+                ? Column(
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          setState(() {
+                            phraseInfoList = phraseInfoList.sublist(0, 3);
+                            phraseMoreAvailable = true;
+                            phraseCurrentPage = 1;
+                          });
+                        },
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              '숨기기',
+                              style: TextStyles.myLibraryShowMoreStyle,
+                            ),
+                            Transform.rotate(
+                              angle: 180 * math.pi / 180,
+                              child: SvgPicture.asset(
+                                'assets/images/show_more_grey.svg',
+                                width: 21,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
       ],
     );
   }

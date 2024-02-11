@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final int maxLines;
   final int maxLength;
+  final String defaultText;
 
   const CustomTextField({
     super.key,
@@ -35,6 +36,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.maxLines = 1,
     this.maxLength = 100,
+    this.defaultText = '',
   });
 
   @override
@@ -43,6 +45,7 @@ class CustomTextField extends StatelessWidget {
       width: width,
       height: height,
       child: TextField(
+        controller: TextEditingController()..text = defaultText,
         autofocus: autofocus,
         obscureText: obscureText,
         keyboardType: keyboardType,

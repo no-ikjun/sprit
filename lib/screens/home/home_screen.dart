@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/banner.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/popups/book/home_book_select.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
@@ -24,6 +28,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
   return await BookLibraryService.getBookLibrary(context, 'READING');
+}
+
+Future<bool> deleteBook(BuildContext context, String bookUuid) async {
+  return await BookLibraryService.deleteBookLibrary(context, bookUuid);
 }
 
 void updateUserInfo(BuildContext context) async {
@@ -181,6 +189,13 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 InkWell(
                                   onTap: () {
+                                    AmplitudeService().logEvent(
+                                      AmplitudeEvent.homeBookAddButton,
+                                      context
+                                          .read<UserInfoState>()
+                                          .userInfo
+                                          .userUuid,
+                                    );
                                     Navigator.pushNamed(context, '/search');
                                   },
                                   splashColor: Colors.transparent,
@@ -223,7 +238,34 @@ class _HomePageState extends State<HomePage> {
                                               width: 0,
                                             ),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          AmplitudeService().logEvent(
+                                              AmplitudeEvent.homeReadingBook,
+                                              context
+                                                  .read<UserInfoState>()
+                                                  .userInfo
+                                                  .userUuid,
+                                              eventProperties: {
+                                                "book_uuid":
+                                                    bookInfo[index].bookUuid
+                                              });
+                                          showModal(
+                                            context,
+                                            HomeBookSelect(
+                                              bookTitle: bookInfo[index].title,
+                                              bookUuid:
+                                                  bookInfo[index].bookUuid,
+                                              onDelete: () async {
+                                                await deleteBook(
+                                                  context,
+                                                  bookInfo[index].bookUuid,
+                                                );
+                                                _onRefresh();
+                                              },
+                                            ),
+                                            false,
+                                          );
+                                        },
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         child: BookThumbnail(
@@ -237,6 +279,14 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 InkWell(
                                                   onTap: () {
+                                                    AmplitudeService().logEvent(
+                                                      AmplitudeEvent
+                                                          .homeBookAddButton,
+                                                      context
+                                                          .read<UserInfoState>()
+                                                          .userInfo
+                                                          .userUuid,
+                                                    );
                                                     Navigator.pushNamed(
                                                         context, '/search');
                                                   },
@@ -288,6 +338,10 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     InkWell(
                       onTap: () {
+                        AmplitudeService().logEvent(
+                          AmplitudeEvent.homeSearchButton,
+                          context.read<UserInfoState>().userInfo.userUuid,
+                        );
                         Navigator.pushNamed(context, '/search');
                       },
                       splashColor: Colors.transparent,
@@ -352,6 +406,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     InkWell(
                       onTap: () {
+                        AmplitudeService().logEvent(
+                          AmplitudeEvent.homeNotificationButton,
+                          context.read<UserInfoState>().userInfo.userUuid,
+                        );
                         Navigator.pushNamed(context, '/notification');
                       },
                       splashColor: Colors.transparent,
@@ -440,6 +498,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                         itemBuilder: (context, index, realIndex) => InkWell(
                           onTap: () {
+                            AmplitudeService().logEvent(
+                                AmplitudeEvent.homeBannerClick,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  "banner_url": bannerInfo[index].clickUrl
+                                });
                             Uri url = Uri.parse(bannerInfo[index].clickUrl);
                             launchUrl(url);
                           },
@@ -551,6 +615,16 @@ class _HomePageState extends State<HomePage> {
                                       bookInfo: popularBookInfo[index],
                                       onTap: () async {
                                         setState(() {
+                                          AmplitudeService().logEvent(
+                                    AmplitudeEvent.homePopularBookClick,
+                                    context
+                                        .read<UserInfoState>()
+                                        .userInfo
+                                        .userUuid,
+                                    eventProperties: {
+                                      "book_uuid":
+                                          popularBookInfo[index].bookUuid
+                                    });
                                           _isLoading = true;
                                         });
                                         await showBookInfo(
@@ -623,6 +697,10 @@ class _HomePageState extends State<HomePage> {
                       width: 30,
                     ),
                     onPressed: () {
+                      AmplitudeService().logEvent(
+                        AmplitudeEvent.homeHamburgerClick,
+                        context.read<UserInfoState>().userInfo.userUuid,
+                      );
                       Scaffold.of(context).openEndDrawer();
                     },
                   ),

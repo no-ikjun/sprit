@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/read/review.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/read/widgets/book_report_modal.dart';
 import 'package:sprit/screens/read/widgets/record_share_modal.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
@@ -167,6 +170,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
               ),
               InkWell(
                 onTap: () {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.recordCompleteButton,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   setState(() {
                     ischecked = !ischecked;
                   });
@@ -200,6 +207,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                         ),
                         InkWell(
                           onTap: () {
+                            AmplitudeService().logEvent(
+                              AmplitudeEvent.recordAddReportButton,
+                              context.read<UserInfoState>().userInfo.userUuid,
+                            );
                             _showReportModal(
                               context,
                             );
@@ -258,6 +269,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                       color: ColorSet.lightGrey,
                       borderColor: ColorSet.lightGrey,
                       onPressed: () {
+                        AmplitudeService().logEvent(
+                          AmplitudeEvent.recordShareButton,
+                          context.read<UserInfoState>().userInfo.userUuid,
+                        );
                         _showShareModal(
                           context,
                           (context
@@ -276,6 +291,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                       width: Scaler.width(0.85, context) * 0.5 - 5,
                       height: 50,
                       onPressed: () async {
+                        AmplitudeService().logEvent(
+                          AmplitudeEvent.recordGoHome,
+                          context.read<UserInfoState>().userInfo.userUuid,
+                        );
                         if (ischecked) {
                           await updateBookLibraryState(
                             context,

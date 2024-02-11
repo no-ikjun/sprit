@@ -8,10 +8,13 @@ import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/providers/selected_book.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
@@ -247,6 +250,10 @@ class _RecordShareModalState extends State<RecordShareModal> {
               ),
               CustomButton(
                 onPressed: () async {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.recordShareModalButton,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
                   saveImage(_imageFile!);
                 },
                 width: Scaler.width(0.8, context),

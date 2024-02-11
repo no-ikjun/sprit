@@ -14,6 +14,15 @@ class UserInfoState with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateNickname(String nickname) {
+    _userInfo = UserInfo(
+      userUuid: _userInfo.userUuid,
+      userNickname: nickname,
+      registerType: _userInfo.registerType,
+    );
+    notifyListeners();
+  }
+
   void removeUserInfo() {
     _userInfo = const UserInfo(
       userUuid: '',

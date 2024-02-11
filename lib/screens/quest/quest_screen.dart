@@ -12,6 +12,7 @@ import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/remove_glow.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
@@ -27,7 +28,7 @@ Future<List<QuestInfo>> getEndedQuest(BuildContext context) async {
 }
 
 class QuestScreen extends StatefulWidget {
-  const QuestScreen({Key? key}) : super(key: key);
+  const QuestScreen({super.key});
 
   @override
   State<QuestScreen> createState() => _QuestScreenState();
@@ -42,20 +43,15 @@ class _QuestScreenState extends State<QuestScreen> {
   List<QuestInfo> endedQuests = [];
 
   Future<void> _fetchQuests() async {
-    await getActiveQuests(context).then((value) {
-      setState(() {
-        activeQuests = value;
-      });
-      getMyActiveQuests(context).then((value) {
-        setState(() {
-          myActiveQuests = value;
-        });
-        getEndedQuest(context).then((value) {
-          setState(() {
-            endedQuests = value;
-          });
-        });
-      });
+    final results = await Future.wait([
+      getActiveQuests(context),
+      getMyActiveQuests(context),
+      getEndedQuest(context),
+    ]);
+    setState(() {
+      activeQuests = results[0] as List<QuestInfo>;
+      myActiveQuests = results[1] as List<AppliedQuestResponse>;
+      endedQuests = results[2] as List<QuestInfo>;
     });
   }
 
@@ -101,17 +97,7 @@ class _QuestScreenState extends State<QuestScreen> {
                 ),
               ),
               isLoading
-                  ? const Column(
-                      children: [
-                        SizedBox(
-                          height: 50,
-                        ),
-                        CupertinoActivityIndicator(
-                          radius: 15,
-                          animating: true,
-                        ),
-                      ],
-                    )
+                  ? Container()
                   : Column(
                       children: [
                         ActiveQuestsWidget(
@@ -171,7 +157,8 @@ class _QuestScreenState extends State<QuestScreen> {
                   width: 30,
                 ),
                 onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
+                  Uri url = Uri.parse("https://forms.gle/w38fCpWv9UnnR9R88");
+                  launchUrl(url);
                 },
               ),
             ],

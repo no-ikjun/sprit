@@ -4,16 +4,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/read/record_alert.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
@@ -186,6 +189,17 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             children: [
                                               InkWell(
                                                 onTap: () async {
+                                                  AmplitudeService().logEvent(
+                                                    AmplitudeEvent
+                                                        .recordSelectButton,
+                                                    context
+                                                        .read<UserInfoState>()
+                                                        .userInfo
+                                                        .userUuid,
+                                                    eventProperties: {
+                                                      'state': 'READING',
+                                                    },
+                                                  );
                                                   setState(() {
                                                     state = 'READING';
                                                     isBookInfoLoading = true;
@@ -239,6 +253,17 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               ),
                                               InkWell(
                                                 onTap: () async {
+                                                  AmplitudeService().logEvent(
+                                                    AmplitudeEvent
+                                                        .recordSelectButton,
+                                                    context
+                                                        .read<UserInfoState>()
+                                                        .userInfo
+                                                        .userUuid,
+                                                    eventProperties: {
+                                                      'state': 'BEFORE',
+                                                    },
+                                                  );
                                                   setState(() {
                                                     state = 'BEFORE';
                                                     isBookInfoLoading = true;
@@ -288,22 +313,40 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               ),
                                             ],
                                           ),
-                                          const Row(
-                                            children: [
-                                              Text(
-                                                '직접 검색',
-                                                style: TextStyles
-                                                    .readBookSearchButtonStyle,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Icon(
-                                                Icons.search,
-                                                size: 14,
-                                                color: ColorSet.darkGrey,
-                                              ),
-                                            ],
+                                          InkWell(
+                                            onTap: () {
+                                              AmplitudeService().logEvent(
+                                                AmplitudeEvent
+                                                    .recordSelectSearch,
+                                                context
+                                                    .read<UserInfoState>()
+                                                    .userInfo
+                                                    .userUuid,
+                                              );
+                                              Navigator.pushNamed(
+                                                context,
+                                                RouteName.search,
+                                              );
+                                            },
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            child: const Row(
+                                              children: [
+                                                Text(
+                                                  '직접 검색',
+                                                  style: TextStyles
+                                                      .readBookSearchButtonStyle,
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Icon(
+                                                  Icons.search,
+                                                  size: 14,
+                                                  color: ColorSet.darkGrey,
+                                                ),
+                                              ],
+                                            ),
                                           )
                                         ],
                                       ),
@@ -467,6 +510,13 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                             padding: 3,
                             radius: 8,
                             onLeftTap: () {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordGoalType,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  'goalType': 'TIME',
+                                },
+                              );
                               setState(() {
                                 goalType = 'TIME';
                                 goalPage = 0;
@@ -474,6 +524,13 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                               });
                             },
                             onRightTap: () {
+                              AmplitudeService().logEvent(
+                                AmplitudeEvent.recordGoalType,
+                                context.read<UserInfoState>().userInfo.userUuid,
+                                eventProperties: {
+                                  'goalType': 'PAGE',
+                                },
+                              );
                               setState(() {
                                 goalType = 'PAGE';
                                 goalPage = 0;
@@ -711,6 +768,18 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                       ),
                                       CustomButton(
                                         onPressed: () async {
+                                          AmplitudeService().logEvent(
+                                            AmplitudeEvent.recordStartButton,
+                                            context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
+                                            eventProperties: {
+                                              'goalType': 'PAGE',
+                                              'goalPage': goalPage,
+                                              'startPage': startPage,
+                                            },
+                                          );
                                           if (isBookSelected) {
                                             if (goalType == 'PAGE' &&
                                                 goalPage == 0) {
@@ -1054,6 +1123,17 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                       ),
                                       CustomButton(
                                         onPressed: () async {
+                                          AmplitudeService().logEvent(
+                                            AmplitudeEvent.recordStartButton,
+                                            context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
+                                            eventProperties: {
+                                              'goalType': 'TIME',
+                                              'goalTime': goalTime,
+                                            },
+                                          );
                                           if (isBookSelected) {
                                             if (goalType == 'TIME' &&
                                                 goalTime == 0) {

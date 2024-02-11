@@ -64,6 +64,56 @@ class RecordInfo {
   }
 }
 
+class MonthlyRecordInfo {
+  final int presentMonth;
+  final int pastMonth;
+  const MonthlyRecordInfo({
+    required this.presentMonth,
+    required this.pastMonth,
+  });
+
+  factory MonthlyRecordInfo.fromJson(Map<String, dynamic> json) {
+    return MonthlyRecordInfo(
+      presentMonth: json['present_month'] as int,
+      pastMonth: json['past_month'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'present_month': presentMonth,
+      'past_month': pastMonth,
+    };
+  }
+}
+
+class BookRecordHistory {
+  final String bookUuid;
+  final bool goalAchieved;
+  final int totalTime;
+  const BookRecordHistory({
+    required this.bookUuid,
+    required this.goalAchieved,
+    required this.totalTime,
+  });
+
+  factory BookRecordHistory.fromJson(Map<String, dynamic> json) {
+    return BookRecordHistory(
+      bookUuid: json['book_uuid'] as String,
+      goalAchieved: json['goal_achieved'] as bool,
+      totalTime: json['total_time'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'book_uuid': bookUuid,
+      'is_achieved': goalAchieved,
+      'total_time': totalTime,
+    };
+  }
+}
+
 class RecordService {
   static Future<String> setNewRecord(
     BuildContext context,
@@ -348,5 +398,69 @@ class RecordService {
       debugPrint('일일 총 시간 불러오기 실패: $e');
       return 0;
     }
+  }
+
+  static Future<MonthlyRecordInfo> getMonthlyRecord(
+    BuildContext context,
+    int year,
+    int month,
+    String kind,
+  ) async {
+    MonthlyRecordInfo result = const MonthlyRecordInfo(
+      presentMonth: 0,
+      pastMonth: 0,
+    );
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/record/monthly-count',
+        queryParameters: {
+          'year': year,
+          'month': month,
+          'kind': kind,
+        },
+      );
+      if (response.statusCode == 200) {
+        result = MonthlyRecordInfo.fromJson(response.data);
+      } else {
+        debugPrint('월별 기록 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('월별 기록 불러오기 실패: $e');
+    }
+    return result;
+  }
+
+  static Future<List<List<BookRecordHistory>>> getWeeklyRecord(
+    BuildContext context,
+    int backWeek, //몇주 전인지
+    int weekday,
+  ) async {
+    List<List<BookRecordHistory>> result = [];
+    int count = weekday == 7 ? 1 : weekday + 1;
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get(
+        '/record/weekly-record',
+        queryParameters: {
+          'back_week': backWeek,
+          'count': count,
+        },
+      );
+      if (response.statusCode == 200) {
+        for (var records in response.data) {
+          List<BookRecordHistory> bookRecords = [];
+          for (var record in records) {
+            bookRecords.add(BookRecordHistory.fromJson(record));
+          }
+          result.add(bookRecords);
+        }
+      } else {
+        debugPrint('주별 기록 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('주별 기록 불러오기 실패: $e');
+    }
+    return result;
   }
 }

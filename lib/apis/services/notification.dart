@@ -93,6 +93,27 @@ class NotificationService {
     }
   }
 
+  static Future<void> deleteFcmToken(
+    BuildContext context,
+    String fcmToken,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.delete(
+        '/notification/delete',
+        queryParameters: {
+          'fcm_token': fcmToken,
+        },
+      );
+      if (response.statusCode == 200) {
+      } else {
+        debugPrint('FCM 토큰 삭제 실패');
+      }
+    } catch (e) {
+      debugPrint('FCM 토큰 삭제 실패 $e');
+    }
+  }
+
   static Future<TimeAgreeInfo> getTimeAgreeInfo(
     BuildContext context,
   ) async {

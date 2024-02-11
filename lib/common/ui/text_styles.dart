@@ -277,6 +277,63 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle questDetailTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailShortDescStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailLongDescStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailMenuStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailScheduleStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailMissionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailBottomMenuStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questDetailBottomDatatyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+    wordSpacing: -1.3,
+  );
+
   static const TextStyle notificationLabelStyle = TextStyle(
     color: ColorSet.semiDarkGrey,
     fontSize: 12,
@@ -578,6 +635,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibraryBookMarkEmptyStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle myLibraryBookMarkStyle = TextStyle(
     color: ColorSet.semiDarkGrey,
     fontSize: 14,
@@ -681,6 +745,20 @@ class TextStyles {
     color: ColorSet.text,
     fontSize: 20,
     fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryInfoStateStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryBookReportTimeStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
     fontFamily: "IBMPlexSans",
   );
 

@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_report.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 Future<bool> setBookReport(
@@ -205,6 +209,10 @@ class _BookReportModalState extends State<BookReportModal> {
                     ),
                     CustomButton(
                       onPressed: () async {
+                        AmplitudeService().logEvent(
+                          AmplitudeEvent.recordSaveReportButton,
+                          context.read<UserInfoState>().userInfo.userUuid,
+                        );
                         await submitBookReport();
                       },
                       width: Scaler.width(0.8, context),
