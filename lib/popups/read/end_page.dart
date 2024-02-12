@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
@@ -246,6 +247,10 @@ class _EndPageState extends State<EndPage> {
                           .pageStart,
                       endPage,
                     );
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('elapsedSeconds');
+                    prefs.remove('isRunning');
                     Navigator.pop(context);
                     Navigator.pushNamedAndRemoveUntil(
                       context,
