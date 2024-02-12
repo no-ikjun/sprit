@@ -276,6 +276,9 @@ class RecordService {
     try {
       final response = await dio.get('/record/notended');
       if (response.statusCode == 200) {
+        if (response.data != null || response.data == '') {
+          return recordInfo;
+        }
         recordInfo = RecordInfo.fromJson(response.data);
       } else {
         debugPrint('진행 중인 기록 불러오기 실패');
