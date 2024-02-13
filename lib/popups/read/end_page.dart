@@ -251,6 +251,7 @@ class _EndPageState extends State<EndPage> {
                         await SharedPreferences.getInstance();
                     prefs.remove('elapsedSeconds');
                     prefs.remove('isRunning');
+                    prefs.remove('recordCreated');
                     Navigator.pop(context);
                     Navigator.pushNamedAndRemoveUntil(
                       context,

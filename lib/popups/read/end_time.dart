@@ -166,6 +166,7 @@ class _EndTimeState extends State<EndTime> {
                       await SharedPreferences.getInstance();
                   prefs.remove('elapsedSeconds');
                   prefs.remove('isRunning');
+                  prefs.remove('recordCreated');
                   Navigator.pop(context);
                   Navigator.pushNamedAndRemoveUntil(
                     context,

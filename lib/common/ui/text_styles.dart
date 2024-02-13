@@ -792,7 +792,7 @@ class TextStyles {
 
   static const TextStyle analyticsGrassTextStyle = TextStyle(
     color: ColorSet.darkGrey,
-    fontSize: 14,
+    fontSize: 12.5,
     fontWeight: FontWeight.w400,
     fontFamily: "IBMPlexSans",
   );
