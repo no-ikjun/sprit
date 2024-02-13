@@ -53,27 +53,34 @@ class _SplashScreenState extends State<SplashScreen> {
         RecordInfo ongoingRecord =
             await RecordService.getNotEndedRecord(context);
         if (ongoingRecord.recordUuid != '') {
-          context.read<SelectedRecordInfoState>().updateSelectedRecord(
-                ongoingRecord,
-              );
-          prefs.setString('recordCreated', ongoingRecord.createdAt);
-          BookInfo bookInfo = await BookInfoService.getBookInfoByUuid(
-            context,
-            ongoingRecord.bookUuid,
-          );
-          context
-              .read<SelectedBookInfoState>()
-              .updateSelectedBookUuid(bookInfo);
-          Navigator.pushReplacementNamed(
-            context,
-            RouteName.readTimer,
-            arguments: ongoingRecord.recordUuid,
-          );
-          return;
+          DateTime createdAt = DateTime.parse(ongoingRecord.createdAt);
+          DateTime now = DateTime.now();
+          if (now.difference(createdAt).inHours >= 24) {
+            prefs.remove('elapsedTime');
+            prefs.remove('isRunning');
+            await RecordService.deleteRecord(context, ongoingRecord.recordUuid);
+          } else {
+            context
+                .read<SelectedRecordInfoState>()
+                .updateSelectedRecord(ongoingRecord);
+            await prefs.setString('recordCreated', ongoingRecord.createdAt);
+            BookInfo bookInfo = await BookInfoService.getBookInfoByUuid(
+              context,
+              ongoingRecord.bookUuid,
+            );
+            context
+                .read<SelectedBookInfoState>()
+                .updateSelectedBookUuid(bookInfo);
+            Navigator.pushReplacementNamed(
+              context,
+              RouteName.readTimer,
+              arguments: ongoingRecord.recordUuid,
+            );
+            return;
+          }
         } else {
           prefs.remove('elapsedTime');
           prefs.remove('isRunning');
-          await RecordService.deleteRecord(context, ongoingRecord.recordUuid);
         }
         Navigator.pushReplacementNamed(context, RouteName.home);
         return;
