@@ -45,6 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
       const storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: "access_token");
       debugPrint(accessToken);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       if (accessToken != null) {
         final userInfo = await UserInfoService.getUserInfo(context);
         context.read<UserInfoState>().updateUserInfo(userInfo!);
@@ -55,7 +56,6 @@ class _SplashScreenState extends State<SplashScreen> {
           context.read<SelectedRecordInfoState>().updateSelectedRecord(
                 ongoingRecord,
               );
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('recordCreated', ongoingRecord.createdAt);
           BookInfo bookInfo = await BookInfoService.getBookInfoByUuid(
             context,
@@ -70,6 +70,10 @@ class _SplashScreenState extends State<SplashScreen> {
             arguments: ongoingRecord.recordUuid,
           );
           return;
+        } else {
+          prefs.remove('elapsedTime');
+          prefs.remove('isRunning');
+          await RecordService.deleteRecord(context, ongoingRecord.recordUuid);
         }
         Navigator.pushReplacementNamed(context, RouteName.home);
         return;
