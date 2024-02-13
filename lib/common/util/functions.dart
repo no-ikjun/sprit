@@ -33,7 +33,7 @@ getFormattedTime(int time) {
 }
 
 getFormattedTimeWithUnit(int time) {
-  if (time == 0) return '';
+  if (time == 0) return '0초';
   if (time < 60) return '$time초';
   if (time < 3600) {
     return '${(time / 60).floor()}분 ${time % 60 > 0 ? ' ${time % 60}초' : ''}';

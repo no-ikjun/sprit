@@ -324,53 +324,66 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         // 목표 달성 실패 (false) 부분
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05598,
-                                          height: barHeightFalse,
-                                          decoration: BoxDecoration(
-                                            color: (selectedIndex == index ||
-                                                    toggleValue == 'week')
-                                                ? ColorSet.red
-                                                : ColorSet.superLightGrey,
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: const Radius.circular(4),
-                                              topRight:
-                                                  const Radius.circular(4),
-                                              bottomLeft: barHeightTrue == 0
-                                                  ? const Radius.circular(4)
-                                                  : const Radius.circular(0),
-                                              bottomRight: barHeightTrue == 0
-                                                  ? const Radius.circular(4)
-                                                  : const Radius.circular(0),
+                                        ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxHeight: 90,
+                                            minHeight: 0,
+                                          ),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05598,
+                                            height: barHeightFalse,
+                                            decoration: BoxDecoration(
+                                              color: (selectedIndex == index ||
+                                                      toggleValue == 'week')
+                                                  ? ColorSet.red
+                                                  : ColorSet.superLightGrey,
+                                              borderRadius: BorderRadius.only(
+                                                topLeft:
+                                                    const Radius.circular(4),
+                                                topRight:
+                                                    const Radius.circular(4),
+                                                bottomLeft: barHeightTrue == 0
+                                                    ? const Radius.circular(4)
+                                                    : const Radius.circular(0),
+                                                bottomRight: barHeightTrue == 0
+                                                    ? const Radius.circular(4)
+                                                    : const Radius.circular(0),
+                                              ),
                                             ),
                                           ),
                                         ),
                                         // 목표 달성 성공 (true) 부분
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05598,
-                                          height: barHeightTrue,
-                                          decoration: BoxDecoration(
-                                            color: (selectedIndex == index ||
-                                                    toggleValue == 'week')
-                                                ? ColorSet.green
-                                                : ColorSet.superLightGrey,
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft:
-                                                  const Radius.circular(4),
-                                              bottomRight:
-                                                  const Radius.circular(4),
-                                              topLeft: barHeightFalse == 0
-                                                  ? const Radius.circular(4)
-                                                  : const Radius.circular(0),
-                                              topRight: barHeightFalse == 0
-                                                  ? const Radius.circular(4)
-                                                  : const Radius.circular(0),
+                                        ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxHeight: 90,
+                                            minHeight: 0,
+                                          ),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05598,
+                                            height: barHeightTrue,
+                                            decoration: BoxDecoration(
+                                              color: (selectedIndex == index ||
+                                                      toggleValue == 'week')
+                                                  ? ColorSet.green
+                                                  : ColorSet.superLightGrey,
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft:
+                                                    const Radius.circular(4),
+                                                bottomRight:
+                                                    const Radius.circular(4),
+                                                topLeft: barHeightFalse == 0
+                                                    ? const Radius.circular(4)
+                                                    : const Radius.circular(0),
+                                                topRight: barHeightFalse == 0
+                                                    ? const Radius.circular(4)
+                                                    : const Radius.circular(0),
+                                              ),
                                             ),
                                           ),
                                         ),
