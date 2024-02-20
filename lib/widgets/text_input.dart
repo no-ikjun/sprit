@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String hintText;
   final Function(String) onChanged;
   final TextInputType keyboardType;
@@ -40,44 +40,50 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late final _controller = TextEditingController()..text = widget.defaultText;
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       child: TextField(
-        controller: TextEditingController()..text = defaultText,
-        autofocus: autofocus,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        onChanged: onChanged,
-        inputFormatters: [LengthLimitingTextInputFormatter(maxLength)],
-        maxLines: maxLines,
+        controller: _controller,
+        autofocus: widget.autofocus,
+        obscureText: widget.obscureText,
+        keyboardType: widget.keyboardType,
+        onChanged: widget.onChanged,
+        inputFormatters: [LengthLimitingTextInputFormatter(widget.maxLength)],
+        maxLines: widget.maxLines,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(
             vertical: 0,
-            horizontal: padding,
+            horizontal: widget.padding,
           ),
-          hintText: hintText,
+          hintText: widget.hintText,
           hintStyle: TextStyles.textHintStyle,
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: focusedBorderColor,
+              color: widget.focusedBorderColor,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(widget.borderRadius),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: borderColor,
+              color: widget.borderColor,
               width: 1,
             ),
             borderRadius: BorderRadius.all(
-              Radius.circular(borderRadius),
+              Radius.circular(widget.borderRadius),
             ),
           ),
         ),
         cursorColor: Colors.black,
-        textAlign: textAlign,
+        textAlign: widget.textAlign,
         textAlignVertical: TextAlignVertical.center,
         style: TextStyles.textInputStyle,
       ),
