@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -101,147 +103,166 @@ class _RecordShareModalState extends State<RecordShareModal> {
               ),
               Screenshot(
                 controller: screenshotController,
-                child: Container(
-                  width: Scaler.width(0.8, context),
-                  decoration: BoxDecoration(
-                    color: ColorSet.background,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: ColorSet.lightGrey,
-                      width: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Container(
+                    width: Scaler.width(0.8, context),
+                    clipBehavior: Clip.none,
+                    decoration: BoxDecoration(
+                      color: ColorSet.background,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          spreadRadius: 0,
+                          blurRadius: 30,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
                     ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: -Scaler.width(0.1, context),
-                        left: -Scaler.width(0.15, context),
-                        child: Image.asset(
-                          'assets/images/share_background_01.png',
-                          width: Scaler.width(0.5, context),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          bottom: 18,
+                          left: 18,
+                          child: SvgPicture.asset(
+                            'assets/images/logo_opacity.svg',
+                            height: 18,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: -Scaler.width(0.12, context),
-                        right: -Scaler.width(0.15, context),
-                        child: Image.asset(
-                          'assets/images/share_background_02.png',
-                          width: Scaler.width(0.7, context),
+                        Positioned(
+                          bottom: Scaler.width(0.05, context),
+                          left: -Scaler.width(0.15, context),
+                          child: Image.asset(
+                            'assets/images/share_background_01.png',
+                            width: Scaler.width(0.5, context),
+                          ),
                         ),
-                      ),
-                      Column(
-                        children: [
-                          const SizedBox(
-                            height: 15,
+                        Positioned(
+                          bottom: -Scaler.width(0.05, context),
+                          right: -Scaler.width(0.15, context),
+                          child: Image.asset(
+                            'assets/images/share_background_02.png',
+                            width: Scaler.width(0.7, context),
                           ),
-                          const Image(
-                            image: AssetImage('assets/images/share_badge.png'),
-                            width: 160,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            DateFormat('yyyy년 MM월 dd일').format(DateTime.now()),
-                            style: TextStyles.shareModalDateStyle,
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            widget.amount,
-                            style: TextStyles.shareModalAmountStyle,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              BookThumbnail(
-                                imgUrl: bookInfo.thumbnail,
-                                width: 55.38,
-                                height: 80,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth:
-                                            Scaler.width(0.8, context) - 87.38,
-                                      ),
-                                      child: Text(
-                                        bookInfo.title,
-                                        style:
-                                            TextStyles.shareModalBookTitleStyle,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '저자 ',
-                                              style: TextStyles
-                                                  .shareModalBookAuthorStyle
-                                                  .copyWith(
-                                                color: ColorSet.grey,
-                                              ),
-                                            ),
-                                            Text(
-                                              bookInfo.authors[0],
-                                              style: TextStyles
-                                                  .shareModalBookAuthorStyle,
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          '${bookInfo.publisher} · ${(bookInfo.publishedAt.length > 9) ? bookInfo.publishedAt.substring(0, 10) : bookInfo.publishedAt}',
-                                          style: TextStyles
-                                              .shareModalBookAuthorStyle
-                                              .copyWith(
-                                            color: ColorSet.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                        ],
-                      ),
-                      isImageLoading
-                          ? const Column(
+                        ),
+                        Column(
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Image(
+                              image:
+                                  AssetImage('assets/images/share_badge.png'),
+                              width: 160,
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Text(
+                              DateFormat('yyyy년 MM월 dd일')
+                                  .format(DateTime.now()),
+                              style: TextStyles.shareModalDateStyle,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              widget.amount,
+                              style: TextStyles.shareModalAmountStyle,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                BookThumbnail(
+                                  imgUrl: bookInfo.thumbnail,
+                                  width: 55.38,
+                                  height: 80,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 SizedBox(
-                                  height: 50,
-                                ),
-                                Center(
-                                  child: CupertinoActivityIndicator(
-                                    radius: 17,
-                                    animating: true,
+                                  height: 80,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: Scaler.width(0.8, context) -
+                                              87.38,
+                                        ),
+                                        child: Text(
+                                          bookInfo.title,
+                                          style: TextStyles
+                                              .shareModalBookTitleStyle,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '저자 ',
+                                                style: TextStyles
+                                                    .shareModalBookAuthorStyle
+                                                    .copyWith(
+                                                  color: ColorSet.grey,
+                                                ),
+                                              ),
+                                              Text(
+                                                bookInfo.authors[0],
+                                                style: TextStyles
+                                                    .shareModalBookAuthorStyle,
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            '${bookInfo.publisher} · ${(bookInfo.publishedAt.length > 9) ? bookInfo.publishedAt.substring(0, 10) : bookInfo.publishedAt}',
+                                            style: TextStyles
+                                                .shareModalBookAuthorStyle
+                                                .copyWith(
+                                              color: ColorSet.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                )
                               ],
-                            )
-                          : Container(),
-                    ],
+                            ),
+                            const SizedBox(
+                              height: 170,
+                            ),
+                          ],
+                        ),
+                        isImageLoading
+                            ? const Column(
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  Center(
+                                    child: CupertinoActivityIndicator(
+                                      radius: 17,
+                                      animating: true,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                      ],
+                    ),
                   ),
                 ),
               ),
