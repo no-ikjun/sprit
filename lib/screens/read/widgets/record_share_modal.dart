@@ -104,7 +104,10 @@ class _RecordShareModalState extends State<RecordShareModal> {
               Screenshot(
                 controller: screenshotController,
                 child: Padding(
-                  padding: const EdgeInsets.all(30),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 40,
+                    horizontal: 30,
+                  ),
                   child: Container(
                     width: Scaler.width(0.8, context),
                     clipBehavior: Clip.none,
@@ -149,7 +152,7 @@ class _RecordShareModalState extends State<RecordShareModal> {
                         Column(
                           children: [
                             const SizedBox(
-                              height: 15,
+                              height: 25,
                             ),
                             const Image(
                               image:
@@ -242,7 +245,7 @@ class _RecordShareModalState extends State<RecordShareModal> {
                               ],
                             ),
                             const SizedBox(
-                              height: 170,
+                              height: 190,
                             ),
                           ],
                         ),
