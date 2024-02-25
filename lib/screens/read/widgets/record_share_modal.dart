@@ -281,7 +281,7 @@ class _RecordShareModalState extends State<RecordShareModal> {
                   saveImage(_imageFile!);
                 },
                 width: Scaler.width(0.8, context),
-                height: 45,
+                height: 50,
                 child: const Text(
                   '공유하기',
                   style: TextStyles.loginButtonStyle,
