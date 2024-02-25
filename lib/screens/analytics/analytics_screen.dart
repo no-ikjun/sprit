@@ -307,10 +307,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   }
 
                                   (totalTimeTrue + totalTimeFalse).reduce(max);
-                                  final double barHeightTrue =
-                                      (totalTimeTrue[index] / maxTime) * 90;
-                                  final double barHeightFalse =
-                                      (totalTimeFalse[index] / maxTime) * 90;
+                                  final double barHeightTrue = totalTimeTrue
+                                          .isEmpty
+                                      ? 0
+                                      : (totalTimeTrue[index] / maxTime) * 90;
+                                  final double barHeightFalse = totalTimeFalse
+                                          .isEmpty
+                                      ? 0
+                                      : (totalTimeFalse[index] / maxTime) * 90;
 
                                   return InkWell(
                                     onTap: () {
