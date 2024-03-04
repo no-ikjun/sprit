@@ -86,196 +86,208 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
             height: 202,
             alignment: Alignment.center,
             width: Scaler.width(1, context),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ListView.builder(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: widget.activeQuests.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Row(
-                      children: [
-                        (index == 0)
-                            ? SizedBox(width: Scaler.width(0.075, context))
-                            : Container(),
-                        Container(
-                          width: 180,
-                          height: 180,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: ColorSet.primary.withOpacity(0.2),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ]),
-                          child: Column(
-                            children: [
-                              Image.network(
-                                widget.activeQuests[index].thumbnailUrl,
-                                width: 180,
-                                height: 90,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.activeQuests.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            (index == 0)
+                                ? SizedBox(width: Scaler.width(0.075, context))
+                                : Container(),
+                            Container(
+                              width: 180,
+                              height: 180,
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: ColorSet.primary.withOpacity(0.2),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ]),
+                              child: Column(
+                                children: [
+                                  Image.network(
+                                    widget.activeQuests[index].thumbnailUrl,
                                     width: 180,
                                     height: 90,
-                                    color: ColorSet.lightGrey,
-                                    child: const Center(
-                                      child: Text(
-                                        '이미지를 불러올 수 없습니다.',
-                                        style: TextStyles.questWidgetTitleStyle,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 180,
+                                        height: 90,
+                                        color: ColorSet.lightGrey,
+                                        child: const Center(
+                                          child: Text(
+                                            '이미지를 불러올 수 없습니다.',
+                                            style: TextStyles
+                                                .questWidgetTitleStyle,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              widget.activeQuests[index].title
+                                                          .length >
+                                                      12
+                                                  ? SizedBox(
+                                                      width: 156,
+                                                      height: 20,
+                                                      child: Marquee(
+                                                        text: widget
+                                                            .activeQuests[index]
+                                                            .title,
+                                                        style: TextStyles
+                                                            .questWidgetTitleStyle,
+                                                        velocity: 30.0,
+                                                        blankSpace: 120,
+                                                        pauseAfterRound:
+                                                            const Duration(
+                                                          seconds: 10,
+                                                        ),
+                                                        showFadingOnlyWhenScrolling:
+                                                            true,
+                                                        fadingEdgeStartFraction:
+                                                            0.1,
+                                                        fadingEdgeEndFraction:
+                                                            0.1,
+                                                        accelerationDuration:
+                                                            const Duration(
+                                                          seconds: 1,
+                                                        ),
+                                                        accelerationCurve:
+                                                            Curves.linear,
+                                                        decelerationDuration:
+                                                            const Duration(
+                                                          milliseconds: 500,
+                                                        ),
+                                                        decelerationCurve:
+                                                            Curves.easeOut,
+                                                      ),
+                                                    )
+                                                  : Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          widget
+                                                              .activeQuests[
+                                                                  index]
+                                                              .title,
+                                                          style: TextStyles
+                                                              .questWidgetTitleStyle,
+                                                        ),
+                                                      ],
+                                                    ),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Text(
+                                                '남은시간',
+                                                style: TextStyles
+                                                    .questWidgetDescriptionStyle
+                                                    .copyWith(
+                                                  color: ColorSet.semiDarkGrey,
+                                                ),
+                                              ),
+                                              Text(
+                                                getRemainingTime(DateTime.parse(
+                                                    widget.activeQuests[index]
+                                                        .startDate)),
+                                                style: TextStyles
+                                                    .questWidgetDescriptionStyle,
+                                              ),
+                                            ],
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              AmplitudeService().logEvent(
+                                                AmplitudeEvent.questDetailClick,
+                                                context
+                                                    .read<UserInfoState>()
+                                                    .userInfo
+                                                    .userUuid,
+                                                eventProperties: {
+                                                  'quest_uuid': widget
+                                                      .activeQuests[index]
+                                                      .questUuid
+                                                },
+                                              );
+                                              Navigator.pushNamed(
+                                                context,
+                                                RouteName.questDetail,
+                                                arguments: widget
+                                                    .activeQuests[index]
+                                                    .questUuid,
+                                              );
+                                            },
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  '자세히 보기',
+                                                  style: TextStyles
+                                                      .questButtonStyle,
+                                                ),
+                                                SvgPicture.asset(
+                                                  'assets/images/right_arrow_grey.svg',
+                                                  width: 15,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          widget.activeQuests[index].title
-                                                      .length >
-                                                  12
-                                              ? SizedBox(
-                                                  width: 156,
-                                                  height: 20,
-                                                  child: Marquee(
-                                                    text: widget
-                                                        .activeQuests[index]
-                                                        .title,
-                                                    style: TextStyles
-                                                        .questWidgetTitleStyle,
-                                                    velocity: 30.0,
-                                                    blankSpace: 120,
-                                                    pauseAfterRound:
-                                                        const Duration(
-                                                      seconds: 10,
-                                                    ),
-                                                    showFadingOnlyWhenScrolling:
-                                                        true,
-                                                    fadingEdgeStartFraction:
-                                                        0.1,
-                                                    fadingEdgeEndFraction: 0.1,
-                                                    accelerationDuration:
-                                                        const Duration(
-                                                      seconds: 1,
-                                                    ),
-                                                    accelerationCurve:
-                                                        Curves.linear,
-                                                    decelerationDuration:
-                                                        const Duration(
-                                                      milliseconds: 500,
-                                                    ),
-                                                    decelerationCurve:
-                                                        Curves.easeOut,
-                                                  ),
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      widget.activeQuests[index]
-                                                          .title,
-                                                      style: TextStyles
-                                                          .questWidgetTitleStyle,
-                                                    ),
-                                                  ],
-                                                ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            '남은시간',
-                                            style: TextStyles
-                                                .questWidgetDescriptionStyle
-                                                .copyWith(
-                                              color: ColorSet.semiDarkGrey,
-                                            ),
-                                          ),
-                                          Text(
-                                            getRemainingTime(DateTime.parse(
-                                                widget.activeQuests[index]
-                                                    .startDate)),
-                                            style: TextStyles
-                                                .questWidgetDescriptionStyle,
-                                          ),
-                                        ],
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          AmplitudeService().logEvent(
-                                            AmplitudeEvent.questDetailClick,
-                                            context
-                                                .read<UserInfoState>()
-                                                .userInfo
-                                                .userUuid,
-                                            eventProperties: {
-                                              'quest_uuid': widget
-                                                  .activeQuests[index].questUuid
-                                            },
-                                          );
-                                          Navigator.pushNamed(
-                                            context,
-                                            RouteName.questDetail,
-                                            arguments: widget
-                                                .activeQuests[index].questUuid,
-                                          );
-                                        },
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              '자세히 보기',
-                                              style:
-                                                  TextStyles.questButtonStyle,
-                                            ),
-                                            SvgPicture.asset(
-                                              'assets/images/right_arrow_grey.svg',
-                                              width: 15,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        (index != widget.activeQuests.length - 1)
-                            ? const SizedBox(
-                                width: 11,
-                              )
-                            : Container(),
-                        (index == widget.activeQuests.length - 1)
-                            ? SizedBox(width: Scaler.width(0.075, context))
-                            : Container(),
-                      ],
-                    );
-                  }),
+                            ),
+                            (index != widget.activeQuests.length - 1)
+                                ? const SizedBox(
+                                    width: 11,
+                                  )
+                                : Container(),
+                            (index == widget.activeQuests.length - 1)
+                                ? SizedBox(width: Scaler.width(0.075, context))
+                                : Container(),
+                          ],
+                        );
+                      }),
+                ),
+              ],
             ),
           );
   }

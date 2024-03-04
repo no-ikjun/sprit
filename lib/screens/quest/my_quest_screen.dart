@@ -54,41 +54,51 @@ class _MyQuestScreenState extends State<MyQuestScreen> {
                 child: SingleChildScrollView(
                   child: isLoading
                       ? const Center(
-                          child: CupertinoActivityIndicator(
-                            radius: 18,
-                            animating: true,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 200,
+                              ),
+                              CupertinoActivityIndicator(
+                                radius: 17,
+                                animating: true,
+                              ),
+                            ],
                           ),
                         )
-                      : Container(
-                          width: Scaler.width(0.85, context),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color(0xFF000000).withOpacity(0.05),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ]),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 18,
-                            horizontal: 18,
-                          ),
-                          child: ListView.builder(
-                            itemCount: myQuests.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return SmallQuestWidget(
-                                questInfo: myQuests[index].questInfo,
-                                questApplyInfo: myQuests[index].questApplyInfo,
-                                isLargeMargin: index == myQuests.length - 1,
-                              );
-                            },
-                          ),
-                        ),
+                      : myQuests.isNotEmpty
+                          ? Container(
+                              width: Scaler.width(0.85, context),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF000000)
+                                          .withOpacity(0.05),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ]),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 18,
+                                horizontal: 18,
+                              ),
+                              child: ListView.builder(
+                                itemCount: myQuests.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return SmallQuestWidget(
+                                    questInfo: myQuests[index].questInfo,
+                                    questApplyInfo:
+                                        myQuests[index].questApplyInfo,
+                                    isLargeMargin: index == myQuests.length - 1,
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(),
                 ),
               ),
             ),
