@@ -1,6 +1,6 @@
 # sprit
 
-A new Flutter project.
+꾸준한 독서를 위해, 스프릿 📚
 
 ## Getting Started
 
