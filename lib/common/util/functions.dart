@@ -108,7 +108,7 @@ getWeekFormat(int backWeek) {
   final endOfWeek = startOfWeek.add(const Duration(days: 6));
   if (backWeek == 0) {
     return '이번주';
-  } else if (backWeek == -1) {
+  } else if (backWeek == 1) {
     return '저번주';
   } else {
     String formattedStart = "${startOfWeek.month}월 ${startOfWeek.day}일";

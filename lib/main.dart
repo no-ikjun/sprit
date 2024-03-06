@@ -8,6 +8,7 @@ import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:provider/provider.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/firebase_options.dart';
+import 'package:sprit/providers/analytics_index.dart';
 import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/providers/library_book_state.dart';
 import 'package:sprit/providers/library_section_order.dart';
@@ -69,6 +70,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SelectedRecordInfoState()),
         ChangeNotifierProvider(create: (_) => LibrarySectionOrderState()),
         ChangeNotifierProvider(create: (_) => LibraryBookListState()),
+        ChangeNotifierProvider(create: (_) => AnalyticsIndex()),
       ],
       child: const MyApp(),
     ),

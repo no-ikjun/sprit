@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
@@ -11,8 +12,10 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/providers/analytics_index.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
+import 'package:sprit/screens/analytics/widgets/graph_slider.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 import 'package:sprit/widgets/toggle_button.dart';
@@ -33,14 +36,19 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
+  CarouselController carouselController = CarouselController();
+
   String toggleValue = 'week';
 
+  //하루 단위 독서 기록(리스트)이 담긴 리스트
   List<List<BookRecordHistory>> bookRecordHistory = [];
+  //하루 단위 독서 기록의 총 시간 (최대 7일)
   List<int> dailyTotalTimes = [];
-  int maxTime = 0;
-  int selectedIndex = 0;
 
+  //backWeek가 0이면 이번주, 1이면 지난주, 2이면 그 전주 ...
   int backWeek = 0;
+
+  int presentCarouselIndex = 0;
 
   @override
   void initState() {
@@ -48,32 +56,65 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     _loadData();
   }
 
-  void _loadData() async {
-    final data =
-        await getBookRecordHistory(context, backWeek, DateTime.now().weekday);
-    setState(() {
-      if (backWeek == 0) {
-        bookRecordHistory = data;
-        dailyTotalTimes = data.map((dayRecords) {
-          return dayRecords.fold(
-              0, (int sum, record) => sum + record.totalTime);
-        }).toList();
-        maxTime = dailyTotalTimes.reduce(max);
-      } else {
-        // 이전 주의 데이터를 추가하는 경우
-        bookRecordHistory.insertAll(0, data);
-        dailyTotalTimes = data.map((dayRecords) {
-          return dayRecords.fold(
-              0, (int sum, record) => sum + record.totalTime);
-        }).toList();
-        maxTime = dailyTotalTimes.reduce(max);
-      }
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _loadData() async {
+    int weekday = DateTime.now().weekday;
+    if (backWeek != 0) {
+      weekday = 6;
+    }
+    final data = await getBookRecordHistory(
+      context,
+      backWeek,
+      weekday,
+    );
+    setState(() {
+      bookRecordHistory = data;
+      dailyTotalTimes = data.map((dayRecords) {
+        return dayRecords.fold(0, (int sum, record) => sum + record.totalTime);
+      }).toList();
+    });
+  }
+
+  void _loadLastWeek() async {
+    int weekday = DateTime.now().weekday;
+    if (backWeek + 1 != 0) {
+      weekday = 6;
+    }
+    final data = await getBookRecordHistory(
+      context,
+      backWeek + 1,
+      weekday,
+    );
+    setState(() {
+      backWeek++;
+      bookRecordHistory = data;
+      dailyTotalTimes = data.map((dayRecords) {
+        return dayRecords.fold(0, (int sum, record) => sum + record.totalTime);
+      }).toList();
+    });
+  }
+
+  void _loadNextWeek() async {
+    int weekday = DateTime.now().weekday;
+    if (backWeek - 1 != 0) {
+      weekday = 6;
+    }
+    final data = await getBookRecordHistory(
+      context,
+      backWeek - 1,
+      weekday,
+    );
+    setState(() {
+      backWeek--;
+      bookRecordHistory = data;
+      dailyTotalTimes = data.map((dayRecords) {
+        return dayRecords.fold(0, (int sum, record) => sum + record.totalTime);
+      }).toList();
+    });
   }
 
   @override
@@ -181,12 +222,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ),
               child: bookRecordHistory.isEmpty
                   ? SizedBox(
-                      width: Scaler.width(0.85, context),
-                      height: 200,
-                      child: const CupertinoActivityIndicator(
-                        radius: 15,
-                        animating: true,
-                      ),
+                      width: Scaler.width(0.85, context) - 30,
+                      height: 90,
                     )
                   : Column(
                       children: [
@@ -200,7 +237,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   toggleValue == 'week'
                                       ? getWeekFormat(backWeek)
                                       : getSelectedDayFormat(
-                                          backWeek, selectedIndex),
+                                          backWeek,
+                                          context.watch<AnalyticsIndex>().index,
+                                        ),
                                   style: TextStyles.analyticsGraphDateStyle,
                                 ),
                                 Text(
@@ -209,7 +248,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                           .reduce((value, element) =>
                                               value + element))
                                       : getFormattedTimeWithUnit(
-                                          dailyTotalTimes[selectedIndex]),
+                                          dailyTotalTimes[context
+                                              .watch<AnalyticsIndex>()
+                                              .index],
+                                        ),
                                   style: TextStyles.analyticsGraphTimeStyle,
                                 ),
                               ],
@@ -263,216 +305,57 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        dailyTotalTimes.reduce(
-                                    (value, element) => value + element) !=
-                                0
-                            ? Column(
-                                children: [
-                                  SizedBox(
-                                    height: 90,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: List.generate(7, (index) {
-                                        if (dailyTotalTimes.length <= index) {
-                                          return SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.05598,
-                                            height: 0,
-                                          );
-                                        }
-                                        List<int> totalTimes =
-                                            List.generate(7, (index) {
-                                          if (index <
-                                              bookRecordHistory.length) {
-                                            return bookRecordHistory[index]
-                                                .fold(
-                                                    0,
-                                                    (sum, record) =>
-                                                        sum + record.totalTime);
-                                          }
-                                          return 0;
-                                        });
-                                        int maxTime = totalTimes.reduce(max);
-                                        List<int> totalTimeTrue =
-                                            List.filled(7, 0);
-                                        List<int> totalTimeFalse =
-                                            List.filled(7, 0);
-
-                                        for (int i = 0;
-                                            i < bookRecordHistory.length;
-                                            i++) {
-                                          for (var record
-                                              in bookRecordHistory[i]) {
-                                            if (record.goalAchieved) {
-                                              totalTimeTrue[i] +=
-                                                  record.totalTime;
-                                            }
-                                            if (record.goalAchieved == false) {
-                                              totalTimeFalse[i] +=
-                                                  record.totalTime;
-                                            }
-                                          }
-                                        }
-
-                                        (totalTimeTrue + totalTimeFalse)
-                                            .reduce(max);
-                                        final double barHeightTrue =
-                                            totalTimeTrue.isEmpty
-                                                ? 0
-                                                : (totalTimeTrue[index] /
-                                                        maxTime) *
-                                                    90;
-                                        final double barHeightFalse =
-                                            totalTimeFalse.isEmpty
-                                                ? 0
-                                                : (totalTimeFalse[index] /
-                                                        maxTime) *
-                                                    90;
-
-                                        return InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedIndex = index;
-                                            });
-                                          },
-                                          splashColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              // 목표 달성 실패 (false) 부분
-                                              ConstrainedBox(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  maxHeight: 90,
-                                                  minHeight: 0,
-                                                ),
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.05598,
-                                                  height: barHeightFalse,
-                                                  decoration: BoxDecoration(
-                                                    color: (selectedIndex ==
-                                                                index ||
-                                                            toggleValue ==
-                                                                'week')
-                                                        ? ColorSet.red
-                                                        : ColorSet
-                                                            .superLightGrey,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          const Radius.circular(
-                                                              4),
-                                                      topRight:
-                                                          const Radius.circular(
-                                                              4),
-                                                      bottomLeft:
-                                                          barHeightTrue == 0
-                                                              ? const Radius
-                                                                  .circular(4)
-                                                              : const Radius
-                                                                  .circular(0),
-                                                      bottomRight:
-                                                          barHeightTrue == 0
-                                                              ? const Radius
-                                                                  .circular(4)
-                                                              : const Radius
-                                                                  .circular(0),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              // 목표 달성 성공 (true) 부분
-                                              ConstrainedBox(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  maxHeight: 90,
-                                                  minHeight: 0,
-                                                ),
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.05598,
-                                                  height: barHeightTrue,
-                                                  decoration: BoxDecoration(
-                                                    color: (selectedIndex ==
-                                                                index ||
-                                                            toggleValue ==
-                                                                'week')
-                                                        ? ColorSet.green
-                                                        : ColorSet
-                                                            .superLightGrey,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomLeft:
-                                                          const Radius.circular(
-                                                              4),
-                                                      bottomRight:
-                                                          const Radius.circular(
-                                                              4),
-                                                      topLeft:
-                                                          barHeightFalse == 0
-                                                              ? const Radius
-                                                                  .circular(4)
-                                                              : const Radius
-                                                                  .circular(0),
-                                                      topRight:
-                                                          barHeightFalse == 0
-                                                              ? const Radius
-                                                                  .circular(4)
-                                                              : const Radius
-                                                                  .circular(0),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 90,
+                              child: SwipeDetector(
+                                onSwipeRight: (offset) {
+                                  context.read<AnalyticsIndex>().reset();
+                                  _loadLastWeek();
+                                },
+                                onSwipeLeft: (offset) {
+                                  context.read<AnalyticsIndex>().reset();
+                                  if (backWeek == 0) return;
+                                  _loadNextWeek();
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: Scaler.width(0.85, context) - 30,
+                                      height: 90,
+                                      color: Colors.white,
+                                    ),
+                                    GraphSliderWidget(
+                                      dailyTotalTimes: dailyTotalTimes,
+                                      bookRecordHistory: bookRecordHistory,
+                                      toggleValue: toggleValue,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 7,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: ["일", "월", "화", "수", "목", "금", "토"]
+                                  .map((day) {
+                                return SizedBox(
+                                  width: Scaler.width(0.05598, context),
+                                  child: Center(
+                                    child: Text(
+                                      day,
+                                      style: TextStyles
+                                          .analyticsGraphDateIndicatorStyle,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  // 요일 표시
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      "일",
-                                      "월",
-                                      "화",
-                                      "수",
-                                      "목",
-                                      "금",
-                                      "토"
-                                    ].map((day) {
-                                      return SizedBox(
-                                        width: Scaler.width(0.05598, context),
-                                        child: Center(
-                                          child: Text(
-                                            day,
-                                            style: TextStyles
-                                                .analyticsGraphDateIndicatorStyle,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ],
-                              )
-                            : Container(),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
                         const SizedBox(
                           height: 12,
                         ),
@@ -500,23 +383,29 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         toggleValue == 'week'
                             ? Column(
                                 children: bookRecordHistory
-                                    .expand((dailyRecords) => dailyRecords
-                                        .map((record) => GraphBookRecord(
-                                              key: ValueKey(record.bookUuid +
-                                                  Random()
-                                                      .nextInt(100)
-                                                      .toString()),
-                                              bookUuid: record.bookUuid,
-                                              totalTime: record.totalTime,
-                                              goalAchieved: record.goalAchieved,
-                                              dailyTotalTime: dailyTotalTimes
-                                                  .reduce((value, element) =>
-                                                      value + element),
-                                            )))
+                                    .expand(
+                                      (dailyRecords) => dailyRecords.map(
+                                        (record) => GraphBookRecord(
+                                          key: ValueKey(
+                                            record.bookUuid +
+                                                Random()
+                                                    .nextInt(1000)
+                                                    .toString(),
+                                          ),
+                                          bookUuid: record.bookUuid,
+                                          totalTime: record.totalTime,
+                                          goalAchieved: record.goalAchieved,
+                                          dailyTotalTime: dailyTotalTimes
+                                              .reduce((value, element) =>
+                                                  value + element),
+                                        ),
+                                      ),
+                                    )
                                     .toList(),
                               )
                             : Column(
-                                children: bookRecordHistory[selectedIndex]
+                                children: bookRecordHistory[
+                                        context.watch<AnalyticsIndex>().index]
                                     .map((record) {
                                   return GraphBookRecord(
                                     key: ValueKey(record.bookUuid +
@@ -524,8 +413,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     bookUuid: record.bookUuid,
                                     totalTime: record.totalTime,
                                     goalAchieved: record.goalAchieved,
-                                    dailyTotalTime:
-                                        dailyTotalTimes[selectedIndex],
+                                    dailyTotalTime: dailyTotalTimes[
+                                        context.watch<AnalyticsIndex>().index],
                                   );
                                 }).toList(),
                               ),

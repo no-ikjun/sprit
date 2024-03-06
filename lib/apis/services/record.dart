@@ -438,7 +438,7 @@ class RecordService {
   static Future<List<List<BookRecordHistory>>> getWeeklyRecord(
     BuildContext context,
     int backWeek, //몇주 전인지
-    int weekday,
+    int weekday, //툐요일 6, 일요일 7, 월요일 1
   ) async {
     List<List<BookRecordHistory>> result = [];
     int count = weekday == 7 ? 1 : weekday + 1;
@@ -449,6 +449,7 @@ class RecordService {
         queryParameters: {
           'back_week': backWeek,
           'count': count,
+          'today': DateTime.now().weekday % 7,
         },
       );
       if (response.statusCode == 200) {
