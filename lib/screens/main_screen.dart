@@ -59,24 +59,31 @@ class _MainScreenState extends State<MainScreen> {
         resizeToAvoidBottomInset: false,
         backgroundColor: ColorSet.background,
         endDrawer: const NavDrawer(),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: ColorSet.primary.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 4,
-                offset: const Offset(0, -3),
-              ),
-            ],
+        bottomNavigationBar: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 90,
           ),
-          child: CustomBottomNavigationBar(
-            selectedIndex: navigationProvider.selectedIndex,
-            onItemTapped: navigationProvider.selectTab,
+          child: Container(
+            margin: EdgeInsets.zero,
+            padding: EdgeInsets.zero,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: ColorSet.primary.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 4,
+                  offset: const Offset(0, -3),
+                ),
+              ],
+            ),
+            child: CustomBottomNavigationBar(
+              selectedIndex: navigationProvider.selectedIndex,
+              onItemTapped: navigationProvider.selectTab,
+            ),
           ),
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(

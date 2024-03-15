@@ -29,11 +29,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   Widget build(BuildContext context) {
     return BottomAppBar(
       notchMargin: 6.0,
+      padding: EdgeInsets.zero,
       color: Colors.transparent,
       elevation: 0,
       child: Stack(
         alignment: Alignment.topCenter,
         clipBehavior: Clip.none,
+        fit: StackFit.loose,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
