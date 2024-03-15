@@ -49,8 +49,15 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+      backgroundColor: Colors.white,
+      constraints: BoxConstraints(
+        minWidth: Scaler.width(1, context),
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
       ),
       builder: (context) {
         TextEditingController textarea = TextEditingController();

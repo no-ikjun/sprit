@@ -18,6 +18,7 @@ class Modal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: ColorSet.white,
       insetPadding: EdgeInsets.zero,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -39,6 +40,8 @@ class Modal extends StatelessWidget {
                 vertical: verticalPadding,
                 horizontal: horizontalPadding,
               ),
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
               content: Column(
                 children: [
                   closeButton

@@ -58,6 +58,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
   ) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
+      constraints: BoxConstraints(
+        minWidth: Scaler.width(1, context),
+      ),
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -81,6 +85,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
   ) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
+      constraints: BoxConstraints(
+        minWidth: Scaler.width(1, context),
+      ),
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -284,8 +292,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                               : '${widget.goalAmount}페이지',
                         );
                       },
-                      child: const Text('공유하기',
-                          style: TextStyles.buttonLabelStyle),
+                      child: const Text(
+                        '공유하기',
+                        style: TextStyles.buttonLabelStyle,
+                      ),
                     ),
                     CustomButton(
                       width: Scaler.width(0.85, context) * 0.5 - 5,

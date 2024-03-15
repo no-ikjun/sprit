@@ -50,10 +50,7 @@ class _QuestBottomInfoState extends State<QuestBottomInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      notchMargin: 6.0,
-      color: Colors.transparent,
-      elevation: 0,
+    return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

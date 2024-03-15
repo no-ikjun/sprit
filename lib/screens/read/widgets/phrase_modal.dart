@@ -61,7 +61,9 @@ class _PhraseModalState extends State<PhraseModal> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: MediaQuery.of(context).viewInsets,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SingleChildScrollView(
         child: SafeArea(
           maintainBottomViewPadding: true,
