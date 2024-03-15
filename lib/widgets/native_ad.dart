@@ -34,13 +34,13 @@ class _NativeTemplateExampleExampleState extends State<NativeAdTemplate> {
       request: const AdRequest(),
       listener: NativeAdListener(
         onAdLoaded: (Ad ad) {
-          debugPrint('$NativeAd loaded.');
+          //debugPrint('$NativeAd loaded.');
           setState(() {
             _nativeAdIsLoaded = true;
           });
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          debugPrint('$NativeAd failedToLoad: $error');
+          //debugPrint('$NativeAd failedToLoad: $error');
           ad.dispose();
         },
         onAdOpened: (Ad ad) => debugPrint('$NativeAd onAdOpened.'),
