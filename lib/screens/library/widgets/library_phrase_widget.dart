@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/amplitude_service.dart';
@@ -27,6 +28,15 @@ class LibraryPhraseWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () {
+        AmplitudeService().logEvent(
+          AmplitudeEvent.libraryPhraseDelete,
+          context.read<UserInfoState>().userInfo.userUuid,
+          eventProperties: {
+            'bookTitle': bookTitle,
+            'phrase': phrase,
+          },
+        );
+        HapticFeedback.heavyImpact();
         showModal(
           context,
           DeletePhrase(

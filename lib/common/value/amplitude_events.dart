@@ -37,6 +37,7 @@ class AmplitudeEvent {
   static const String libraryMyBookShowMore = "LIBRARY_MY_BOOK_SHOW_MORE";
   static const String libraryPhraseUpdate = "LIBRARY_PHRASE_UPDATE";
   static const String libraryPhraseShowMore = "LIBRARY_PHRASE_SHOW_MORE";
+  static const String libraryPhraseDelete = "LIBRARY_PHRASE_DELETE";
   static const String libraryReportDetailClick = "LIBRARY_REPORT_DETAIL_CLICK";
   static const String libraryReportDetailEdit = "LIBRARY_REPORT_DETAIL_EDIT";
 
