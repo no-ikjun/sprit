@@ -198,8 +198,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           context,
                                           isReadingTimeNotificationOn,
                                           readingTime,
-                                          !isWeeklyReportNotificationOn,
+                                          isWeeklyReportNotificationOn,
                                         );
+
                                         if (result == false) {
                                           setState(() {
                                             isWeeklyReportNotificationOn =
@@ -227,7 +228,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         final result =
                                             await updateTimeAgreeInfo(
                                           context,
-                                          !isReadingTimeNotificationOn,
+                                          isReadingTimeNotificationOn,
                                           readingTime,
                                           isWeeklyReportNotificationOn,
                                         );
@@ -297,7 +298,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         final result =
                                             await updateRemindAgreeInfo(
                                           context,
-                                          !isReminderNotificationOn,
+                                          isReminderNotificationOn,
                                           reminderTime,
                                         );
                                         if (result == false) {
@@ -367,7 +368,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         final result =
                                             await updateQuestAgreeInfo(
                                           context,
-                                          !isNewQuestNotificationOn,
+                                          isNewQuestNotificationOn,
                                           isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
                                         );
@@ -398,7 +399,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                             await updateQuestAgreeInfo(
                                           context,
                                           isNewQuestNotificationOn,
-                                          !isQuestEndNotificationOn,
+                                          isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
                                         );
                                         if (result == false) {
@@ -430,7 +431,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           context,
                                           isNewQuestNotificationOn,
                                           isQuestEndNotificationOn,
-                                          !isQuestTimeNotificationOn,
+                                          isQuestTimeNotificationOn,
                                         );
                                         if (result == false) {
                                           setState(() {
