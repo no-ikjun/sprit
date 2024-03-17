@@ -65,7 +65,7 @@ getPastTime(String timeData) {
   final time = DateTime.parse(timeData);
   final difference = now.difference(time);
   if (difference.inDays > 30) {
-    return '${difference.inDays ~/ 30}달 전';
+    return '${difference.inDays ~/ 30}개월 전';
   } else if (difference.inDays > 0) {
     return '${difference.inDays}일 전';
   } else if (difference.inHours > 0) {
