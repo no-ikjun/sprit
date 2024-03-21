@@ -1,6 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
+import 'package:sprit/common/value/router.dart';
+import 'package:sprit/screens/quest/quest_detail_screen.dart';
 import 'package:sprit/widgets/modal.dart';
 
 showModal(BuildContext context, Widget content, bool closeButton) async {
@@ -150,5 +153,40 @@ getQuestStatusData(QuestInfo questInfo, QuestApplyInfo questApplyInfo) {
     return getPastTime(questInfo.endDate);
   } else {
     return getGoingtime(questInfo.startDate);
+  }
+}
+
+void handleMessage(RemoteMessage message, BuildContext context) async {
+  debugPrint('message = ${message.notification!.title}');
+  if (message.data['type'] == 'notice') {
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => SubwayEventDetailScreen(
+    //       title: message.notification!.title!,
+    //       detail: "",
+    //       date: "",
+    //       place: "",
+    //       createdAt: "",
+    //       isFirstOpen: true,
+    //     ),
+    //   ),
+    //   (route) => false,
+    // );
+  } else if (message.data['type'] == 'quest') {
+    Navigator.pushNamed(
+      context,
+      RouteName.home,
+      arguments: message.data['uuid'],
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuestDetailScreen(
+          questUuid: message.data['uuid'],
+          //isFirstOpen: true,
+        ),
+      ),
+    );
   }
 }

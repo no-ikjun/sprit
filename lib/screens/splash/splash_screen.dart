@@ -16,6 +16,7 @@ import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/quest/quest_detail_screen.dart';
 
 Future<void> registerFcmToken(BuildContext context, String fcmToken) async {
   await NotificationService.registerFcmToken(context, fcmToken);
@@ -29,6 +30,52 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // 종료상태에서 클릭한 푸시 알림 메세지 핸들링
+    if (initialMessage != null) _handleMessage(initialMessage);
+
+    // 앱이 백그라운드 상태에서 푸시 알림 클릭 하여 열릴 경우 메세지 스트림을 통해 처리
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) async {
+    debugPrint('message = ${message.notification!.title}');
+    if (message.data['type'] == 'notice') {
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => SubwayEventDetailScreen(
+      //       title: message.notification!.title!,
+      //       detail: "",
+      //       date: "",
+      //       place: "",
+      //       createdAt: "",
+      //       isFirstOpen: true,
+      //     ),
+      //   ),
+      //   (route) => false,
+      // );
+    } else if (message.data['type'] == 'quest') {
+      Navigator.pushNamed(
+        context,
+        RouteName.home,
+        arguments: message.data['uuid'],
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuestDetailScreen(
+            questUuid: message.data['uuid'],
+            //isFirstOpen: true,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();

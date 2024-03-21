@@ -575,6 +575,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                             width: Scaler.width(0.8, context) -
                                                 16 * 9,
                                             child: TextField(
+                                              autofocus: true,
                                               textAlign: TextAlign.center,
                                               keyboardType:
                                                   TextInputType.number,
@@ -607,8 +608,9 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                 focusedBorder:
                                                     const OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: ColorSet.grey,
-                                                      width: 1.0),
+                                                    color: ColorSet.primary,
+                                                    width: 2.0,
+                                                  ),
                                                   borderRadius:
                                                       BorderRadius.all(
                                                     Radius.circular(8),
@@ -692,8 +694,9 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                 focusedBorder:
                                                     const OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: ColorSet.grey,
-                                                      width: 1.0),
+                                                    color: ColorSet.primary,
+                                                    width: 2.0,
+                                                  ),
                                                   borderRadius:
                                                       BorderRadius.all(
                                                     Radius.circular(8),
@@ -942,6 +945,17 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                   borderSide: BorderSide(
                                                     color: ColorSet.border,
                                                     width: 1.0,
+                                                  ),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(8),
+                                                  ),
+                                                  borderSide: BorderSide(
+                                                    color: ColorSet.primary,
+                                                    width: 2.0,
                                                   ),
                                                 ),
                                               ),
