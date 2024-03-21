@@ -155,38 +155,3 @@ getQuestStatusData(QuestInfo questInfo, QuestApplyInfo questApplyInfo) {
     return getGoingtime(questInfo.startDate);
   }
 }
-
-void handleMessage(RemoteMessage message, BuildContext context) async {
-  debugPrint('message = ${message.notification!.title}');
-  if (message.data['type'] == 'notice') {
-    // Navigator.pushAndRemoveUntil(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => SubwayEventDetailScreen(
-    //       title: message.notification!.title!,
-    //       detail: "",
-    //       date: "",
-    //       place: "",
-    //       createdAt: "",
-    //       isFirstOpen: true,
-    //     ),
-    //   ),
-    //   (route) => false,
-    // );
-  } else if (message.data['type'] == 'quest') {
-    Navigator.pushNamed(
-      context,
-      RouteName.home,
-      arguments: message.data['uuid'],
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QuestDetailScreen(
-          questUuid: message.data['uuid'],
-          //isFirstOpen: true,
-        ),
-      ),
-    );
-  }
-}
