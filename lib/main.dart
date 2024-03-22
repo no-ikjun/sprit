@@ -18,6 +18,7 @@ import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/book_report_screen.dart';
+import 'package:sprit/screens/notice/notice_detail_screen.dart';
 import 'package:sprit/screens/quest/quest_detail_screen.dart';
 import 'package:sprit/screens/read/read_complete_screen.dart';
 import 'package:sprit/screens/read/record_setting_screen.dart';
@@ -131,6 +132,13 @@ class MyApp extends StatelessWidget {
               final String questUuid = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => QuestDetailScreen(questUuid: questUuid),
+              );
+            case RouteName.noticeDetail:
+              final String recordUuid = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => NoticeDetailScreen(
+                  recordUuid: recordUuid,
+                ),
               );
             default:
               return MaterialPageRoute(

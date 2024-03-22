@@ -31,6 +31,7 @@ class RouteName {
   static const questDetail = "/questDetail";
   static const myQuest = "/myQuest";
   static const notice = "/notice";
+  static const noticeDetail = "/noticeDetail";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
