@@ -64,9 +64,8 @@ class NavDrawer extends StatelessWidget {
                         AmplitudeEvent.drawerNoticeClick,
                         context.read<UserInfoState>().userInfo.userUuid,
                       );
-                      Uri url = Uri.parse(
-                          "https://ikjun.notion.site/SPRIT-c9a608de7a82409fbc673c6ce7b7cfa8?pvs=4");
-                      launchUrl(url);
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, RouteName.notice);
                     },
                     child: Stack(
                       alignment: Alignment.topLeft,
@@ -123,6 +122,7 @@ class NavDrawer extends StatelessWidget {
                         AmplitudeEvent.drawerProfileClick,
                         context.read<UserInfoState>().userInfo.userUuid,
                       );
+                      Navigator.pop(context);
                       Navigator.pushNamed(context, RouteName.profile);
                     },
                     child: Row(
@@ -160,6 +160,7 @@ class NavDrawer extends StatelessWidget {
                           'body': '',
                         },
                       );
+                      Navigator.pop(context);
                       launchUrl(url);
                     },
                     child: Row(

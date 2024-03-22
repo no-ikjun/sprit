@@ -1,9 +1,6 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
-import 'package:sprit/common/value/router.dart';
-import 'package:sprit/screens/quest/quest_detail_screen.dart';
 import 'package:sprit/widgets/modal.dart';
 
 showModal(BuildContext context, Widget content, bool closeButton) async {

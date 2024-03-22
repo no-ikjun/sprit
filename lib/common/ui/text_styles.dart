@@ -894,4 +894,18 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle noticeTileTypeStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle noticeTileTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }
