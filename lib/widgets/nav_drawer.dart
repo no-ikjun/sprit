@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/amplitude_service.dart';
+import 'package:sprit/apis/services/notice.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/policy/logout.dart';
+import 'package:sprit/providers/new_notice.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+Future<String> getLatestNoticeUuid(BuildContext context) async {
+  return await NoticeService.getlatestNoticeUuid(context);
+}
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key});
@@ -68,13 +75,34 @@ class NavDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, RouteName.notice);
                     },
                     child: Stack(
-                      alignment: Alignment.topLeft,
+                      alignment: Alignment.topRight,
                       children: [
                         Row(
                           children: [
-                            SvgPicture.asset(
-                              'assets/images/bell_icon.svg',
-                              height: 18,
+                            Stack(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/bell_icon.svg',
+                                  height: 18,
+                                ),
+                                context.watch<NewNoticeState>().newNotice
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 10,
+                                        ),
+                                        child: Container(
+                                          width: 5,
+                                          height: 5,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(2.5),
+                                            ),
+                                            color: ColorSet.primary,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
                             ),
                             const SizedBox(
                               width: 15,

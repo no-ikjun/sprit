@@ -3,19 +3,23 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/banner.dart';
 import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
+import 'package:sprit/apis/services/notice.dart';
 import 'package:sprit/apis/services/user_info.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/book/home_book_select.dart';
+import 'package:sprit/providers/new_notice.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/screens/home/widgets/popular_book.dart';
@@ -50,6 +54,10 @@ Future<Map<String, dynamic>> getPopularBook(
   return await BookInfoService.getPopularBook(context, page);
 }
 
+Future<String> getLatestNoticeUuid(BuildContext context) async {
+  return await NoticeService.getlatestNoticeUuid(context);
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -79,7 +87,9 @@ class _HomePageState extends State<HomePage> {
       UserInfoService.getUserInfo(context),
       getBannerInfo(context),
       getPopularBook(context, 1),
+      getLatestNoticeUuid(context),
     ]);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       bookInfo = results[0] as List<BookInfo>;
       context.read<UserInfoState>().updateUserInfo(results[1] as UserInfo);
@@ -88,6 +98,9 @@ class _HomePageState extends State<HomePage> {
       popularBookInfo = popularBooksResult['books'] as List<BookInfo>;
       moreAvailable = popularBooksResult['more_available'] as bool;
       currentPage = 1;
+      if ((prefs.getString('noticeUuid') ?? '') != results[4] as String) {
+        context.read<NewNoticeState>().updateNewNotice(true);
+      }
     });
   }
 
@@ -694,9 +707,28 @@ class _HomePageState extends State<HomePage> {
                     highlightColor: Colors.transparent,
                     padding:
                         EdgeInsets.only(right: Scaler.width(0.075, context)),
-                    icon: SvgPicture.asset(
-                      'assets/images/hamburger_icon.svg',
-                      width: 30,
+                    icon: Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        context.watch<NewNoticeState>().newNotice
+                            ? Container(
+                                width: 5,
+                                height: 5,
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(2.5)),
+                                  color: ColorSet.primary,
+                                ),
+                              )
+                            : const SizedBox(
+                                width: 5,
+                                height: 5,
+                              ),
+                        SvgPicture.asset(
+                          'assets/images/hamburger_icon.svg',
+                          width: 30,
+                        ),
+                      ],
                     ),
                     onPressed: () {
                       AmplitudeService().logEvent(

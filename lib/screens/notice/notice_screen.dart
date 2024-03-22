@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprit/apis/services/notice.dart';
 import 'package:sprit/common/ui/color_set.dart';
+import 'package:sprit/providers/new_notice.dart';
 import 'package:sprit/screens/notice/widgets/notice_tile.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
@@ -21,10 +24,18 @@ class _NoticeScreenState extends State<NoticeScreen> {
 
   void _getNoticeList() async {
     final list = await NoticeService.getNoticeList(context);
+    context.read<NewNoticeState>().updateNewNotice(false);
     if (mounted) {
       setState(() {
         noticeList = list;
       });
+      if (noticeList.isNotEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString(
+          'noticeUuid',
+          noticeList[0].noticeUuid,
+        );
+      }
     }
   }
 

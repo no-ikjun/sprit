@@ -84,4 +84,20 @@ class NoticeService {
     }
     return noticeInfo;
   }
+
+  static Future<String> getlatestNoticeUuid(BuildContext context) async {
+    final dio = await authDio(context);
+    String noticeUuid = '';
+    try {
+      final response = await dio.get('/notice/latest');
+      if (response.statusCode == 200) {
+        noticeUuid = response.data as String;
+      } else {
+        debugPrint('최신 공지사항 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('최신 공지사항 조회 실패 $e');
+    }
+    return noticeUuid;
+  }
 }
