@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/widgets.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/review.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/widgets/star_row.dart';
 
 class ReviewContent extends StatelessWidget {
   final ReviewInfo review;
-  const ReviewContent({Key? key, required this.review}) : super(key: key);
+  const ReviewContent({super.key, required this.review});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(
+          height: 10,
+        ),
         Container(
-          padding: EdgeInsets.symmetric(
-            vertical: 14,
-            horizontal: Scaler.width(0.075, context),
+          width: Scaler.width(0.85, context),
+          decoration: BoxDecoration(
+            color: ColorSet.white,
+            borderRadius: BorderRadius.circular(12),
           ),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               Row(
@@ -26,21 +32,21 @@ class ReviewContent extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      SvgPicture.asset(
-                        'assets/images/profile_icon.svg',
-                        width: 38,
+                      Image.asset(
+                        'assets/images/profile_img.png',
+                        width: 30,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 7),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
                             '독자 ${review.userUuid.substring(2, 7)}',
                             style: TextStyles.bookReviewNameStyle,
                           ),
                           Text(
-                            review.createdAt.substring(0, 10),
+                            getPastTime(review.createdAt),
                             style: TextStyles.bookReviewDateStyle,
                           ),
                         ],
@@ -75,11 +81,6 @@ class ReviewContent extends StatelessWidget {
                     ),
             ],
           ),
-        ),
-        Container(
-          width: Scaler.width(1, context),
-          height: 1,
-          color: ColorSet.lightGrey,
         ),
       ],
     );

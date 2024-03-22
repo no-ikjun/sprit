@@ -102,57 +102,60 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       )
                     ],
                   )
-                : SizedBox(
-                    width: Scaler.width(0.85, context),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          bookInfo.title,
-                          style: TextStyles.bookReviewTitleStyle,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Row(
-                          children: [
-                            StarRowWidget(star: bookInfo.star),
-                            const SizedBox(
-                              width: 8,
+                : Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: Scaler.width(0.85, context),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  bookInfo.title,
+                                  style: TextStyles.bookReviewTitleStyle,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                Row(
+                                  children: [
+                                    StarRowWidget(star: bookInfo.star),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      bookInfo.star.toString().substring(0, 3),
+                                      style: TextStyles.bookReviewCountStyle,
+                                    ),
+                                    Text(
+                                      ' (${bookInfo.starCount})',
+                                      style: TextStyles.bookReviewCountStyle
+                                          .copyWith(
+                                        color: ColorSet.grey,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
-                            Text(
-                              bookInfo.star.toString().substring(0, 3),
-                              style: TextStyles.bookReviewCountStyle,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            children: List.generate(
+                              reviews.length,
+                              (index) {
+                                return ReviewContent(review: reviews[index]);
+                              },
                             ),
-                            Text(
-                              ' (${bookInfo.starCount})',
-                              style: TextStyles.bookReviewCountStyle.copyWith(
-                                color: ColorSet.grey,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-            const SizedBox(
-              height: 12,
-            ),
-            Container(
-              width: Scaler.width(1, context),
-              height: 1,
-              color: ColorSet.lightGrey,
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: reviews.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return ReviewContent(review: reviews[index]);
-                },
-              ),
-            ),
           ],
         ),
       ),

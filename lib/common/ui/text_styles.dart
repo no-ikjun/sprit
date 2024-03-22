@@ -217,7 +217,7 @@ class TextStyles {
   static const TextStyle bookReviewContentStyle = TextStyle(
     color: ColorSet.darkGrey,
     fontSize: 12,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
 
