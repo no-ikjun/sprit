@@ -275,7 +275,6 @@ class RecordService {
     );
     try {
       final response = await dio.get('/record/notended');
-      debugPrint('notended: ${response.data}');
       if (response.statusCode == 200) {
         if (response.data == null || response.data == '') {
           return recordInfo;

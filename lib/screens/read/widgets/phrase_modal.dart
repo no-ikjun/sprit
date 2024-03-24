@@ -15,9 +15,16 @@ Future<String> setPhrase(
   BuildContext context,
   String bookUuid,
   String phrase,
+  int page,
   bool remind,
 ) async {
-  return await PhraseService.setNewPhrase(context, bookUuid, phrase, remind);
+  return await PhraseService.setNewPhrase(
+    context,
+    bookUuid,
+    phrase,
+    page,
+    remind,
+  );
 }
 
 class PhraseModal extends StatefulWidget {
@@ -46,7 +53,7 @@ class _PhraseModalState extends State<PhraseModal> {
       isSubmitted = true;
       isLoading = true;
     });
-    setPhrase(context, widget.bookUuid, phrase, remind).then((value) {
+    setPhrase(context, widget.bookUuid, phrase, 0, remind).then((value) {
       if (value != '') {
         setState(() {
           isLoading = false;

@@ -705,6 +705,13 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibraryPhrasePageStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle myLibraryPhraseDescriptionStyle = TextStyle(
     color: ColorSet.darkGrey,
     fontSize: 14,

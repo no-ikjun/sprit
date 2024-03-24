@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
@@ -50,12 +52,39 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
       children: [
         SizedBox(
           width: Scaler.width(0.85, context),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 '저장된 문구 (스크랩)',
                 style: TextStyles.myLibrarySubTitleStyle,
+              ),
+              InkWell(
+                onTap: () {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.libraryPhraseShowMore,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
+                  //TODO: show all phrases button action
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      '모두보기',
+                      style: TextStyles.myLibraryShowMoreStyle,
+                    ),
+                    Transform.rotate(
+                      angle: 270 * math.pi / 180,
+                      child: SvgPicture.asset(
+                        'assets/images/show_more_grey.svg',
+                        width: 21,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -76,6 +105,8 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                     phraseUuid: phraseInfoList[index].phraseUuid,
                     phrase: phraseInfoList[index].phrase,
                     bookTitle: phraseInfoList[index].bookTitle,
+                    bookThumbnail: phraseInfoList[index].bookThumbnail,
+                    page: phraseInfoList[index].page,
                     callback: () async {
                       setState(() {
                         phraseInfoList = [];
@@ -103,83 +134,83 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
             },
           ),
         ),
-        phraseMoreAvailable
-            ? Column(
-                children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      AmplitudeService().logEvent(
-                        AmplitudeEvent.libraryPhraseShowMore,
-                        context.read<UserInfoState>().userInfo.userUuid,
-                      );
-                      await getPhraseForLibrary(
-                        context,
-                        phraseCurrentPage + 1,
-                      ).then((value) {
-                        setState(() {
-                          phraseInfoList.addAll(value.phraseLibraryList);
-                          phraseMoreAvailable = value.moreAvailable;
-                          phraseCurrentPage++;
-                        });
-                      });
-                    },
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          '더보기',
-                          style: TextStyles.myLibraryShowMoreStyle,
-                        ),
-                        SvgPicture.asset(
-                          'assets/images/arrow_right.svg',
-                          width: 12,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : phraseInfoList.length > 3
-                ? Column(
-                    children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      InkWell(
-                        onTap: () async {
-                          setState(() {
-                            phraseInfoList = phraseInfoList.sublist(0, 3);
-                            phraseMoreAvailable = true;
-                            phraseCurrentPage = 1;
-                          });
-                        },
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              '숨기기',
-                              style: TextStyles.myLibraryShowMoreStyle,
-                            ),
-                            Transform.rotate(
-                              angle: 180 * math.pi / 180,
-                              child: SvgPicture.asset(
-                                'assets/images/show_more_grey.svg',
-                                width: 21,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : Container(),
+        // phraseMoreAvailable
+        //     ? Column(
+        //         children: [
+        //           const SizedBox(
+        //             height: 15,
+        //           ),
+        //           InkWell(
+        //             onTap: () async {
+        //               AmplitudeService().logEvent(
+        //                 AmplitudeEvent.libraryPhraseShowMore,
+        //                 context.read<UserInfoState>().userInfo.userUuid,
+        //               );
+        //               await getPhraseForLibrary(
+        //                 context,
+        //                 phraseCurrentPage + 1,
+        //               ).then((value) {
+        //                 setState(() {
+        //                   phraseInfoList.addAll(value.phraseLibraryList);
+        //                   phraseMoreAvailable = value.moreAvailable;
+        //                   phraseCurrentPage++;
+        //                 });
+        //               });
+        //             },
+        //             splashColor: Colors.transparent,
+        //             highlightColor: Colors.transparent,
+        //             child: Row(
+        //               mainAxisAlignment: MainAxisAlignment.center,
+        //               children: [
+        //                 const Text(
+        //                   '더보기',
+        //                   style: TextStyles.myLibraryShowMoreStyle,
+        //                 ),
+        //                 SvgPicture.asset(
+        //                   'assets/images/show_more_grey.svg',
+        //                   width: 21,
+        //                 )
+        //               ],
+        //             ),
+        //           ),
+        //         ],
+        //       )
+        //     : phraseInfoList.length > 3
+        //         ? Column(
+        //             children: [
+        //               const SizedBox(
+        //                 height: 15,
+        //               ),
+        //               InkWell(
+        //                 onTap: () async {
+        //                   setState(() {
+        //                     phraseInfoList = phraseInfoList.sublist(0, 3);
+        //                     phraseMoreAvailable = true;
+        //                     phraseCurrentPage = 1;
+        //                   });
+        //                 },
+        //                 splashColor: Colors.transparent,
+        //                 highlightColor: Colors.transparent,
+        //                 child: Row(
+        //                   mainAxisAlignment: MainAxisAlignment.center,
+        //                   children: [
+        //                     const Text(
+        //                       '숨기기',
+        //                       style: TextStyles.myLibraryShowMoreStyle,
+        //                     ),
+        //                     Transform.rotate(
+        //                       angle: 180 * math.pi / 180,
+        //                       child: SvgPicture.asset(
+        //                         'assets/images/show_more_grey.svg',
+        //                         width: 21,
+        //                       ),
+        //                     )
+        //                   ],
+        //                 ),
+        //               ),
+        //             ],
+        //           )
+        //         : Container(),
       ],
     );
   }

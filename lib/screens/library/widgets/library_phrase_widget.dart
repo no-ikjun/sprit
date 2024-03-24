@@ -10,17 +10,22 @@ import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/library/delete_phrase.dart';
 import 'package:sprit/popups/library/patch_phrase.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/widgets/book_thumbnail.dart';
 
 class LibraryPhraseWidget extends StatelessWidget {
   final String phraseUuid;
   final String bookTitle;
+  final String bookThumbnail;
   final String phrase;
+  final int page;
   final Function callback;
   const LibraryPhraseWidget({
     super.key,
     required this.phraseUuid,
     required this.bookTitle,
+    required this.bookThumbnail,
     required this.phrase,
+    required this.page,
     required this.callback,
   });
 
@@ -41,6 +46,26 @@ class LibraryPhraseWidget extends StatelessWidget {
           context,
           DeletePhrase(
             bookTitle: bookTitle,
+            phraseUuid: phraseUuid,
+            callback: callback,
+          ),
+          false,
+        );
+      },
+      onTap: () {
+        AmplitudeService().logEvent(
+          AmplitudeEvent.libraryPhraseUpdate,
+          context.read<UserInfoState>().userInfo.userUuid,
+          eventProperties: {
+            'bookTitle': bookTitle,
+            'phrase': phrase,
+          },
+        );
+        showModal(
+          context,
+          PatchPhrase(
+            bookTitle: bookTitle,
+            phrase: phrase,
             phraseUuid: phraseUuid,
             callback: callback,
           ),
@@ -75,47 +100,35 @@ class LibraryPhraseWidget extends StatelessWidget {
                   width: Scaler.width(0.85, context) - 30 - 42,
                   child: Row(
                     children: [
+                      BookThumbnail(
+                        imgUrl: bookThumbnail,
+                        width: 34.62,
+                        height: 50,
+                      ),
+                      const SizedBox(width: 8),
                       Flexible(
-                        child: Text(
-                          bookTitle,
-                          style: TextStyles.myLibraryPhraseTitleStyle,
-                          overflow: TextOverflow.ellipsis,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              bookTitle,
+                              style: TextStyles.myLibraryPhraseTitleStyle,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              page == 0 ? '페이지 기록 없음' : 'p. $page',
+                              style: TextStyles.myLibraryPhrasePageStyle,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    AmplitudeService().logEvent(
-                      AmplitudeEvent.libraryPhraseShowMore,
-                      context.read<UserInfoState>().userInfo.userUuid,
-                      eventProperties: {
-                        'bookTitle': bookTitle,
-                        'phrase': phrase,
-                      },
-                    );
-                    showModal(
-                      context,
-                      PatchPhrase(
-                        bookTitle: bookTitle,
-                        phrase: phrase,
-                        phraseUuid: phraseUuid,
-                        callback: callback,
-                      ),
-                      false,
-                    );
-                  },
-                  child: const Icon(
-                    Icons.edit,
-                    color: ColorSet.lightGrey,
-                    size: 20,
-                  ),
-                ),
               ],
             ),
             const SizedBox(
-              height: 5,
+              height: 11,
             ),
             SizedBox(
               width: Scaler.width(0.85, context) - 24,

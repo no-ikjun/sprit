@@ -32,25 +32,33 @@ class PhraseLibraryListType {
 class PhraseLibraryType {
   final String phraseUuid;
   final String bookTitle;
+  final String bookThumbnail;
   final String phrase;
+  final int page;
   const PhraseLibraryType({
     required this.phraseUuid,
     required this.bookTitle,
+    required this.bookThumbnail,
     required this.phrase,
+    required this.page,
   });
 
   factory PhraseLibraryType.fromJson(Map<String, dynamic> json) {
     return PhraseLibraryType(
       phraseUuid: json['phrase_uuid'] as String,
       bookTitle: json['book_title'] as String,
+      bookThumbnail: json['book_thumbnail'] as String,
       phrase: json['phrase'] as String,
+      page: json['page'] as int,
     );
   }
   Map<String, dynamic> toJson() {
     return {
       'phrase_uuid': phraseUuid,
       'book_title': bookTitle,
+      'book_thumbnail': bookThumbnail,
       'phrase': phrase,
+      'page': page,
     };
   }
 }
@@ -60,6 +68,7 @@ class PhraseInfo {
   final String bookUuid;
   final String userUuid;
   final String phrase;
+  final int page;
   final bool remind;
   final String createdAt;
   const PhraseInfo({
@@ -67,6 +76,7 @@ class PhraseInfo {
     required this.bookUuid,
     required this.userUuid,
     required this.phrase,
+    required this.page,
     required this.remind,
     required this.createdAt,
   });
@@ -76,6 +86,7 @@ class PhraseInfo {
       bookUuid: json['book_uuid'] as String,
       userUuid: json['user_uuid'] as String,
       phrase: json['phrase'] as String,
+      page: json['page'] as int,
       remind: json['remind'] as bool,
       createdAt: json['created_at'] as String,
     );
@@ -86,6 +97,7 @@ class PhraseInfo {
       'book_uuid': bookUuid,
       'user_uuid': userUuid,
       'phrase': phrase,
+      'page': page,
       'remind': remind,
       'created_at': createdAt,
     };
@@ -97,6 +109,7 @@ class PhraseService {
     BuildContext context,
     String bookUuid,
     String phrase,
+    int page,
     bool remind,
   ) async {
     final dio = await authDio(context);
@@ -106,6 +119,7 @@ class PhraseService {
         data: {
           'book_uuid': bookUuid,
           'phrase': phrase,
+          'page': page,
           'remind': remind,
         },
       );
@@ -190,6 +204,7 @@ class PhraseService {
           bookUuid: '',
           userUuid: '',
           phrase: '',
+          page: 0,
           remind: false,
           createdAt: '',
         );
@@ -201,6 +216,7 @@ class PhraseService {
         bookUuid: '',
         userUuid: '',
         phrase: '',
+        page: 0,
         remind: false,
         createdAt: '',
       );
@@ -263,6 +279,7 @@ class PhraseService {
   ) async {
     List<PhraseLibraryType> phraseLibraryList = [];
     final dio = await authDio(context);
+    bool moreAvailable = false;
     try {
       final response = await dio.get(
         '/phrase/library',
@@ -274,6 +291,7 @@ class PhraseService {
         for (final phraseLibrary in response.data['library_phrase_list']) {
           phraseLibraryList.add(PhraseLibraryType.fromJson(phraseLibrary));
         }
+        moreAvailable = response.data['more_available'] as bool;
       } else {
         debugPrint('내 서재 문구 불러오기 실패');
       }
@@ -282,7 +300,7 @@ class PhraseService {
     }
     return PhraseLibraryListCallback(
       phraseLibraryList: phraseLibraryList,
-      moreAvailable: false,
+      moreAvailable: moreAvailable,
     );
   }
 }
