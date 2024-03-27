@@ -118,7 +118,8 @@ class _SplashScreenState extends State<SplashScreen> {
             context
                 .read<SelectedBookInfoState>()
                 .updateSelectedBookUuid(bookInfo);
-            Navigator.pushReplacementNamed(
+            Navigator.pushReplacementNamed(context, RouteName.home);
+            Navigator.pushNamed(
               context,
               RouteName.readTimer,
               arguments: ongoingRecord.recordUuid,
