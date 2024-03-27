@@ -7,6 +7,8 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/popups/quest/new_quest.dart';
 import 'package:sprit/screens/quest/widgets/active_quest.dart';
 import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
@@ -89,11 +91,30 @@ class _QuestScreenState extends State<QuestScreen> {
         SliverToBoxAdapter(
           child: Column(
             children: [
+              const SizedBox(
+                height: 15,
+              ),
               SizedBox(
                 width: Scaler.width(0.85, context),
-                child: const Text(
-                  '스프릿 퀘스트',
-                  style: TextStyles.questScreenTitleStyle,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      '스프릿 퀘스트',
+                      style: TextStyles.questScreenTitleStyle,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showModal(context, const NewQuestModal(), false);
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: SvgPicture.asset(
+                        'assets/images/plus_icon.svg',
+                        width: 30,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               isLoading
@@ -141,28 +162,6 @@ class _QuestScreenState extends State<QuestScreen> {
       maintainBottomViewPadding: true,
       child: Column(
         children: [
-          CustomAppBar(
-            isHomeScreen: true,
-            logoShown: false,
-            onlyLabel: false,
-            rightIcons: [
-              IconButton(
-                iconSize: 30,
-                splashColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                padding: EdgeInsets.only(right: Scaler.width(0.075, context)),
-                icon: SvgPicture.asset(
-                  'assets/images/plus_icon.svg',
-                  width: 30,
-                ),
-                onPressed: () {
-                  Uri url = Uri.parse("https://forms.gle/w38fCpWv9UnnR9R88");
-                  launchUrl(url);
-                },
-              ),
-            ],
-          ),
           Expanded(
             child: ScrollConfiguration(
               behavior: RemoveGlow(),
