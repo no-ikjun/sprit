@@ -273,7 +273,32 @@ class PhraseService {
     }
   }
 
-  static Future<PhraseLibraryListCallback> getPhraseForLibrary(
+  static Future<PhraseLibraryListCallback> getPhraseForLibraryScreen(
+    BuildContext context,
+  ) async {
+    List<PhraseLibraryType> phraseLibraryList = [];
+    final dio = await authDio(context);
+    bool moreAvailable = false;
+    try {
+      final response = await dio.get('/phrase/library/screen');
+      if (response.statusCode == 200) {
+        for (final phraseLibrary in response.data['library_phrase_list']) {
+          phraseLibraryList.add(PhraseLibraryType.fromJson(phraseLibrary));
+        }
+        moreAvailable = response.data['more_available'] as bool;
+      } else {
+        debugPrint('내 서재 문구 불러오기 실패');
+      }
+    } catch (e) {
+      debugPrint('내 서재 문구 불러오기 실패 $e');
+    }
+    return PhraseLibraryListCallback(
+      phraseLibraryList: phraseLibraryList,
+      moreAvailable: moreAvailable,
+    );
+  }
+
+  static Future<PhraseLibraryListCallback> getPhraseForPhraseScreen(
     BuildContext context,
     int page,
   ) async {
@@ -281,12 +306,9 @@ class PhraseService {
     final dio = await authDio(context);
     bool moreAvailable = false;
     try {
-      final response = await dio.get(
-        '/phrase/library',
-        queryParameters: {
-          'page': page,
-        },
-      );
+      final response = await dio.get('/phrase/library/all', queryParameters: {
+        'page': page,
+      });
       if (response.statusCode == 200) {
         for (final phraseLibrary in response.data['library_phrase_list']) {
           phraseLibraryList.add(PhraseLibraryType.fromJson(phraseLibrary));

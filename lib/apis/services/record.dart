@@ -108,7 +108,7 @@ class BookRecordHistory {
   Map<String, dynamic> toJson() {
     return {
       'book_uuid': bookUuid,
-      'is_achieved': goalAchieved,
+      'goal_achieved': goalAchieved,
       'total_time': totalTime,
     };
   }

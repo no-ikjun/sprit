@@ -12,11 +12,10 @@ import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/library_phrase_widget.dart';
 
-Future<PhraseLibraryListCallback> getPhraseForLibrary(
+Future<PhraseLibraryListCallback> getPhraseForLibraryScreen(
   BuildContext context,
-  int page,
 ) async {
-  return await PhraseService.getPhraseForLibrary(context, page);
+  return await PhraseService.getPhraseForLibraryScreen(context);
 }
 
 class MyPhraseComponent extends StatefulWidget {
@@ -28,14 +27,11 @@ class MyPhraseComponent extends StatefulWidget {
 
 class _MyPhraseComponentState extends State<MyPhraseComponent> {
   List<PhraseLibraryType> phraseInfoList = [];
-  bool phraseMoreAvailable = false;
-  int phraseCurrentPage = 1;
 
   void _initialize() async {
-    await getPhraseForLibrary(context, phraseCurrentPage).then((value) {
+    await getPhraseForLibraryScreen(context).then((value) {
       setState(() {
         phraseInfoList = value.phraseLibraryList;
-        phraseMoreAvailable = value.moreAvailable;
       });
     });
   }
@@ -110,16 +106,12 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                     callback: () async {
                       setState(() {
                         phraseInfoList = [];
-                        phraseCurrentPage = 1;
-                        phraseMoreAvailable = false;
                       });
-                      await getPhraseForLibrary(
+                      await getPhraseForLibraryScreen(
                         context,
-                        phraseCurrentPage,
                       ).then((value) {
                         setState(() {
                           phraseInfoList = value.phraseLibraryList;
-                          phraseMoreAvailable = value.moreAvailable;
                         });
                       });
                     },
