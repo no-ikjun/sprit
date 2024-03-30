@@ -9,6 +9,7 @@ import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/library_phrase_widget.dart';
 
@@ -61,7 +62,10 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                     AmplitudeEvent.libraryPhraseShowMore,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
-                  //TODO: show all phrases button action
+                  Navigator.pushNamed(
+                    context,
+                    RouteName.libraryPhraseScreen,
+                  );
                 },
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,

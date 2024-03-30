@@ -52,18 +52,30 @@ class _LibraryPhraseWidgetState extends State<LibraryPhraseWidget> {
         borderRadius: BorderRadius.circular(8),
       ),
       items: [
-        const PopupMenuItem<int>(
+        PopupMenuItem<int>(
           value: 0,
-          child: Text(
-            '수정하기',
-            style: TextStyles.myLibraryPhraseMenuStyle,
+          child: Row(
+            children: [
+              SvgPicture.asset('assets/images/edit_icon.svg', width: 18),
+              const SizedBox(width: 8),
+              const Text(
+                '수정하기',
+                style: TextStyles.myLibraryPhraseMenuStyle,
+              ),
+            ],
           ),
         ),
-        const PopupMenuItem<int>(
+        PopupMenuItem<int>(
           value: 1,
-          child: Text(
-            '삭제하기',
-            style: TextStyles.myLibraryPhraseMenuStyle,
+          child: Row(
+            children: [
+              SvgPicture.asset('assets/images/trash_icon.svg', width: 18),
+              const SizedBox(width: 8),
+              const Text(
+                '삭제하기',
+                style: TextStyles.myLibraryPhraseMenuStyle,
+              ),
+            ],
           ),
         ),
       ],

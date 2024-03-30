@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sprit/screens/home/profile_screen.dart';
+import 'package:sprit/screens/library/phrase_screen.dart';
 import 'package:sprit/screens/main_screen.dart';
 import 'package:sprit/screens/login/login_screen.dart';
 import 'package:sprit/screens/login/sign_up_screen.dart';
@@ -32,6 +33,7 @@ class RouteName {
   static const myQuest = "/myQuest";
   static const notice = "/notice";
   static const noticeDetail = "/noticeDetail";
+  static const libraryPhraseScreen = "/library/phrase";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -47,4 +49,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.profile: (context) => const ProfileScreen(),
   RouteName.myQuest: (context) => const MyQuestScreen(),
   RouteName.notice: (context) => const NoticeScreen(),
+  RouteName.libraryPhraseScreen: (context) => const LibraryPhraseScreen(),
 };

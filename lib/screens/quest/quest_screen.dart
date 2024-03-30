@@ -12,9 +12,7 @@ import 'package:sprit/popups/quest/new_quest.dart';
 import 'package:sprit/screens/quest/widgets/active_quest.dart';
 import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
-import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/remove_glow.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
