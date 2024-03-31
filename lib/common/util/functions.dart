@@ -152,3 +152,21 @@ getQuestStatusData(QuestInfo questInfo, QuestApplyInfo questApplyInfo) {
     return getGoingtime(questInfo.startDate);
   }
 }
+
+getGoalString(String type, int goalSale) {
+  if (type == 'PAGE') {
+    return '$goalSale페이지';
+  } else if (type == 'TIME') {
+    if (goalSale < 60) {
+      return '$goalSale분';
+    } else {
+      if (goalSale % 60 == 0) {
+        return '${goalSale ~/ 60}시간';
+      } else {
+        return '${goalSale ~/ 60}시간 ${goalSale % 60}분';
+      }
+    }
+  } else {
+    return '';
+  }
+}

@@ -1005,6 +1005,18 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                   ),
                                                 ),
                                                 DropdownMenuItem(
+                                                  value: 90,
+                                                  child: Text(
+                                                    '1시간 30분',
+                                                    style: TextStyles
+                                                        .textFieldStyle
+                                                        .copyWith(
+                                                      color: ColorSet.darkGrey,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DropdownMenuItem(
                                                   value: 120,
                                                   child: Text(
                                                     '2시간',
@@ -1017,21 +1029,9 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                   ),
                                                 ),
                                                 DropdownMenuItem(
-                                                  value: 180,
+                                                  value: 150,
                                                   child: Text(
-                                                    '3시간',
-                                                    style: TextStyles
-                                                        .textFieldStyle
-                                                        .copyWith(
-                                                      color: ColorSet.darkGrey,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ),
-                                                DropdownMenuItem(
-                                                  value: 240,
-                                                  child: Text(
-                                                    '4시간',
+                                                    '2시간 30분',
                                                     style: TextStyles
                                                         .textFieldStyle
                                                         .copyWith(
