@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,11 +15,13 @@ import 'package:sprit/apis/services/book.dart';
 import 'package:sprit/apis/services/book_library.dart';
 import 'package:sprit/apis/services/notice.dart';
 import 'package:sprit/apis/services/user_info.dart';
+import 'package:sprit/apis/services/version.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/popups/book/home_book_select.dart';
+import 'package:sprit/popups/home/version_check.dart';
 import 'package:sprit/providers/new_notice.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
@@ -30,23 +33,28 @@ import 'package:sprit/widgets/loader.dart';
 import 'package:sprit/widgets/native_ad.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+//현재 독서 중인 책 정보 불러오기
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
   return await BookLibraryService.getBookLibrary(context, 'READING');
 }
 
+//읽고있는 책 정보 삭제
 Future<bool> deleteBook(BuildContext context, String bookUuid) async {
   return await BookLibraryService.deleteBookLibrary(context, bookUuid);
 }
 
+//유저 정보 context 업데이트
 void updateUserInfo(BuildContext context) async {
   final userInfo = await UserInfoService.getUserInfo(context);
   context.read<UserInfoState>().updateUserInfo(userInfo!);
 }
 
+//배너 정보 불러오기
 Future<List<BannerInfo>> getBannerInfo(BuildContext context) async {
   return await BannerInfoService.getBannerInfo(context);
 }
 
+//요즘 인기있는 책 정보 불러오기
 Future<Map<String, dynamic>> getPopularBook(
   BuildContext context,
   int page,
@@ -54,8 +62,30 @@ Future<Map<String, dynamic>> getPopularBook(
   return await BookInfoService.getPopularBook(context, page);
 }
 
+//가장 최근에 올라온 공지사항 uuid 불러오기
 Future<String> getLatestNoticeUuid(BuildContext context) async {
   return await NoticeService.getlatestNoticeUuid(context);
+}
+
+//최신 앱 버전 정보 불러오기
+Future<void> getLatestVersion(BuildContext context) async {
+  final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  final VersionInfo versionInfo =
+      await VersionService.getLatestVersion(context);
+  if (packageInfo.version == versionInfo.versionNumber &&
+      packageInfo.buildNumber.toString() == versionInfo.buildNumber) {
+    return;
+  } else {
+    if (versionInfo.updateRequired) {
+      showModal(
+        context,
+        VersionCheck(
+          functions: versionInfo.description.split('&&'),
+        ),
+        false,
+      );
+    }
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -88,6 +118,7 @@ class _HomePageState extends State<HomePage> {
       getBannerInfo(context),
       getPopularBook(context, 1),
       getLatestNoticeUuid(context),
+      getLatestVersion(context),
     ]);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
