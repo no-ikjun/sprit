@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/color_set.dart';
@@ -43,7 +44,7 @@ class _LibraryPhraseScreenState extends State<LibraryPhraseScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
+    if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent &&
         phraseLibraryMoreAvailable) {
       _loadMore();
