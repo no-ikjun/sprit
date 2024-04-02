@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,6 +18,16 @@ import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/quest/quest_detail_screen.dart';
+
+Future<void> checkTrackingPermission(BuildContext context) async {
+  if (await AppTrackingTransparency.trackingAuthorizationStatus ==
+      TrackingStatus.notDetermined) {
+    // Wait for dialog popping animation
+    await Future.delayed(const Duration(milliseconds: 200));
+    // Request system's tracking authorization dialog
+    await AppTrackingTransparency.requestTrackingAuthorization();
+  }
+}
 
 Future<void> registerFcmToken(BuildContext context, String fcmToken) async {
   await NotificationService.registerFcmToken(context, fcmToken);
@@ -80,6 +91,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(milliseconds: 2100), () async {
+      await checkTrackingPermission(context);
       final librarySectionOrderState = LibrarySectionOrderState();
       await librarySectionOrderState.loadOrderFromPrefs();
       //fcm token 관련

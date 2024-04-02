@@ -5,6 +5,8 @@ PODS:
     - Amplitude (= 8.16.1)
     - Flutter
   - AnalyticsConnector (1.0.3)
+  - app_tracking_transparency (0.0.1):
+    - Flutter
   - barcode_scan2 (0.0.1):
     - Flutter
     - MTBBarcodeScanner
@@ -126,6 +128,7 @@ PODS:
 
 DEPENDENCIES:
   - amplitude_flutter (from `.symlinks/plugins/amplitude_flutter/ios`)
+  - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
   - barcode_scan2 (from `.symlinks/plugins/barcode_scan2/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
@@ -164,6 +167,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   amplitude_flutter:
     :path: ".symlinks/plugins/amplitude_flutter/ios"
+  app_tracking_transparency:
+    :path: ".symlinks/plugins/app_tracking_transparency/ios"
   barcode_scan2:
     :path: ".symlinks/plugins/barcode_scan2/ios"
   firebase_core:
@@ -199,6 +204,7 @@ SPEC CHECKSUMS:
   Amplitude: fe18b3bbd880f2d9174b8109b79a77cd67687e2d
   amplitude_flutter: 6216e64320d2dbe4e5be2764381d93280499211f
   AnalyticsConnector: a53214d38ae22734c6266106c0492b37832633a9
+  app_tracking_transparency: 5b1745ef9ade815f7455cb6a0848349589afb7c5
   barcode_scan2: 0af2bb63c81b4565aab6cd78278e4c0fa136dbb0
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
