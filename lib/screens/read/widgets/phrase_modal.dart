@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/amplitude_service.dart';
@@ -48,12 +49,19 @@ class _PhraseModalState extends State<PhraseModal> {
   bool isLoading = false;
   bool isSubmitted = false;
 
+  bool nextStep = false;
+
+  String pageText = '';
+
+  late TextEditingController pageController;
+
   Future<void> submitPhrase() async {
+    int pageInt = int.tryParse(pageText) ?? 0;
     setState(() {
       isSubmitted = true;
       isLoading = true;
     });
-    setPhrase(context, widget.bookUuid, phrase, 0, remind).then((value) {
+    setPhrase(context, widget.bookUuid, phrase, pageInt, remind).then((value) {
       if (value != '') {
         setState(() {
           isLoading = false;
@@ -63,6 +71,18 @@ class _PhraseModalState extends State<PhraseModal> {
         });
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = TextEditingController(text: pageText);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -161,108 +181,232 @@ class _PhraseModalState extends State<PhraseModal> {
                     const SizedBox(
                       height: 8,
                     ),
-                    const Text(
-                      '기억하고 싶은 문구를 작성해주세요',
+                    Text(
+                      nextStep ? '몇 페이지에 나온 내용인가요?' : '기억하고 싶은 문구를 작성해주세요',
                       style: TextStyles.timerBottomSheetDescriptionStyle,
                     ),
                     const SizedBox(
                       height: 15,
                     ),
-                    SizedBox(
-                      width: Scaler.width(0.8, context),
-                      child: TextField(
-                        controller: widget.textarea,
-                        onChanged: (value) {
-                          if (value.length > 50) {
-                            setState(() {
-                              remind = false;
-                            });
-                          }
-                          setState(() {
-                            phrase = value;
-                          });
-                        },
-                        autofocus: true,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 5,
-                        decoration: const InputDecoration(
-                          hintText: "예) 선택. 집중. 몰입 대상을 정하자.",
-                          hintStyle: TextStyles.timerBottomSheetHintTextStyle,
-                          contentPadding: EdgeInsets.all(15),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: ColorSet.lightGrey,
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: ColorSet.lightGrey,
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    SizedBox(
-                      width: Scaler.width(0.8, context),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    nextStep
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('리마인드 알림 받기',
-                                  style: TextStyles
-                                      .timerBottomSheetReminderTextStyle),
+                              SizedBox(
+                                width: 130,
+                                height: 40,
+                                child: TextField(
+                                  controller: pageController,
+                                  autofocus: true,
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp('[0-9]'),
+                                    ),
+                                  ],
+                                  style: TextStyles.textFieldStyle.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                  onChanged: (value) => setState(() {
+                                    pageText = value;
+                                  }),
+                                  decoration: InputDecoration(
+                                    hintText: '페이지 번호',
+                                    hintStyle:
+                                        TextStyles.textFieldStyle.copyWith(
+                                      color: ColorSet.grey,
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: ColorSet.primary,
+                                        width: 2.0,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8),
+                                      ),
+                                    ),
+                                    contentPadding: const EdgeInsets.all(5),
+                                    filled: true,
+                                    fillColor: Colors.transparent,
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: ColorSet.border,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
                               Text(
-                                '100자 이내의 문구만 알림으로 받을 수 있어요',
+                                '쪽',
                                 style: TextStyles
-                                    .timerBottomSheetReminderMentStyle,
+                                    .timerBottomSheetDescriptionStyle
+                                    .copyWith(
+                                  color: ColorSet.semiDarkGrey,
+                                ),
+                              ),
+                            ],
+                          )
+                        : SizedBox(
+                            width: Scaler.width(0.8, context),
+                            child: TextField(
+                              controller: widget.textarea,
+                              onChanged: (value) {
+                                if (value.length > 50) {
+                                  setState(() {
+                                    remind = false;
+                                  });
+                                }
+                                setState(() {
+                                  phrase = value;
+                                });
+                              },
+                              autofocus: true,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 5,
+                              decoration: const InputDecoration(
+                                hintText: "예) 선택. 집중. 몰입 대상을 정하자.",
+                                hintStyle:
+                                    TextStyles.timerBottomSheetHintTextStyle,
+                                contentPadding: EdgeInsets.all(15),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: ColorSet.lightGrey,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: ColorSet.lightGrey,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                    nextStep
+                        ? Column(
+                            children: [
+                              const SizedBox(
+                                height: 27,
+                              ),
+                              SizedBox(
+                                width: Scaler.width(0.8, context),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          pageText = '';
+                                        });
+                                        await submitPhrase();
+                                      },
+                                      width: Scaler.width(0.39, context),
+                                      height: 45,
+                                      borderColor: ColorSet.lightGrey,
+                                      color: ColorSet.lightGrey,
+                                      child: const Text(
+                                        '건너뛰기',
+                                        style: TextStyles.loginButtonStyle,
+                                      ),
+                                    ),
+                                    CustomButton(
+                                      onPressed: () async {
+                                        await submitPhrase();
+                                      },
+                                      width: Scaler.width(0.39, context),
+                                      height: 45,
+                                      borderColor: ColorSet.primary,
+                                      color: ColorSet.primary,
+                                      child: const Text(
+                                        '저장하기',
+                                        style: TextStyles.loginButtonStyle,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              SizedBox(
+                                width: Scaler.width(0.8, context),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('리마인드 알림 받기',
+                                            style: TextStyles
+                                                .timerBottomSheetReminderTextStyle),
+                                        Text(
+                                          '100자 이내의 문구만 알림으로 받을 수 있어요',
+                                          style: TextStyles
+                                              .timerBottomSheetReminderMentStyle,
+                                        ),
+                                      ],
+                                    ),
+                                    CustomSwitch(
+                                      onToggle: () {
+                                        if (phrase.length <= 100) {
+                                          setState(() {
+                                            remind = !remind;
+                                          });
+                                        }
+                                      },
+                                      switchValue: remind,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              CustomButton(
+                                onPressed: () async {
+                                  AmplitudeService().logEvent(
+                                    AmplitudeEvent.recordSavePhrase,
+                                    context
+                                        .read<UserInfoState>()
+                                        .userInfo
+                                        .userUuid,
+                                  );
+                                  setState(() {
+                                    nextStep = true;
+                                  });
+                                },
+                                width: Scaler.width(0.8, context),
+                                height: 45,
+                                child: const Text(
+                                  '다음으로',
+                                  style: TextStyles.loginButtonStyle,
+                                ),
                               ),
                             ],
                           ),
-                          CustomSwitch(
-                            onToggle: () {
-                              if (phrase.length <= 100) {
-                                setState(() {
-                                  remind = !remind;
-                                });
-                              }
-                            },
-                            switchValue: remind,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomButton(
-                      onPressed: () async {
-                        AmplitudeService().logEvent(
-                          AmplitudeEvent.recordSavePhrase,
-                          context.read<UserInfoState>().userInfo.userUuid,
-                        );
-                        await submitPhrase();
-                      },
-                      width: Scaler.width(0.8, context),
-                      height: 45,
-                      child: const Text(
-                        '저장하기',
-                        style: TextStyles.loginButtonStyle,
-                      ),
-                    ),
                     const SizedBox(
                       height: 15,
                     ),
