@@ -26,7 +26,6 @@ import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
-//test
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
