@@ -13,7 +13,6 @@ import 'package:sprit/screens/quest/widgets/active_quest.dart';
 import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
 import 'package:sprit/widgets/remove_glow.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
@@ -104,10 +103,7 @@ class _QuestScreenState extends State<QuestScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        // showModal(context, const NewQuestModal(), false);
-                        Uri url =
-                            Uri.parse("https://forms.gle/w38fCpWv9UnnR9R88");
-                        launchUrl(url);
+                        showModal(context, const NewQuestModal(), false);
                       },
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,

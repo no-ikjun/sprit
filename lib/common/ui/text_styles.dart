@@ -334,6 +334,28 @@ class TextStyles {
     wordSpacing: -1.3,
   );
 
+  static const TextStyle questGenerateTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 22,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle questGenerateDescriptionStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+    wordSpacing: -1.3,
+  );
+
+  static const TextStyle questGenerateHintStyle = TextStyle(
+    color: ColorSet.grey,
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle notificationLabelStyle = TextStyle(
     color: ColorSet.semiDarkGrey,
     fontSize: 12,

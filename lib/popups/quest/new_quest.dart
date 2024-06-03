@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 class NewQuestModal extends StatelessWidget {
@@ -32,11 +33,12 @@ class NewQuestModal extends StatelessWidget {
         CustomButton(
           onPressed: () {
             Navigator.pop(context);
+            Navigator.pushNamed(context, RouteName.questCodeInput);
           },
           width: Scaler.width(0.85, context),
           height: 45,
-          color: ColorSet.lightGrey,
-          borderColor: ColorSet.lightGrey,
+          color: ColorSet.grey,
+          borderColor: ColorSet.grey,
           child: const Text(
             '퀘스트 코드로 참여하기',
             style: TextStyles.loginButtonStyle,
