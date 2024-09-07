@@ -3,7 +3,9 @@ class AmplitudeEvent {
   static const String menuHomeClick = "MENU_HOME_CLICK";
   static const String menuLibraryClick = "MENU_LIBRARY_CLICK";
   static const String menuRecordClick = "MENU_RECORD_CLICK";
+  // 퀘스트 사용 안함
   static const String menuQuestClick = "MENU_QUEST_CLICK";
+  static const String menuSocialClick = "MENU_SOCIAL_CLICK";
   static const String menuAnalyticsClick = "MENU_ANALYTICS_CLICK";
 
   //Home Screen

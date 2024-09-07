@@ -81,7 +81,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
-                    AmplitudeEvent.menuLibraryClick,
+                    AmplitudeEvent.menuAnalyticsClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(1);
@@ -94,13 +94,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                     const SizedBox(height: 10),
                     SvgPicture.asset(
                       widget.selectedIndex == 1
-                          ? 'assets/images/bookmark_icon_blue.svg'
-                          : 'assets/images/bookmark_icon_grey.svg',
+                          ? 'assets/images/graph_icon_blue.svg'
+                          : 'assets/images/graph_icon_grey.svg',
                       height: 26,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '내 서재',
+                      '독서기록',
                       style: TextStyles.bottomAppBarLabelStyle.copyWith(
                         color: (widget.selectedIndex == 1)
                             ? ColorSet.primaryLight
@@ -119,7 +119,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
-                    AmplitudeEvent.menuQuestClick,
+                    AmplitudeEvent.menuSocialClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(2);
@@ -132,13 +132,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                     const SizedBox(height: 10),
                     SvgPicture.asset(
                       widget.selectedIndex == 2
-                          ? 'assets/images/quest_icon_blue.svg'
-                          : 'assets/images/quest_icon_grey.svg',
+                          ? 'assets/images/social_icon_blue.svg'
+                          : 'assets/images/social_icon_grey.svg',
                       height: 24,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '퀘스트',
+                      '소셜',
                       style: TextStyles.bottomAppBarLabelStyle.copyWith(
                         color: (widget.selectedIndex == 2)
                             ? ColorSet.primaryLight
@@ -156,7 +156,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
-                    AmplitudeEvent.menuAnalyticsClick,
+                    AmplitudeEvent.menuLibraryClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(3);
@@ -169,13 +169,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                     const SizedBox(height: 10),
                     SvgPicture.asset(
                       widget.selectedIndex == 3
-                          ? 'assets/images/graph_icon_blue.svg'
-                          : 'assets/images/graph_icon_grey.svg',
+                          ? 'assets/images/bookmark_icon_blue.svg'
+                          : 'assets/images/bookmark_icon_grey.svg',
                       height: 24,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '기록분석',
+                      '내 서재',
                       style: TextStyles.bottomAppBarLabelStyle.copyWith(
                         color: (widget.selectedIndex == 3)
                             ? ColorSet.primaryLight

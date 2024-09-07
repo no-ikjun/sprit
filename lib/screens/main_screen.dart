@@ -25,11 +25,11 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const HomePage();
       case 1:
-        return const MyLibraryScreen();
+        return const AnalyticsScreen();
       case 2:
         return const QuestScreen();
       case 3:
-        return const AnalyticsScreen();
+        return const MyLibraryScreen();
       default:
         return const Text('Other Tab');
     }
