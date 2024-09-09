@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:intl/intl.dart';
@@ -40,15 +42,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   String toggleValue = 'week';
 
-  //하루 단위 독서 기록(리스트)이 담긴 리스트
+  // 하루 단위 독서 기록(리스트)이 담긴 리스트
   List<List<BookRecordHistory>> bookRecordHistory = [];
-  //하루 단위 독서 기록의 총 시간 (최대 7일)
+  // 하루 단위 독서 기록의 총 시간 (최대 7일)
   List<int> dailyTotalTimes = [];
 
-  //backWeek가 0이면 이번주, 1이면 지난주, 2이면 그 전주 ...
+  // backWeek가 0이면 이번주, 1이면 지난주, 2이면 그 전주 ...
   int backWeek = 0;
 
-  int presentCarouselIndex = 0;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -56,12 +58,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     _loadData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  Future<void> _loadData() async {
+    setState(() {
+      isLoading = true;
+    });
 
-  void _loadData() async {
     int weekday = DateTime.now().weekday;
     if (backWeek != 0) {
       weekday = 6;
@@ -76,6 +77,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       dailyTotalTimes = data.map((dayRecords) {
         return dayRecords.fold(0, (int sum, record) => sum + record.totalTime);
       }).toList();
+      isLoading = false;
     });
   }
 
@@ -119,332 +121,379 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      maintainBottomViewPadding: true,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: Scaler.width(0.85, context),
-                  child: const Text(
-                    '독서 기록',
-                    style: TextStyles.analyticsTitleStyle,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            const GrassWidget(),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: Scaler.width(0.85, context),
-                  child: const Text(
-                    '독서량 추세',
-                    style: TextStyles.analyticsSubTitleStyle,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            CustomToggleButton(
-              width: Scaler.width(0.85, context),
-              height: 40,
-              padding: 3,
-              radius: 8,
-              onLeftTap: () {
-                AmplitudeService().logEvent(
-                  AmplitudeEvent.analyticsToggleValue,
-                  context.read<UserInfoState>().userInfo.userUuid,
-                  eventProperties: {
-                    'value': 'week',
-                  },
-                );
-                setState(() {
-                  toggleValue = 'week';
-                });
-              },
-              onRightTap: () {
-                AmplitudeService().logEvent(
-                  AmplitudeEvent.analyticsToggleValue,
-                  context.read<UserInfoState>().userInfo.userUuid,
-                  eventProperties: {
-                    'value': 'day',
-                  },
-                );
-                setState(() {
-                  toggleValue = 'day';
-                });
-              },
-              leftText: const Text(
-                '일주일',
-                style: TextStyles.toggleButtonLabelStyle,
+    Widget scrollView = CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: <Widget>[
+        CupertinoSliverRefreshControl(
+          onRefresh: _loadData, // 새로고침 동작 시 _loadData 호출
+        ),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 15,
               ),
-              rightText: const Text(
-                '하루',
-                style: TextStyles.toggleButtonLabelStyle,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: Scaler.width(0.85, context),
-              padding: const EdgeInsets.symmetric(
-                vertical: 17,
-                horizontal: 15,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 0,
-                    blurRadius: 4,
-                    offset: const Offset(0, 0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: Scaler.width(0.85, context),
+                    child: const Text(
+                      '독서 기록',
+                      style: TextStyles.analyticsTitleStyle,
+                    ),
                   ),
                 ],
               ),
-              child: bookRecordHistory.isEmpty
-                  ? SizedBox(
-                      width: Scaler.width(0.85, context) - 30,
-                      height: 90,
-                    )
-                  : Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  toggleValue == 'week'
-                                      ? getWeekFormat(backWeek)
-                                      : getSelectedDayFormat(
-                                          backWeek,
-                                          context.watch<AnalyticsIndex>().index,
-                                        ),
-                                  style: TextStyles.analyticsGraphDateStyle,
-                                ),
-                                Text(
-                                  toggleValue == 'week'
-                                      ? getFormattedTimeWithUnit(dailyTotalTimes
-                                          .reduce((value, element) =>
-                                              value + element))
-                                      : getFormattedTimeWithUnit(
-                                          dailyTotalTimes[context
-                                              .watch<AnalyticsIndex>()
-                                              .index],
-                                        ),
-                                  style: TextStyles.analyticsGraphTimeStyle,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        color: ColorSet.green,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    const Text(
-                                      '목표 달성 성공',
-                                      style: TextStyles
-                                          .analyticsGraphIndicatorStyle,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        color: ColorSet.red,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    const Text(
-                                      '목표 달성 실패',
-                                      style: TextStyles
-                                          .analyticsGraphIndicatorStyle,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 90,
-                              child: SwipeDetector(
-                                onSwipeRight: (offset) {
-                                  context.read<AnalyticsIndex>().reset();
-                                  _loadLastWeek();
-                                },
-                                onSwipeLeft: (offset) {
-                                  context.read<AnalyticsIndex>().reset();
-                                  if (backWeek == 0) return;
-                                  _loadNextWeek();
-                                },
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      width: Scaler.width(0.85, context) - 30,
-                                      height: 90,
-                                      color: Colors.white,
-                                    ),
-                                    GraphSliderWidget(
-                                      dailyTotalTimes: dailyTotalTimes,
-                                      bookRecordHistory: bookRecordHistory,
-                                      toggleValue: toggleValue,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 7,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: ["일", "월", "화", "수", "목", "금", "토"]
-                                  .map((day) {
-                                return SizedBox(
-                                  width: Scaler.width(0.05598, context),
-                                  child: Center(
-                                    child: Text(
-                                      day,
-                                      style: TextStyles
-                                          .analyticsGraphDateIndicatorStyle,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        dailyTotalTimes.reduce(
-                                    (value, element) => value + element) !=
-                                0
-                            ? const Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+              const SizedBox(
+                height: 25,
+              ),
+              const GrassWidget(),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: Scaler.width(0.85, context),
+                    child: const Text(
+                      '독서량 추세',
+                      style: TextStyles.analyticsSubTitleStyle,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomToggleButton(
+                width: Scaler.width(0.85, context),
+                height: 40,
+                padding: 3,
+                radius: 8,
+                onLeftTap: () {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.analyticsToggleValue,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                    eventProperties: {
+                      'value': 'week',
+                    },
+                  );
+                  setState(() {
+                    toggleValue = 'week';
+                  });
+                },
+                onRightTap: () {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.analyticsToggleValue,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                    eventProperties: {
+                      'value': 'day',
+                    },
+                  );
+                  setState(() {
+                    toggleValue = 'day';
+                  });
+                },
+                leftText: const Text(
+                  '일주일',
+                  style: TextStyles.toggleButtonLabelStyle,
+                ),
+                rightText: const Text(
+                  '하루',
+                  style: TextStyles.toggleButtonLabelStyle,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: Scaler.width(0.85, context),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 17,
+                  horizontal: 15,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : bookRecordHistory.isEmpty
+                        ? SizedBox(
+                            width: Scaler.width(0.85, context) - 30,
+                            height: 90,
+                          )
+                        : Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '독서 기록',
-                                    style: TextStyles
-                                        .analyticsGraphRecordMentStyle,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        toggleValue == 'week'
+                                            ? getWeekFormat(backWeek)
+                                            : getSelectedDayFormat(
+                                                backWeek,
+                                                context
+                                                    .watch<AnalyticsIndex>()
+                                                    .index,
+                                              ),
+                                        style:
+                                            TextStyles.analyticsGraphDateStyle,
+                                      ),
+                                      Text(
+                                        toggleValue == 'week'
+                                            ? getFormattedTimeWithUnit(
+                                                dailyTotalTimes.reduce(
+                                                    (value, element) =>
+                                                        value + element))
+                                            : getFormattedTimeWithUnit(
+                                                dailyTotalTimes[context
+                                                    .watch<AnalyticsIndex>()
+                                                    .index],
+                                              ),
+                                        style:
+                                            TextStyles.analyticsGraphTimeStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                              color: ColorSet.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(3),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          const Text(
+                                            '목표 달성 성공',
+                                            style: TextStyles
+                                                .analyticsGraphIndicatorStyle,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                              color: ColorSet.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(3),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          const Text(
+                                            '목표 달성 실패',
+                                            style: TextStyles
+                                                .analyticsGraphIndicatorStyle,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              )
-                            : Container(),
-                        dailyTotalTimes.reduce(
-                                    (value, element) => value + element) !=
-                                0
-                            ? const SizedBox(
-                                height: 12,
-                              )
-                            : Container(),
-                        toggleValue == 'week'
-                            ? Column(
-                                children: bookRecordHistory
-                                    .expand(
-                                      (dailyRecords) => dailyRecords.map(
-                                        (record) => GraphBookRecord(
-                                          key: ValueKey(
-                                            record.bookUuid +
-                                                Random()
-                                                    .nextInt(1000)
-                                                    .toString(),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: 90,
+                                    child: SwipeDetector(
+                                      onSwipeRight: (offset) {
+                                        context.read<AnalyticsIndex>().reset();
+                                        _loadLastWeek();
+                                      },
+                                      onSwipeLeft: (offset) {
+                                        context.read<AnalyticsIndex>().reset();
+                                        if (backWeek == 0) return;
+                                        _loadNextWeek();
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            width: Scaler.width(0.85, context) -
+                                                30,
+                                            height: 90,
+                                            color: Colors.white,
                                           ),
+                                          GraphSliderWidget(
+                                            dailyTotalTimes: dailyTotalTimes,
+                                            bookRecordHistory:
+                                                bookRecordHistory,
+                                            toggleValue: toggleValue,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      "일",
+                                      "월",
+                                      "화",
+                                      "수",
+                                      "목",
+                                      "금",
+                                      "토"
+                                    ].map((day) {
+                                      return SizedBox(
+                                        width: Scaler.width(0.05598, context),
+                                        child: Center(
+                                          child: Text(
+                                            day,
+                                            style: TextStyles
+                                                .analyticsGraphDateIndicatorStyle,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              dailyTotalTimes.reduce((value, element) =>
+                                          value + element) !=
+                                      0
+                                  ? const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '독서 기록',
+                                          style: TextStyles
+                                              .analyticsGraphRecordMentStyle,
+                                        ),
+                                      ],
+                                    )
+                                  : Container(),
+                              dailyTotalTimes.reduce((value, element) =>
+                                          value + element) !=
+                                      0
+                                  ? const SizedBox(
+                                      height: 12,
+                                    )
+                                  : Container(),
+                              toggleValue == 'week'
+                                  ? Column(
+                                      children: bookRecordHistory
+                                          .expand(
+                                            (dailyRecords) => dailyRecords.map(
+                                              (record) => GraphBookRecord(
+                                                key: ValueKey(record.bookUuid +
+                                                    Random()
+                                                        .nextInt(1000)
+                                                        .toString()),
+                                                bookUuid: record.bookUuid,
+                                                totalTime: record.totalTime,
+                                                goalAchieved:
+                                                    record.goalAchieved,
+                                                dailyTotalTime: dailyTotalTimes
+                                                    .reduce((value, element) =>
+                                                        value + element),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    )
+                                  : Column(
+                                      children: bookRecordHistory[context
+                                              .watch<AnalyticsIndex>()
+                                              .index]
+                                          .map((record) {
+                                        return GraphBookRecord(
+                                          key: ValueKey(record.bookUuid +
+                                              Random().nextInt(100).toString()),
                                           bookUuid: record.bookUuid,
                                           totalTime: record.totalTime,
                                           goalAchieved: record.goalAchieved,
-                                          dailyTotalTime: dailyTotalTimes
-                                              .reduce((value, element) =>
-                                                  value + element),
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                              )
-                            : Column(
-                                children: bookRecordHistory[
-                                        context.watch<AnalyticsIndex>().index]
-                                    .map((record) {
-                                  return GraphBookRecord(
-                                    key: ValueKey(record.bookUuid +
-                                        Random().nextInt(100).toString()),
-                                    bookUuid: record.bookUuid,
-                                    totalTime: record.totalTime,
-                                    goalAchieved: record.goalAchieved,
-                                    dailyTotalTime: dailyTotalTimes[
-                                        context.watch<AnalyticsIndex>().index],
-                                  );
-                                }).toList(),
-                              ),
-                      ],
+                                          dailyTotalTime: dailyTotalTimes[
+                                              context
+                                                  .watch<AnalyticsIndex>()
+                                                  .index],
+                                        );
+                                      }).toList(),
+                                    ),
+                            ],
+                          ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: Scaler.width(0.85, context),
+                    child: Text(
+                      '${DateFormat('y년 M월').format(DateTime.now())} 독서 현황',
+                      style: TextStyles.analyticsSubTitleStyle,
                     ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: Scaler.width(0.85, context),
-                  child: Text(
-                    '${DateFormat('y년 M월').format(DateTime.now())} 독서 현황',
-                    style: TextStyles.analyticsSubTitleStyle,
                   ),
-                ),
-              ],
-            ),
-            const MonthlyCount(kind: 'COUNT'),
-            const MonthlyCount(kind: 'GOAL'),
-            const MonthlyCount(kind: 'BOOK'),
-            const SizedBox(
-              height: 30,
-            ),
-          ],
+                ],
+              ),
+              const MonthlyCount(kind: 'COUNT'),
+              const MonthlyCount(kind: 'GOAL'),
+              const MonthlyCount(kind: 'BOOK'),
+              const SizedBox(
+                height: 30,
+              ),
+            ],
+          ),
         ),
-      ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Container(),
+        ),
+      ],
+    );
+
+    if (Platform.isAndroid) {
+      scrollView = RefreshIndicator(
+        onRefresh: _loadData,
+        child: scrollView,
+      );
+    }
+
+    return SafeArea(
+      maintainBottomViewPadding: true,
+      child: scrollView,
     );
   }
 }
