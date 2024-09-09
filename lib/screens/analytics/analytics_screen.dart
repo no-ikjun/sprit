@@ -125,7 +125,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         CupertinoSliverRefreshControl(
-          onRefresh: _loadData, // 새로고침 동작 시 _loadData 호출
+          onRefresh: _loadData,
         ),
         SliverToBoxAdapter(
           child: Column(
@@ -227,8 +227,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ],
                 ),
                 child: isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(),
+                    ? const SizedBox(
+                        height: 90,
+                        child: Center(
+                          child: CupertinoActivityIndicator(
+                            radius: 12,
+                            animating: true,
+                          ),
+                        ),
                       )
                     : bookRecordHistory.isEmpty
                         ? SizedBox(
