@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/library/section_order.dart';
@@ -20,6 +25,23 @@ class MyLibraryScreen extends StatefulWidget {
 }
 
 class _MyLibraryScreenState extends State<MyLibraryScreen> {
+  final ImagePicker picker = ImagePicker();
+  XFile? image0;
+
+  // 이미지를 선택하는 메서드
+  Future<void> getImage() async {
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 30,
+    );
+    if (image != null) {
+      setState(() {
+        image0 = image;
+      });
+      await ProfileService.uploadProfileImage(context, image);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -66,6 +88,53 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                   ),
                   const SizedBox(
                     height: 20,
+                  ),
+                  SizedBox(
+                    width: Scaler.width(0.85, context),
+                    child: Row(
+                      children: [
+                        Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: image0 != null
+                                  ? Image.file(
+                                      File(image0!.path),
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      "https://avatars.githubusercontent.com/u/9919?v=4",
+                                      width: 100,
+                                      height: 100,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              SvgPicture.asset(
+                                        'assets/images/default_profile.svg',
+                                        width: 100,
+                                        height: 100,
+                                      ),
+                                    ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                getImage();
+                              },
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'assets/images/camera_icon.svg',
+                                  width: 28,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   Column(
                     children: context
