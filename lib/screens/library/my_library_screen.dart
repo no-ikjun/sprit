@@ -8,6 +8,7 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/library/section_order.dart';
 import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/user_info.dart';
@@ -188,30 +189,54 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                           ),
                           Row(
                             children: [
-                              const Text(
-                                "팔로워 ",
-                                style: TextStyles.myLibraryFollowerStyle,
-                              ),
-                              Text(
-                                "17명",
-                                style:
-                                    TextStyles.myLibraryFollowerStyle.copyWith(
-                                  fontWeight: FontWeight.w600,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RouteName.followScreen,
+                                    arguments: 'follower',
+                                  );
+                                },
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      "팔로워 ",
+                                      style: TextStyles.myLibraryFollowerStyle,
+                                    ),
+                                    Text(
+                                      "17명",
+                                      style: TextStyles.myLibraryFollowerStyle
+                                          .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const Text(
                                 " · ",
                                 style: TextStyles.myLibraryFollowerStyle,
                               ),
-                              const Text(
-                                "팔로잉 ",
-                                style: TextStyles.myLibraryFollowerStyle,
-                              ),
-                              Text(
-                                "17명",
-                                style:
-                                    TextStyles.myLibraryFollowerStyle.copyWith(
-                                  fontWeight: FontWeight.w600,
+                              InkWell(
+                                onTap: () {},
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      "팔로잉 ",
+                                      style: TextStyles.myLibraryFollowerStyle,
+                                    ),
+                                    Text(
+                                      "17명",
+                                      style: TextStyles.myLibraryFollowerStyle
+                                          .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

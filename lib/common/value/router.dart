@@ -36,6 +36,7 @@ class RouteName {
   static const notice = "/notice";
   static const noticeDetail = "/noticeDetail";
   static const libraryPhraseScreen = "/library/phrase";
+  static const followScreen = "/follow";
 }
 
 var namedRoutes = <String, WidgetBuilder>{

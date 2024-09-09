@@ -24,6 +24,7 @@ import 'package:sprit/screens/read/read_complete_screen.dart';
 import 'package:sprit/screens/read/record_setting_screen.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
+import 'package:sprit/screens/social/follow_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
 void main() async {
@@ -139,6 +140,11 @@ class MyApp extends StatelessWidget {
                 builder: (context) => NoticeDetailScreen(
                   recordUuid: recordUuid,
                 ),
+              );
+            case RouteName.followScreen:
+              final String type = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => FollowScreen(type: type),
               );
             default:
               return MaterialPageRoute(
