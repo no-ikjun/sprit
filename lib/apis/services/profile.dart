@@ -3,6 +3,41 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sprit/apis/auth_dio.dart';
 
+class ProfileInfo {
+  final String userUuid;
+  final String nickname;
+  final String image;
+  final String description;
+  final List<String> recommendList;
+  const ProfileInfo({
+    required this.userUuid,
+    required this.nickname,
+    required this.image,
+    required this.description,
+    required this.recommendList,
+  });
+
+  factory ProfileInfo.fromJson(Map<String, dynamic> json) {
+    return ProfileInfo(
+      userUuid: json['user_uuid'],
+      nickname: json['nickname'],
+      image: json['image'],
+      description: json['description'],
+      recommendList: List<String>.from(json['recommend_list']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_uuid': userUuid,
+      'nickname': nickname,
+      'image': image,
+      'description': description,
+      'recommend_list': recommendList,
+    };
+  }
+}
+
 class ProfileService {
   static Future<void> uploadProfileImage(
     BuildContext context,
@@ -25,6 +60,41 @@ class ProfileService {
       }
     } catch (e) {
       debugPrint('프로필 이미지 업로드 실패 $e');
+    }
+  }
+
+  static Future<ProfileInfo> getProfileInfo(
+    BuildContext context,
+    String userUuid,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/profile', queryParameters: {
+        'user_uuid': userUuid,
+      });
+      if (response.statusCode == 200) {
+        debugPrint('프로필 정보 조회 성공');
+        debugPrint(response.data.toString());
+        return ProfileInfo.fromJson(response.data);
+      } else {
+        debugPrint('프로필 정보 조회 실패');
+        return const ProfileInfo(
+          userUuid: '',
+          nickname: '',
+          image: '',
+          description: '',
+          recommendList: [],
+        );
+      }
+    } catch (e) {
+      debugPrint('프로필 정보 조회 실패 $e');
+      return const ProfileInfo(
+        userUuid: '',
+        nickname: '',
+        image: '',
+        description: '',
+        recommendList: [],
+      );
     }
   }
 }

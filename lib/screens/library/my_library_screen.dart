@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,10 +10,12 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/popups/library/section_order.dart';
 import 'package:sprit/providers/library_section_order.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/ordered_component/book_mark.dart';
 import 'package:sprit/screens/library/ordered_component/book_report.dart';
 import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
 import 'package:sprit/screens/library/ordered_component/phrase_info.dart';
+import 'package:sprit/widgets/remove_glow.dart'; // 필요한 경우 추가
 
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
@@ -28,7 +28,6 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
   final ImagePicker picker = ImagePicker();
   XFile? image0;
 
-  // 이미지를 선택하는 메서드
   Future<void> getImage() async {
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
@@ -42,143 +41,232 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
     }
   }
 
+  bool isLoading = false;
+
+  ProfileInfo? profileInfo;
+
+  Future<void> _loadData() async {
+    setState(() {
+      isLoading = true;
+    });
+    String userUuid = context.read<UserInfoState>().userInfo.userUuid;
+    ProfileService.getProfileInfo(context, userUuid).then((value) {
+      setState(() {
+        profileInfo = value;
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Provider.of<LibrarySectionOrderState>(context, listen: false)
-          .loadOrderFromPrefs(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return SafeArea(
-            maintainBottomViewPadding: true,
-            child: SingleChildScrollView(
-              child: Column(
+    if (isLoading) {
+      return const Center(
+        child: CupertinoActivityIndicator(
+          radius: 18,
+          animating: true,
+        ),
+      );
+    }
+    Widget scrollView = CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: <Widget>[
+        CupertinoSliverRefreshControl(
+          onRefresh: _loadData,
+        ),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: Scaler.width(0.85, context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              '내 서재',
-                              style: TextStyles.myLibraryTitleStyle,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                showModal(context, const LibrarySectionOrder(),
-                                    false);
-                              },
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              child: SvgPicture.asset(
-                                'assets/images/setting_gear.svg',
-                                width: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
                   SizedBox(
                     width: Scaler.width(0.85, context),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: image0 != null
-                                  ? Image.file(
-                                      File(image0!.path),
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      "https://avatars.githubusercontent.com/u/9919?v=4",
-                                      width: 100,
-                                      height: 100,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              SvgPicture.asset(
-                                        'assets/images/default_profile.svg',
-                                        width: 100,
-                                        height: 100,
-                                      ),
-                                    ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                getImage();
-                              },
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              child: Center(
-                                child: SvgPicture.asset(
-                                  'assets/images/camera_icon.svg',
-                                  width: 28,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                        const Text(
+                          '내 서재',
+                          style: TextStyles.myLibraryTitleStyle,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            showModal(
+                                context, const LibrarySectionOrder(), false);
+                          },
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: SvgPicture.asset(
+                            'assets/images/setting_gear.svg',
+                            width: 30,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Column(
-                    children: context
-                        .watch<LibrarySectionOrderState>()
-                        .getSectionOrder
-                        .map((section) {
-                          switch (section) {
-                            case LibrarySection.bookMark:
-                              return const BookMarkComponent();
-                            case LibrarySection.bookInfo:
-                              return const MyBookInfoComponent();
-                            case LibrarySection.phrase:
-                              return const MyPhraseComponent();
-                            case LibrarySection.report:
-                              return const MyBookReportComponent();
-                            default:
-                              return Container();
-                          }
-                        })
-                        .expand(
-                            (widget) => [widget, const SizedBox(height: 35)])
-                        .toList(),
-                  ),
                 ],
               ),
-            ),
-          );
-        } else {
-          return const SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: CupertinoActivityIndicator(
-                      radius: 18,
-                      animating: true,
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: Scaler.width(0.85, context),
+                child: Row(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: image0 != null
+                              ? Image.file(
+                                  File(image0!.path),
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  "https://d3ob3cint7tr3s.cloudfront.net/${profileInfo?.image}",
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      SvgPicture.asset(
+                                    'assets/images/default_profile.svg',
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            getImage();
+                          },
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/images/camera_icon.svg',
+                              width: 28,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    SizedBox(
+                      width: Scaler.width(0.85, context) - 120,
+                      height: 95,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            '${profileInfo?.nickname}',
+                            style: TextStyles.myLibraryNicknameStyle,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '${profileInfo?.description}',
+                            style: TextStyles.myLibraryDescriptionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Row(
+                            children: [
+                              const Text(
+                                "팔로워 ",
+                                style: TextStyles.myLibraryFollowerStyle,
+                              ),
+                              Text(
+                                "17명",
+                                style:
+                                    TextStyles.myLibraryFollowerStyle.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Text(
+                                " · ",
+                                style: TextStyles.myLibraryFollowerStyle,
+                              ),
+                              const Text(
+                                "팔로잉 ",
+                                style: TextStyles.myLibraryFollowerStyle,
+                              ),
+                              Text(
+                                "17명",
+                                style:
+                                    TextStyles.myLibraryFollowerStyle.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
-      },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Column(
+                children: context
+                    .watch<LibrarySectionOrderState>()
+                    .getSectionOrder
+                    .map((section) {
+                      switch (section) {
+                        case LibrarySection.bookMark:
+                          return const BookMarkComponent();
+                        case LibrarySection.bookInfo:
+                          return const MyBookInfoComponent();
+                        case LibrarySection.phrase:
+                          return const MyPhraseComponent();
+                        case LibrarySection.report:
+                          return const MyBookReportComponent();
+                        default:
+                          return Container();
+                      }
+                    })
+                    .expand((widget) => [widget, const SizedBox(height: 35)])
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Container(),
+        ),
+      ],
+    );
+
+    if (Platform.isAndroid) {
+      scrollView = RefreshIndicator(
+        onRefresh: _loadData,
+        child: scrollView,
+      );
+    }
+
+    return SafeArea(
+      maintainBottomViewPadding: true,
+      child: ScrollConfiguration(
+        behavior: RemoveGlow(),
+        child: scrollView,
+      ),
     );
   }
 }

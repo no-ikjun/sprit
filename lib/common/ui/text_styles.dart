@@ -650,6 +650,27 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle myLibraryNicknameStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryDescriptionStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle myLibraryFollowerStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle myLibraryWarningStyle = TextStyle(
     color: ColorSet.grey,
     fontSize: 10,
