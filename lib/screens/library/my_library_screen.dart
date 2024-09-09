@@ -45,10 +45,12 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
 
   ProfileInfo? profileInfo;
 
-  Future<void> _loadData() async {
-    setState(() {
-      isLoading = true;
-    });
+  Future<void> _loadData(bool isFirst) async {
+    if (isFirst) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     String userUuid = context.read<UserInfoState>().userInfo.userUuid;
     ProfileService.getProfileInfo(context, userUuid).then((value) {
       setState(() {
@@ -61,7 +63,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _loadData(true);
   }
 
   @override
@@ -78,7 +80,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         CupertinoSliverRefreshControl(
-          onRefresh: _loadData,
+          onRefresh: () => _loadData(false),
         ),
         SliverToBoxAdapter(
           child: Column(
@@ -256,7 +258,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
 
     if (Platform.isAndroid) {
       scrollView = RefreshIndicator(
-        onRefresh: _loadData,
+        onRefresh: () => _loadData(false),
         child: scrollView,
       );
     }
