@@ -979,4 +979,25 @@ class TextStyles {
     fontWeight: FontWeight.w400,
     fontFamily: "IBMPlexSans",
   );
+
+  static const TextStyle followNicknameStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle followRecordStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle followButtonStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
 }

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/follow.dart';
 import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
@@ -16,7 +17,7 @@ import 'package:sprit/screens/library/ordered_component/book_mark.dart';
 import 'package:sprit/screens/library/ordered_component/book_report.dart';
 import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
 import 'package:sprit/screens/library/ordered_component/phrase_info.dart';
-import 'package:sprit/widgets/remove_glow.dart'; // 필요한 경우 추가
+import 'package:sprit/widgets/remove_glow.dart';
 
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
@@ -39,12 +40,16 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
         image0 = image;
       });
       await ProfileService.uploadProfileImage(context, image);
+    } else {
+      debugPrint('이미지 선택 취소');
     }
   }
 
   bool isLoading = false;
 
   ProfileInfo? profileInfo;
+  int? followerCount;
+  int? followingCount;
 
   Future<void> _loadData(bool isFirst) async {
     if (isFirst) {
@@ -53,11 +58,16 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
       });
     }
     String userUuid = context.read<UserInfoState>().userInfo.userUuid;
-    ProfileService.getProfileInfo(context, userUuid).then((value) {
-      setState(() {
-        profileInfo = value;
-        isLoading = false;
-      });
+
+    final profile = await ProfileService.getProfileInfo(context, userUuid);
+    final followers = await FollowService.getFollowerList(context, userUuid);
+    final following = await FollowService.getFollowingList(context, userUuid);
+
+    setState(() {
+      profileInfo = profile;
+      followerCount = followers.length;
+      followingCount = following.length;
+      isLoading = false;
     });
   }
 
@@ -206,7 +216,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                                       style: TextStyles.myLibraryFollowerStyle,
                                     ),
                                     Text(
-                                      "17명",
+                                      "$followerCount명",
                                       style: TextStyles.myLibraryFollowerStyle
                                           .copyWith(
                                         fontWeight: FontWeight.w600,
@@ -220,7 +230,13 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                                 style: TextStyles.myLibraryFollowerStyle,
                               ),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RouteName.followScreen,
+                                    arguments: 'following',
+                                  );
+                                },
                                 splashColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
                                 child: Row(
@@ -230,7 +246,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                                       style: TextStyles.myLibraryFollowerStyle,
                                     ),
                                     Text(
-                                      "17명",
+                                      "$followingCount명",
                                       style: TextStyles.myLibraryFollowerStyle
                                           .copyWith(
                                         fontWeight: FontWeight.w600,

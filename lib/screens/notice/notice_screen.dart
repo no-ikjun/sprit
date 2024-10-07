@@ -49,6 +49,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
   Widget build(BuildContext context) {
     Widget scrollView = CustomScrollView(
       controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         if (Platform.isIOS)
           CupertinoSliverRefreshControl(
@@ -67,7 +68,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
           ),
         ),
         SliverFillRemaining(
-          hasScrollBody: true,
+          hasScrollBody: false,
           child: Container(
             color: ColorSet.background,
           ),
