@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:provider/provider.dart';
+import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/firebase_options.dart';
 import 'package:sprit/providers/analytics_index.dart';
@@ -89,6 +90,9 @@ class MyApp extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: ColorSet.primary),
+        ),
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context)
