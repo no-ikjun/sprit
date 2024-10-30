@@ -244,7 +244,7 @@ class TextStyles {
 
   static const TextStyle questWidgetTitleStyle = TextStyle(
     color: ColorSet.text,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     fontFamily: "IBMPlexSans",
   );
@@ -997,6 +997,13 @@ class TextStyles {
   static const TextStyle followButtonStyle = TextStyle(
     color: ColorSet.white,
     fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle socialSubTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 20,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );

@@ -8,7 +8,7 @@ import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/analytics_screen.dart';
 import 'package:sprit/screens/home/home_screen.dart';
 import 'package:sprit/screens/library/my_library_screen.dart';
-import 'package:sprit/screens/quest/quest_screen.dart';
+import 'package:sprit/screens/social/social_screen.dart';
 import 'package:sprit/widgets/bottom_navigation_bar.dart';
 import 'package:sprit/widgets/nav_drawer.dart';
 
@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const AnalyticsScreen();
       case 2:
-        return const QuestScreen();
+        return const SocialScreen();
       case 3:
         return const MyLibraryScreen();
       default:
