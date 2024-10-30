@@ -10,6 +10,7 @@ import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/popups/library/edit_desc.dart';
 import 'package:sprit/popups/library/section_order.dart';
 import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/user_info.dart';
@@ -186,16 +187,42 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text(
-                            '${profileInfo?.nickname}',
-                            style: TextStyles.myLibraryNicknameStyle,
-                            overflow: TextOverflow.ellipsis,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteName.profile,
+                              );
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Text(
+                              '${profileInfo?.nickname}',
+                              style: TextStyles.myLibraryNicknameStyle,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          Text(
-                            '${profileInfo?.description}',
-                            style: TextStyles.myLibraryDescriptionStyle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                          InkWell(
+                            onTap: () {
+                              showModal(
+                                context,
+                                EditDesc(
+                                  desc: profileInfo?.description ?? '',
+                                  callback: () async {
+                                    await _loadData(false);
+                                  },
+                                ),
+                                false,
+                              );
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Text(
+                              '${profileInfo?.description}',
+                              style: TextStyles.myLibraryDescriptionStyle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           Row(
                             children: [

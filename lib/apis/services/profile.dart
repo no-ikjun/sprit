@@ -97,4 +97,29 @@ class ProfileService {
       );
     }
   }
+
+  static Future<void> updateProfileDesc(
+    BuildContext context,
+    String userUuid,
+    String desc,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/profile/desc',
+        data: {
+          'user_uuid': userUuid,
+          'desc': desc,
+        },
+      );
+      if (response.statusCode == 200) {
+        debugPrint('프로필 소개 수정 성공');
+        debugPrint(response.data.toString());
+      } else {
+        debugPrint('프로필 소개 수정 실패');
+      }
+    } catch (e) {
+      debugPrint('프로필 소개 수정 실패 $e');
+    }
+  }
 }
