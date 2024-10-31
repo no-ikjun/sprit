@@ -30,6 +30,7 @@ import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/loader.dart';
 import 'package:sprit/widgets/native_ad.dart';
+import 'package:sprit/widgets/scalable_inkwell.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 //현재 독서 중인 책 정보 불러오기
@@ -539,7 +540,8 @@ class _HomePageState extends State<HomePage> {
                             })
                           },
                         ),
-                        itemBuilder: (context, index, realIndex) => InkWell(
+                        itemBuilder: (context, index, realIndex) =>
+                            ScalableInkWell(
                           onTap: () {
                             AmplitudeService().logEvent(
                                 AmplitudeEvent.homeBannerClick,
@@ -550,8 +552,6 @@ class _HomePageState extends State<HomePage> {
                             Uri url = Uri.parse(bannerInfo[index].clickUrl);
                             launchUrl(url);
                           },
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
                           child: Container(
                             width: Scaler.width(0.85, context),
                             clipBehavior: Clip.hardEdge,

@@ -13,6 +13,7 @@ import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/widgets/scalable_inkwell.dart';
 
 class ActiveQuestsWidget extends StatefulWidget {
   const ActiveQuestsWidget({
@@ -93,7 +94,7 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
               itemBuilder: (context, index) {
                 return Row(
                   children: [
-                    InkWell(
+                    ScalableInkWell(
                       onTap: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.questDetailClick,
@@ -108,8 +109,6 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                           arguments: widget.activeQuests[index].questUuid,
                         );
                       },
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
                       child: Container(
                         width: Scaler.width(0.7, context),
                         height: Scaler.width(0.3, context) * 0.5 + 20,
