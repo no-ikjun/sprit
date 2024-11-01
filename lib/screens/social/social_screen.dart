@@ -8,6 +8,9 @@ import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/screens/quest/widgets/active_quest.dart';
+import 'package:sprit/screens/social/widgets/phrase_article.dart';
+import 'package:sprit/screens/social/widgets/review_article.dart';
+import 'package:sprit/screens/social/widgets/start_article.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
@@ -124,6 +127,9 @@ class _SocialScreenState extends State<SocialScreen> {
                             ],
                           ),
                         ),
+                        const StartArticle(),
+                        const ReviewArticle(),
+                        const PhraseArticle(),
                       ],
                     ),
             ],

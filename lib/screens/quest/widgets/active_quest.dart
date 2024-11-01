@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +71,7 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                 ),
                 child: const Center(
                   child: Text(
-                    '퀘스트 모집 준비 중 🔥',
+                    '새로운 퀘스트 준비 중 🔥',
                     style: TextStyles.questButtonStyle,
                   ),
                 ),
@@ -207,7 +206,7 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                                     ],
                                   ),
                                   const SizedBox(
-                                    height: 5,
+                                    height: 3,
                                   ),
                                   Column(
                                     crossAxisAlignment:
