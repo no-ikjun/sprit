@@ -137,13 +137,14 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
-                                    width: 60,
-                                    height: 30,
+                                    width: Scaler.width(0.3, context),
+                                    height: Scaler.width(0.3, context) * 0.5,
                                     color: ColorSet.lightGrey,
                                     child: const Center(
                                       child: Text(
                                         '이미지를 불러올 수 없습니다.',
-                                        style: TextStyles.questWidgetTitleStyle,
+                                        style: TextStyles
+                                            .questWidgetDescriptionStyle,
                                       ),
                                     ),
                                   );
