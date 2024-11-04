@@ -224,7 +224,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
         child: Column(
           children: [
             const CustomAppBar(
-              label: '유저 검색',
+              label: '사용자 검색',
             ),
             Expanded(
               child: Scrollbar(

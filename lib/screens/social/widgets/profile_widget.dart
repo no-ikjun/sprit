@@ -43,6 +43,7 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   bool isFollowing = false;
+  bool isLoading = true;
 
   Future<void> follow(BuildContext context) async {
     await followUser(
@@ -69,6 +70,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Future<void> checkIsFollowing(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
     bool isFollowing = await checkFollowing(
       context,
       context.read<UserInfoState>().userInfo.userUuid,
@@ -76,6 +80,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     );
     setState(() {
       this.isFollowing = isFollowing;
+      isLoading = false;
     });
   }
 
@@ -127,16 +132,18 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     ),
                   ],
                 ),
-                FollowButton(
-                  isFollowing: isFollowing,
-                  onPressed: () async {
-                    if (isFollowing) {
-                      await unfollow(context);
-                    } else {
-                      await follow(context);
-                    }
-                  },
-                ),
+                isLoading
+                    ? Container()
+                    : FollowButton(
+                        isFollowing: isFollowing,
+                        onPressed: () async {
+                          if (isFollowing) {
+                            await unfollow(context);
+                          } else {
+                            await follow(context);
+                          }
+                        },
+                      ),
               ],
             ),
           ),
