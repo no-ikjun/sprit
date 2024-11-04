@@ -5,7 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/popups/read/save_page.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
@@ -124,7 +126,7 @@ class _EndTimeState extends State<EndTime> {
           activeColor: ColorSet.primary,
           inactiveColor: ColorSet.superLightGrey,
           thumbColor: ColorSet.primary,
-          overlayColor: MaterialStateColor.resolveWith(
+          overlayColor: WidgetStateColor.resolveWith(
             (states) => ColorSet.white.withOpacity(0),
           ),
         ),
@@ -168,11 +170,20 @@ class _EndTimeState extends State<EndTime> {
                   prefs.remove('isRunning');
                   prefs.remove('recordCreated');
                   Navigator.pop(context);
-                  Navigator.pushNamedAndRemoveUntil(
+                  showModal(
                     context,
-                    RouteName.readComplete,
-                    (route) => false,
-                    arguments: (widget.time * _value).round(),
+                    SavePage(
+                      recordUuid: context
+                          .read<SelectedRecordInfoState>()
+                          .getSelectedRecordInfo
+                          .recordUuid,
+                      bookUuid: context
+                          .read<SelectedRecordInfoState>()
+                          .getSelectedRecordInfo
+                          .bookUuid,
+                      timeArgument: (widget.time * _value).round(),
+                    ),
+                    false,
                   );
                 },
                 child: const Text('독서 종료', style: TextStyles.buttonLabelStyle),

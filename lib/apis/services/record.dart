@@ -257,6 +257,29 @@ class RecordService {
     }
   }
 
+  static Future<void> updatePageEnd(
+    BuildContext context,
+    String recordUuid,
+    int pageEnd,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.patch(
+        '/record/page-end',
+        queryParameters: {
+          'record_uuid': recordUuid,
+          'page_end': pageEnd,
+        },
+      );
+      if (response.statusCode == 200) {
+      } else {
+        debugPrint('마지막 페이지 업데이트 실패');
+      }
+    } catch (e) {
+      debugPrint('마지막 페이지 업데이트 실패: $e');
+    }
+  }
+
   static Future<RecordInfo> getNotEndedRecord(BuildContext context) async {
     final dio = await authDio(context);
     RecordInfo recordInfo = const RecordInfo(
