@@ -54,7 +54,6 @@ class ProfileService {
       );
       if (response.statusCode == 201) {
         debugPrint('프로필 이미지 업로드 성공');
-        debugPrint(response.data.toString());
       } else {
         debugPrint('프로필 이미지 업로드 실패');
       }
@@ -114,12 +113,35 @@ class ProfileService {
       );
       if (response.statusCode == 200) {
         debugPrint('프로필 소개 수정 성공');
-        debugPrint(response.data.toString());
       } else {
         debugPrint('프로필 소개 수정 실패');
       }
     } catch (e) {
       debugPrint('프로필 소개 수정 실패 $e');
+    }
+  }
+
+  static Future<List<ProfileInfo>> getRecommendProfile(
+    BuildContext context,
+    String userUuid,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/profile/recommend', queryParameters: {
+        'user_uuid': userUuid,
+      });
+      if (response.statusCode == 200) {
+        debugPrint('추천 프로필 조회 성공');
+        return List<ProfileInfo>.from(
+          response.data.map((x) => ProfileInfo.fromJson(x)),
+        );
+      } else {
+        debugPrint('추천 프로필 조회 실패');
+        return [];
+      }
+    } catch (e) {
+      debugPrint('추천 프로필 조회 실패 $e');
+      return [];
     }
   }
 }

@@ -12,6 +12,7 @@ import 'package:sprit/screens/notification/time_setting_screen.dart';
 import 'package:sprit/screens/quest/my_quest_screen.dart';
 import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
+import 'package:sprit/screens/social/search_user_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
 class RouteName {
@@ -37,6 +38,7 @@ class RouteName {
   static const noticeDetail = "/noticeDetail";
   static const libraryPhraseScreen = "/library/phrase";
   static const followScreen = "/follow";
+  static const searchUserScreen = "/searchUser";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -54,4 +56,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.questCodeInput: (context) => const InputQuestCodeScreen(),
   RouteName.notice: (context) => const NoticeScreen(),
   RouteName.libraryPhraseScreen: (context) => const LibraryPhraseScreen(),
+  RouteName.searchUserScreen: (context) => const SearchUserScreen(),
 };

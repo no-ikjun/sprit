@@ -7,6 +7,7 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/screens/quest/widgets/active_quest.dart';
 import 'package:sprit/screens/social/widgets/phrase_article.dart';
 import 'package:sprit/screens/social/widgets/review_article.dart';
@@ -80,12 +81,17 @@ class _SocialScreenState extends State<SocialScreen> {
                       style: TextStyles.questScreenTitleStyle,
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RouteName.searchUserScreen,
+                        );
+                      },
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       child: SvgPicture.asset(
-                        'assets/images/social_bell_icon.svg',
-                        width: 22,
+                        'assets/images/add_friend_icon.svg',
+                        width: 26,
                       ),
                     ),
                   ],

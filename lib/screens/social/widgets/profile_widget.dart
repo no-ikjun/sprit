@@ -28,7 +28,7 @@ class ProfileWidget extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(25),
                       child: Image.network(
-                        'https://naverpa-phinf.pstatic.net/MjAyNDA5MDJfMTgw/MDAxNzI1MjY0NjI3MjMx.CM1-4Jd8ThxDStFgK6nI7AJ2f_ADiPWwAzl8ktM7HZMg.-DrgIHz3oiPplnKATOqp3mDPXap8yPoFx6vbVyvY1OAg.JPEG/342x228_17252646272195900464080537449699.jpg',
+                        'https://d3ob3cint7tr3s.cloudfront.net/${profileInfo.image}',
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
@@ -52,7 +52,7 @@ class ProfileWidget extends StatelessWidget {
                   ],
                 ),
                 FollowButton(
-                  isFollowing: true,
+                  isFollowing: false,
                   onPressed: () {},
                 ),
               ],
