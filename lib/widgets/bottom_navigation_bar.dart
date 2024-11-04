@@ -8,6 +8,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/widgets/scalable_inkwell.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final int selectedIndex;
@@ -40,17 +41,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              InkWell(
+              ScalableInkWell(
                 onTap: () {
-                  HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuHomeClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(0);
                 },
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                scale: 0.85,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -77,17 +76,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   ],
                 ),
               ),
-              InkWell(
+              ScalableInkWell(
                 onTap: () {
-                  HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuAnalyticsClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(1);
                 },
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                scale: 0.85,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -115,17 +112,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 ),
               ),
               const SizedBox(width: 23),
-              InkWell(
+              ScalableInkWell(
                 onTap: () {
-                  HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuSocialClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(2);
                 },
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                scale: 0.85,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -152,17 +147,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   ],
                 ),
               ),
-              InkWell(
+              ScalableInkWell(
                 onTap: () {
-                  HapticFeedback.lightImpact();
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuLibraryClick,
                     context.read<UserInfoState>().userInfo.userUuid,
                   );
                   widget.onItemTapped(3);
                 },
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                scale: 0.85,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 class ScalableInkWell extends StatefulWidget {
   final VoidCallback onTap;
   final Widget child;
+  final double scale;
 
   const ScalableInkWell({
     super.key,
     required this.onTap,
     required this.child,
+    this.scale = 0.95,
   });
 
   @override
@@ -21,19 +23,19 @@ class _ScalableInkWellState extends State<ScalableInkWell> {
   void _onTapDown(TapDownDetails details) {
     HapticFeedback.lightImpact();
     setState(() {
-      _scale = 0.95; // 눌렀을 때 크기를 5% 줄임
+      _scale = widget.scale; // 눌렀을 때 크기를 5% 줄임
     });
   }
 
   void _onTapUp(TapUpDetails details) {
     setState(() {
-      _scale = 1.0; // 크기를 원래대로 돌림
+      _scale = 1.0;
     });
   }
 
   void _onTapCancel() {
     setState(() {
-      _scale = 1.0; // 취소 시에도 크기를 원래대로 돌림
+      _scale = 1.0;
     });
   }
 
