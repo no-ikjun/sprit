@@ -144,4 +144,30 @@ class ProfileService {
       return [];
     }
   }
+
+  static Future<List<ProfileInfo>> searchProfile(
+    BuildContext context,
+    String searchValue,
+    String userUuid,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/profile/search', queryParameters: {
+        'keyword': searchValue,
+        'user_uuid': userUuid,
+      });
+      if (response.statusCode == 200) {
+        debugPrint('프로필 검색 성공');
+        return List<ProfileInfo>.from(
+          response.data.map((x) => ProfileInfo.fromJson(x)),
+        );
+      } else {
+        debugPrint('프로필 검색 실패');
+        return [];
+      }
+    } catch (e) {
+      debugPrint('프로필 검색 실패 $e');
+      return [];
+    }
+  }
 }

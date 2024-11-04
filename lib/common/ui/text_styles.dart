@@ -393,7 +393,7 @@ class TextStyles {
 
   static const TextStyle notificationTimeSettingInformationStyle = TextStyle(
     color: ColorSet.grey,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );

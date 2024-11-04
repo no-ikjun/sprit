@@ -3,8 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/amplitude_service.dart';
@@ -18,8 +18,8 @@ import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
 import 'package:sprit/screens/analytics/widgets/graph_slider.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
-import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 import 'package:sprit/widgets/toggle_button.dart';
+// import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 
 Future<List<List<BookRecordHistory>>> getBookRecordHistory(
   BuildContext context,
@@ -459,26 +459,48 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           ),
               ),
               const SizedBox(
-                height: 30,
+                height: 5,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: Scaler.width(0.85, context),
-                    child: Text(
-                      '${DateFormat('y년 M월').format(DateTime.now())} 독서 현황',
-                      style: TextStyles.analyticsSubTitleStyle,
+              SizedBox(
+                width: Scaler.width(0.85, context),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/information_grey_icon.svg',
+                      width: 12,
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      width: 3,
+                    ),
+                    const Text(
+                      '그래프 옆으로 스와이프하여 지난주/다음주로 이동',
+                      style: TextStyles.notificationTimeSettingInformationStyle,
+                    ),
+                  ],
+                ),
               ),
-              const MonthlyCount(kind: 'COUNT'),
-              const MonthlyCount(kind: 'GOAL'),
-              const MonthlyCount(kind: 'BOOK'),
               const SizedBox(
                 height: 30,
               ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     SizedBox(
+              //       width: Scaler.width(0.85, context),
+              //       child: Text(
+              //         '${DateFormat('y년 M월').format(DateTime.now())} 독서 현황',
+              //         style: TextStyles.analyticsSubTitleStyle,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const MonthlyCount(kind: 'COUNT'),
+              // const MonthlyCount(kind: 'GOAL'),
+              // const MonthlyCount(kind: 'BOOK'),
+              // const SizedBox(
+              //   height: 30,
+              // ),
             ],
           ),
         ),

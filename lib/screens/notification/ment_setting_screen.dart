@@ -263,7 +263,7 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                               children: [
                                 SvgPicture.asset(
                                   'assets/images/information_grey_icon.svg',
-                                  width: 14,
+                                  width: 12,
                                 ),
                                 const SizedBox(
                                   width: 5,

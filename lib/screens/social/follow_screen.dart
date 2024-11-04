@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sprit/apis/services/follow.dart';
 import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/color_set.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/social/widgets/profile_widget.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
@@ -17,9 +20,39 @@ class FollowScreen extends StatefulWidget {
 
 class _FollowScreenState extends State<FollowScreen> {
   final ScrollController _scrollController = ScrollController();
+  List<ProfileInfo> profileList = [];
+  bool isLoading = false;
+
+  Future<void> fetchData() async {
+    String userUuid = context.read<UserInfoState>().userInfo.userUuid;
+    if (widget.type == 'follower') {
+      final followers = await FollowService.getFollowerList(context, userUuid);
+      setState(() {
+        profileList = followers;
+      });
+    } else {
+      final followings =
+          await FollowService.getFollowingList(context, userUuid);
+      setState(() {
+        profileList = followings;
+      });
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLoading = true;
+    });
+    fetchData();
+  }
 
   Future<void> _onRefresh() async {
-    await Future<void>.delayed(const Duration(seconds: 1));
+    await fetchData();
   }
 
   @override
@@ -37,24 +70,25 @@ class _FollowScreenState extends State<FollowScreen> {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              return const ProfileWidget(
-                profileInfo: ProfileInfo(
-                  userUuid: 'userUuid',
-                  nickname: 'nickname',
-                  image: 'image',
-                  description: 'desc',
-                  recommendList: [],
-                ),
+              return ProfileWidget(
+                profileInfo: profileList[index],
               );
             },
-            childCount: 5,
+            childCount: profileList.length,
           ),
         ),
         SliverFillRemaining(
           hasScrollBody: false,
-          child: Container(
-            color: ColorSet.background,
-          ),
+          child: isLoading
+              ? const Center(
+                  child: CupertinoActivityIndicator(
+                    radius: 15,
+                    animating: true,
+                  ),
+                )
+              : Container(
+                  color: ColorSet.background,
+                ),
         )
       ],
     );

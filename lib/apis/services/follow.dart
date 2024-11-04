@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/auth_dio.dart';
+import 'package:sprit/apis/services/profile.dart';
 
 class FollowService {
   static Future<void> follow(
@@ -9,8 +10,8 @@ class FollowService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.get('/follow', data: {
-        'follwer_uuid': follwerUuid,
+      final response = await dio.post('/follow', data: {
+        'follower_uuid': follwerUuid,
         'followee_uuid': followeeUuid,
       });
       if (response.statusCode == 201) {
@@ -30,11 +31,11 @@ class FollowService {
   ) async {
     final dio = await authDio(context);
     try {
-      final response = await dio.delete('/follow/cancel', data: {
-        'follwer_uuid': follwerUuid,
+      final response = await dio.delete('/follow', data: {
+        'follower_uuid': follwerUuid,
         'followee_uuid': followeeUuid,
       });
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         debugPrint('언팔로우 성공');
       } else {
         debugPrint('언팔로우 실패');
@@ -52,11 +53,11 @@ class FollowService {
     final dio = await authDio(context);
     try {
       final response = await dio.get('/follow/check', data: {
-        'follwer_uuid': follwerUuid,
+        'follower_uuid': follwerUuid,
         'followee_uuid': followeeUuid,
       });
       if (response.statusCode == 200) {
-        return response.data;
+        return response.data.toString() == 'true';
       } else {
         debugPrint('팔로우 상태 확인 실패');
         return false;
@@ -67,7 +68,7 @@ class FollowService {
     }
   }
 
-  static Future<List<String>> getFollowerList(
+  static Future<List<ProfileInfo>> getFollowerList(
     BuildContext context,
     String userUuid,
   ) async {
@@ -77,7 +78,9 @@ class FollowService {
         'user_uuid': userUuid,
       });
       if (response.statusCode == 200) {
-        return response.data;
+        return List<ProfileInfo>.from(
+          response.data.map((x) => ProfileInfo.fromJson(x)),
+        );
       } else {
         debugPrint('팔로워 목록 조회 실패');
         return [];
@@ -88,7 +91,7 @@ class FollowService {
     }
   }
 
-  static Future<List<String>> getFollowingList(
+  static Future<List<ProfileInfo>> getFollowingList(
     BuildContext context,
     String userUuid,
   ) async {
@@ -98,7 +101,9 @@ class FollowService {
         'user_uuid': userUuid,
       });
       if (response.statusCode == 200) {
-        return response.data;
+        return List<ProfileInfo>.from(
+          response.data.map((x) => ProfileInfo.fromJson(x)),
+        );
       } else {
         debugPrint('팔로잉 목록 조회 실패');
         return [];
