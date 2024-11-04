@@ -6,7 +6,6 @@ import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
-import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/read/save_page.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/widgets/custom_button.dart';
