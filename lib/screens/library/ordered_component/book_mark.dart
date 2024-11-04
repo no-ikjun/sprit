@@ -57,7 +57,7 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                 style: TextStyles.myLibrarySubTitleStyle,
               ),
               Text(
-                '책갈피 기능을 사용하려면 페이지를 기준으로 독서를 기록해주세요',
+                '책갈피 기능을 사용하려면 기록 종료 전 마지막 페이지를 입력해주세요',
                 style: TextStyles.myLibraryWarningStyle,
               ),
             ],
