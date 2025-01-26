@@ -380,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(
+                    ScalableInkWell(
                       onTap: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.homeSearchButton,
@@ -388,8 +388,6 @@ class _HomePageState extends State<HomePage> {
                         );
                         Navigator.pushNamed(context, '/search');
                       },
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
                       child: Container(
                         width: Scaler.width(0.41, context),
                         padding: const EdgeInsets.symmetric(
@@ -415,14 +413,14 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '책 검색하기',
+                                  '기록 추가하기',
                                   style: TextStyles.homeButtonTitleStyle,
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
                                 Text(
-                                  '읽고있는 책 제목을\n검색해보세요!',
+                                  '이미 읽은 책을\n기록으로 남겨보세요!',
                                   style: TextStyles.homeButtonLabelStyle,
                                 ),
                               ],
@@ -437,8 +435,8 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Image.asset(
-                                      'assets/images/3d_magnifier.png',
-                                      width: Scaler.width(0.12, context),
+                                      'assets/images/3d_book.png',
+                                      width: Scaler.width(0.11, context),
                                     ),
                                   ],
                                 ),
@@ -448,7 +446,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    InkWell(
+                    ScalableInkWell(
                       onTap: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.homeNotificationButton,
@@ -456,8 +454,6 @@ class _HomePageState extends State<HomePage> {
                         );
                         Navigator.pushNamed(context, '/notification');
                       },
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
                       child: Container(
                         width: Scaler.width(0.41, context),
                         padding: const EdgeInsets.symmetric(
@@ -506,7 +502,7 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Image.asset(
                                       'assets/images/3d_bell.png',
-                                      width: Scaler.width(0.12, context),
+                                      width: Scaler.width(0.11, context),
                                     ),
                                   ],
                                 ),
