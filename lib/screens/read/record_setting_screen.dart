@@ -18,6 +18,7 @@ import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/read/widgets/selected_book.dart';
+import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
@@ -323,9 +324,15 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                     .userInfo
                                                     .userUuid,
                                               );
-                                              Navigator.pushNamed(
+                                              Navigator.push(
                                                 context,
-                                                RouteName.search,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const SearchScreen(
+                                                    redirect: 'newRecord',
+                                                    //isFirstOpen: true,
+                                                  ),
+                                                ),
                                               );
                                             },
                                             splashColor: Colors.transparent,
@@ -1056,12 +1063,11 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                 padding: const EdgeInsets.only(
                                                     right: 8),
                                                 overlayColor:
-                                                    MaterialStateProperty
+                                                    WidgetStateProperty
                                                         .resolveWith<Color?>(
-                                                  (Set<MaterialState> states) {
+                                                  (Set<WidgetState> states) {
                                                     if (states.contains(
-                                                        MaterialState
-                                                            .pressed)) {
+                                                        WidgetState.pressed)) {
                                                       return Colors.transparent;
                                                     }
                                                     return Colors.transparent;
@@ -1086,12 +1092,11 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               menuItemStyleData:
                                                   MenuItemStyleData(
                                                 overlayColor:
-                                                    MaterialStateProperty
+                                                    WidgetStateProperty
                                                         .resolveWith<Color?>(
-                                                  (Set<MaterialState> states) {
+                                                  (Set<WidgetState> states) {
                                                     if (states.contains(
-                                                        MaterialState
-                                                            .pressed)) {
+                                                        WidgetState.pressed)) {
                                                       return Colors.transparent;
                                                     }
                                                     return Colors.transparent;

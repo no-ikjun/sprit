@@ -240,7 +240,11 @@ class _HomePageState extends State<HomePage> {
                                           .userInfo
                                           .userUuid,
                                     );
-                                    Navigator.pushNamed(context, '/search');
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/search',
+                                      arguments: '',
+                                    );
                                   },
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
@@ -675,6 +679,7 @@ class _HomePageState extends State<HomePage> {
                                               .trim()
                                               .split(' ')[0],
                                           popularBookInfo[index].isbn,
+                                          '',
                                         ).then((value) {
                                           setState(() {
                                             _isLoading = false;

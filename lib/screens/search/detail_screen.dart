@@ -226,7 +226,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           color: ColorSet.superLightGrey,
                                           borderColor: ColorSet.superLightGrey,
                                           child: Text(
-                                            '찜해두기',
+                                            '읽을 예정이에요',
                                             style: TextStyles
                                                 .bookDetailButtonStyle
                                                 .copyWith(
@@ -258,7 +258,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           color: ColorSet.superLightGrey,
                                           borderColor: ColorSet.superLightGrey,
                                           child: Text(
-                                            '읽은 책으로 표시',
+                                            '이미 읽었어요',
                                             style: TextStyles
                                                 .bookDetailButtonStyle
                                                 .copyWith(

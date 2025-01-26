@@ -39,16 +39,28 @@ Future<void> showBookInfo(
   BuildContext context,
   String isbn,
   String isbnAll,
+  String redirect,
 ) async {
   BookInfo bookInfo = await getBookInfoByISBN(context, isbnAll);
   if (bookInfo.bookUuid == '') {
     await registerBook(context, isbn);
     bookInfo = await getBookInfoByISBN(context, isbnAll);
-    Navigator.pushNamed(
-      context,
-      RouteName.bookDetail,
-      arguments: bookInfo.bookUuid,
-    );
+    if (redirect == 'newRecord') {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteName.recordSetting,
+        ModalRoute.withName(RouteName.home), // 홈 화면(RouteName.home)만 남기고 제거
+        arguments: bookInfo.bookUuid,
+      );
+    } else if (redirect == 'prevRecord') {
+      //TODO: 이전 기록 등록 화면으로 이동
+    } else {
+      Navigator.pushNamed(
+        context,
+        RouteName.bookDetail,
+        arguments: bookInfo.bookUuid,
+      );
+    }
   } else {
     Navigator.pushNamed(
       context,
@@ -60,7 +72,8 @@ Future<void> showBookInfo(
 
 class SearchScreen extends StatefulWidget {
   final bool isHome;
-  const SearchScreen({super.key, this.isHome = false});
+  final String redirect;
+  const SearchScreen({super.key, this.isHome = false, this.redirect = ''});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -206,7 +219,10 @@ class _SearchScreenState extends State<SearchScreen>
                                     value.type != ResultType.Error) {
                                   Map<String, dynamic> response =
                                       await searchBook(
-                                          context, value.rawContent, 1);
+                                    context,
+                                    value.rawContent,
+                                    1,
+                                  );
                                   setState(() {
                                     searchResult = response['search_list'];
                                     isEnd = response['is_end'];
@@ -290,6 +306,7 @@ class _SearchScreenState extends State<SearchScreen>
                                             SearchResultWidget(
                                               bookInfo: searchResult[index],
                                               onTap: () async {
+                                                debugPrint(widget.redirect);
                                                 setState(() {
                                                   isBookInfoLoading = true;
                                                 });
@@ -300,10 +317,10 @@ class _SearchScreenState extends State<SearchScreen>
                                                       .trim()
                                                       .split(' ')[0],
                                                   searchResult[index].isbn,
-                                                ).then((value) {
-                                                  setState(() {
-                                                    isBookInfoLoading = false;
-                                                  });
+                                                  widget.redirect,
+                                                );
+                                                setState(() {
+                                                  isBookInfoLoading = false;
                                                 });
                                               },
                                             ),
@@ -318,7 +335,7 @@ class _SearchScreenState extends State<SearchScreen>
               ],
             ),
             isSearchDataLoading
-                ? const Loader(loadingTxt: '검색 결과 로딩중...')
+                ? const Loader(loadingTxt: '정보 불러오는 중...')
                 : isBookInfoLoading
                     ? const Loader()
                     : Container()

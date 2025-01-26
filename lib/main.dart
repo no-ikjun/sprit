@@ -25,6 +25,7 @@ import 'package:sprit/screens/read/read_complete_screen.dart';
 import 'package:sprit/screens/read/record_setting_screen.dart';
 import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
+import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/social/follow_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
@@ -149,6 +150,11 @@ class MyApp extends StatelessWidget {
               final String type = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => FollowScreen(type: type),
+              );
+            case RouteName.search:
+              final String redirect = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => SearchScreen(redirect: redirect),
               );
             default:
               return MaterialPageRoute(

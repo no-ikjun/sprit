@@ -186,8 +186,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           ),
           Positioned(
             top: -10,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(30),
+            child: ScalableInkWell(
               onTap: () {
                 AmplitudeService().logEvent(
                   AmplitudeEvent.menuRecordClick,
