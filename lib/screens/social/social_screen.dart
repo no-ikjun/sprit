@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/apis/services/article.dart';
 import 'package:sprit/apis/services/quest.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/quest/widgets/active_quest.dart';
 import 'package:sprit/screens/social/widgets/phrase_article.dart';
 import 'package:sprit/screens/social/widgets/review_article.dart';
@@ -16,6 +19,14 @@ import 'package:sprit/widgets/remove_glow.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
+}
+
+Future<List<ArticleInfo>> getArticleList(
+  BuildContext context,
+  String userUuid,
+  int page,
+) async {
+  return await ArticleService.getArticleList(context, userUuid, page);
 }
 
 class SocialScreen extends StatefulWidget {
@@ -29,31 +40,69 @@ class _SocialScreenState extends State<SocialScreen> {
   final ScrollController _scrollController = ScrollController();
 
   bool isLoading = false;
+  bool hasMore = true;
+  int currentPage = 1;
   List<QuestInfo> activeQuests = [];
+  List<ArticleInfo> articleInfo = [];
 
-  Future<void> _fetchData() async {
-    final results = await Future.wait([
-      getActiveQuests(context),
-    ]);
-    setState(() {
-      activeQuests = results[0];
-    });
-  }
+  Future<void> _fetchData({bool append = false}) async {
+    if (!hasMore || isLoading) return;
 
-  Future<void> _loadData() async {
     setState(() {
       isLoading = true;
     });
-    await _fetchData();
-    setState(() {
-      isLoading = false;
-    });
+
+    String userUuid = context.read<UserInfoState>().userInfo.userUuid;
+    try {
+      final results = await Future.wait([
+        getActiveQuests(context),
+        getArticleList(context, userUuid, currentPage),
+      ]);
+
+      if (!append) {
+        // 초기 데이터 로드
+        activeQuests = results[0] as List<QuestInfo>;
+        articleInfo = results[1] as List<ArticleInfo>;
+      } else {
+        // 추가 데이터 로드
+        final newArticles = results[1] as List<ArticleInfo>;
+        if (newArticles.isEmpty) {
+          hasMore = false;
+        } else {
+          articleInfo.addAll(newArticles);
+          currentPage++;
+        }
+      }
+    } catch (e) {
+      debugPrint("데이터 로드 실패: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent &&
+        hasMore &&
+        !isLoading) {
+      _fetchData(append: true);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _scrollController.addListener(_onScroll);
+    _fetchData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,23 +112,22 @@ class _SocialScreenState extends State<SocialScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         CupertinoSliverRefreshControl(
-          onRefresh: _loadData,
+          onRefresh: () async {
+            currentPage = 1;
+            hasMore = true;
+            await _fetchData();
+          },
         ),
         SliverToBoxAdapter(
           child: Column(
             children: [
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               SizedBox(
                 width: Scaler.width(0.85, context),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      '소셜',
-                      style: TextStyles.questScreenTitleStyle,
-                    ),
+                    const Text('소셜', style: TextStyles.questScreenTitleStyle),
                     InkWell(
                       onTap: () {
                         Navigator.pushNamed(
@@ -97,13 +145,11 @@ class _SocialScreenState extends State<SocialScreen> {
                   ],
                 ),
               ),
-              isLoading
-                  ? Container()
+              isLoading && articleInfo.isEmpty
+                  ? const CircularProgressIndicator()
                   : Column(
                       children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: Scaler.width(0.85, context),
                           child: const Row(
@@ -117,11 +163,9 @@ class _SocialScreenState extends State<SocialScreen> {
                         ),
                         ActiveQuestsWidget(
                           activeQuests: activeQuests,
-                          isLoading: isLoading,
+                          isLoading: isLoading && activeQuests.isEmpty,
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
+                        const SizedBox(height: 15),
                         SizedBox(
                           width: Scaler.width(0.85, context),
                           child: const Row(
@@ -133,11 +177,47 @@ class _SocialScreenState extends State<SocialScreen> {
                             ],
                           ),
                         ),
-                        const StartArticle(),
-                        const ReviewArticle(),
-                        const PhraseArticle(),
+                        Column(
+                          children: articleInfo.map((e) {
+                            if (e.type == 'record') {
+                              return StartArticle(
+                                articleUuid: e.articleUuid,
+                                userUuid: e.userUuid,
+                                bookUuid: e.bookUuid,
+                                createdAt: e.createdAt,
+                              );
+                            } else if (e.type == 'review') {
+                              return ReviewArticle(
+                                articleUuid: e.articleUuid,
+                                userUuid: e.userUuid,
+                                bookUuid: e.bookUuid,
+                                data: e.data,
+                                createdAt: e.createdAt,
+                              );
+                            } else if (e.type == 'phrase') {
+                              return PhraseArticle(
+                                articleUuid: e.articleUuid,
+                                userUuid: e.userUuid,
+                                bookUuid: e.bookUuid,
+                                data: e.data,
+                                createdAt: e.createdAt,
+                              );
+                            } else {
+                              return Container();
+                            }
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 30),
                       ],
                     ),
+              if (isLoading && hasMore)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: CupertinoActivityIndicator(
+                    radius: 15,
+                    animating: true,
+                  ),
+                ),
             ],
           ),
         ),
@@ -150,11 +230,16 @@ class _SocialScreenState extends State<SocialScreen> {
 
     if (Platform.isAndroid) {
       scrollView = RefreshIndicator(
-        onRefresh: _loadData,
+        onRefresh: () async {
+          currentPage = 1;
+          hasMore = true;
+          await _fetchData();
+        },
         color: ColorSet.primary,
         child: scrollView,
       );
     }
+
     return SafeArea(
       maintainBottomViewPadding: true,
       child: Column(
@@ -164,7 +249,7 @@ class _SocialScreenState extends State<SocialScreen> {
               behavior: RemoveGlow(),
               child: scrollView,
             ),
-          )
+          ),
         ],
       ),
     );
