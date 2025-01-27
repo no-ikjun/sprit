@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ScalableInkWell extends StatefulWidget {
   final VoidCallback onTap;
@@ -24,7 +25,7 @@ class _ScalableInkWellState extends State<ScalableInkWell> {
     setState(() {
       _scale = widget.scale;
     });
-
+    HapticFeedback.lightImpact();
     // 애니메이션 대기
     await Future.delayed(const Duration(milliseconds: 100));
 

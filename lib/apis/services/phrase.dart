@@ -111,6 +111,7 @@ class PhraseService {
     String phrase,
     int page,
     bool remind,
+    bool share,
   ) async {
     final dio = await authDio(context);
     try {
@@ -121,6 +122,7 @@ class PhraseService {
           'phrase': phrase,
           'page': page,
           'remind': remind,
+          'share': share,
         },
       );
       if (response.statusCode == 201) {

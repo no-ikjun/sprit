@@ -18,6 +18,7 @@ Future<String> setPhrase(
   String phrase,
   int page,
   bool remind,
+  bool share,
 ) async {
   return await PhraseService.setNewPhrase(
     context,
@@ -25,6 +26,7 @@ Future<String> setPhrase(
     phrase,
     page,
     remind,
+    share,
   );
 }
 
@@ -45,6 +47,7 @@ class PhraseModal extends StatefulWidget {
 class _PhraseModalState extends State<PhraseModal> {
   String phrase = '';
   bool remind = true;
+  bool share = true;
 
   bool isLoading = false;
   bool isSubmitted = false;
@@ -61,7 +64,14 @@ class _PhraseModalState extends State<PhraseModal> {
       isSubmitted = true;
       isLoading = true;
     });
-    setPhrase(context, widget.bookUuid, phrase, pageInt, remind).then((value) {
+    setPhrase(
+      context,
+      widget.bookUuid,
+      phrase,
+      pageInt,
+      remind,
+      share,
+    ).then((value) {
       if (value != '') {
         setState(() {
           isLoading = false;
@@ -347,6 +357,41 @@ class _PhraseModalState extends State<PhraseModal> {
                             children: [
                               const SizedBox(
                                 height: 15,
+                              ),
+                              SizedBox(
+                                width: Scaler.width(0.8, context),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('문구 공유하기',
+                                            style: TextStyles
+                                                .timerBottomSheetReminderTextStyle),
+                                        Text(
+                                          '공유한 문구는 프로필 페이지에 표시돼요',
+                                          style: TextStyles
+                                              .timerBottomSheetReminderMentStyle,
+                                        ),
+                                      ],
+                                    ),
+                                    CustomSwitch(
+                                      onToggle: () {
+                                        setState(() {
+                                          share = !share;
+                                        });
+                                      },
+                                      switchValue: share,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
                               ),
                               SizedBox(
                                 width: Scaler.width(0.8, context),
