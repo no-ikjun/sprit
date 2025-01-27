@@ -146,12 +146,7 @@ class _SocialScreenState extends State<SocialScreen> {
                 ),
               ),
               isLoading && articleInfo.isEmpty
-                  ? const Center(
-                      child: CupertinoActivityIndicator(
-                        radius: 18,
-                        animating: true,
-                      ),
-                    )
+                  ? Container()
                   : Column(
                       children: [
                         const SizedBox(height: 20),
