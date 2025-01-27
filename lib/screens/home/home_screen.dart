@@ -417,14 +417,14 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '기록 추가하기',
+                                  '책 검색하기',
                                   style: TextStyles.homeButtonTitleStyle,
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
                                 Text(
-                                  '이미 읽은 책을\n기록으로 남겨보세요!',
+                                  '읽고있는 책 제목을\n검색해보세요!',
                                   style: TextStyles.homeButtonLabelStyle,
                                 ),
                               ],
@@ -439,8 +439,8 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Image.asset(
-                                      'assets/images/3d_book.png',
-                                      width: Scaler.width(0.11, context),
+                                      'assets/images/3d_magnifier.png',
+                                      width: Scaler.width(0.12, context),
                                     ),
                                   ],
                                 ),
@@ -448,6 +448,43 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
+                        // child: Stack(
+                        //   children: [
+                        //     const Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: [
+                        //         Text(
+                        //           '기록 추가하기',
+                        //           style: TextStyles.homeButtonTitleStyle,
+                        //         ),
+                        //         SizedBox(
+                        //           height: 3,
+                        //         ),
+                        //         Text(
+                        //           '이미 읽은 책을\n기록으로 남겨보세요!',
+                        //           style: TextStyles.homeButtonLabelStyle,
+                        //         ),
+                        //       ],
+                        //     ),
+                        //     Column(
+                        //       mainAxisAlignment: MainAxisAlignment.end,
+                        //       children: [
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           mainAxisAlignment: MainAxisAlignment.end,
+                        //           children: [
+                        //             Image.asset(
+                        //               'assets/images/3d_book.png',
+                        //               width: Scaler.width(0.11, context),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ],
+                        // ),
                       ),
                     ),
                     ScalableInkWell(
