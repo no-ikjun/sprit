@@ -91,30 +91,33 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                BookThumbnail(
-                  imgUrl: thumbnail,
-                  width: 34.62,
-                  height: 50,
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      bookTitle,
-                      style: TextStyles.myLibraryBookReportTitleStyle,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      widget.createdAt.substring(0, 10),
-                      style: TextStyles.myLibraryBookReportDateStyle,
-                    ),
-                  ],
-                ),
-              ],
+            SizedBox(
+              width: Scaler.width(0.6, context),
+              child: Row(
+                children: [
+                  BookThumbnail(
+                    imgUrl: thumbnail,
+                    width: 34.62,
+                    height: 50,
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        bookTitle,
+                        style: TextStyles.myLibraryBookReportTitleStyle,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        widget.createdAt.substring(0, 10),
+                        style: TextStyles.myLibraryBookReportDateStyle,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

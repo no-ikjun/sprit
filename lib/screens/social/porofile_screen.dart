@@ -51,7 +51,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   int followerCount = 0;
   int followingCount = 0;
   List<ArticleInfo> articleList = [];
-  int currentPage = 1;
   bool hasMore = true;
 
   bool isLoading = false;
@@ -66,10 +65,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     try {
       final results = await Future.wait([
         getProfileInfo(context, widget.profileUuid),
-        getUserArticleList(context, widget.profileUuid, currentPage),
+        getUserArticleList(context, widget.profileUuid,
+            append ? articleList.length ~/ 10 + 1 : 1),
         getFollowCount(context, widget.profileUuid),
       ]);
-      currentPage++;
       if (!append) {
         profileInfo = results[0] as ProfileInfo;
         final followCounts = results[2] as List<int>;
@@ -95,27 +94,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 50 &&
+            _scrollController.position.maxScrollExtent &&
         hasMore &&
         !isLoading) {
-      setState(() {
-        isLoading = true;
-      });
       _fetchData(append: true);
-    }
-  }
-
-  Future<void> _onRefresh() async {
-    currentPage = 1;
-    hasMore = true;
-    isLoading = true;
-
-    try {
-      await _fetchData();
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
@@ -147,11 +129,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         CupertinoSliverRefreshControl(
-          onRefresh: _onRefresh,
+          onRefresh: () async {
+            hasMore = true;
+            await _fetchData();
+          },
         ),
         SliverToBoxAdapter(
           child: Column(
             children: [
+              CustomAppBar(
+                label: profileInfo?.nickname ?? '',
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -307,7 +295,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     if (Platform.isAndroid) {
       scrollView = RefreshIndicator(
-        onRefresh: _onRefresh,
+        onRefresh: () async {
+          hasMore = true;
+          await _fetchData();
+        },
         color: ColorSet.primary,
         child: scrollView,
       );
@@ -318,14 +309,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       backgroundColor: ColorSet.background,
       body: SafeArea(
         maintainBottomViewPadding: true,
-        child: Column(
-          children: [
-            CustomAppBar(
-              label: profileInfo?.nickname ?? '',
-            ),
-            scrollView,
-          ],
-        ),
+        child: scrollView,
       ),
     );
   }
