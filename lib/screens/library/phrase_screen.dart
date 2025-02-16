@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/phrase.dart';
 import 'package:sprit/common/ui/color_set.dart';

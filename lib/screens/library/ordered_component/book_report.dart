@@ -1,9 +1,16 @@
+import 'dart:math' as math;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/book_report.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/common/value/router.dart';
+import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/book_report_content.dart';
 
 Future<List<BookReportInfo>> getBookReportByUserUuid(
@@ -43,12 +50,42 @@ class _MyBookReportComponentState extends State<MyBookReportComponent> {
       children: [
         SizedBox(
           width: Scaler.width(0.85, context),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '내가 작성한 독후감',
+              const Text(
+                '독후감',
                 style: TextStyles.myLibrarySubTitleStyle,
+              ),
+              InkWell(
+                onTap: () {
+                  AmplitudeService().logEvent(
+                    AmplitudeEvent.libraryReportShowMore,
+                    context.read<UserInfoState>().userInfo.userUuid,
+                  );
+                  Navigator.pushNamed(
+                    context,
+                    RouteName.libraryReportListScreen,
+                  );
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      '모두보기',
+                      style: TextStyles.myLibraryShowMoreStyle,
+                    ),
+                    Transform.rotate(
+                      angle: 270 * math.pi / 180,
+                      child: SvgPicture.asset(
+                        'assets/images/show_more_grey.svg',
+                        width: 21,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -59,7 +96,8 @@ class _MyBookReportComponentState extends State<MyBookReportComponent> {
         SizedBox(
           width: Scaler.width(1, context),
           child: CarouselSlider.builder(
-            itemCount: bookReportInfoList.length,
+            itemCount:
+                (bookReportInfoList.length > 5) ? 5 : bookReportInfoList.length,
             options: CarouselOptions(
               viewportFraction: 0.87,
               autoPlay: false,

@@ -32,6 +32,10 @@ void _showBottomModal(
 ) {
   showModalBottomSheet(
     context: context,
+    backgroundColor: Colors.white,
+    constraints: BoxConstraints(
+      minWidth: Scaler.width(1, context),
+    ),
     isScrollControlled: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),

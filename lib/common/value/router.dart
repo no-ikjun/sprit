@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sprit/screens/library/report_list_screen.dart';
 import 'package:sprit/screens/quest/custom_quest/input_code_screen.dart';
 import 'package:sprit/screens/home/profile_screen.dart';
 import 'package:sprit/screens/library/phrase_screen.dart';
@@ -39,6 +40,7 @@ class RouteName {
   static const libraryPhraseScreen = "/library/phrase";
   static const followScreen = "/follow";
   static const searchUserScreen = "/searchUser";
+  static const libraryReportListScreen = "/library/reportList";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -56,5 +58,6 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.questCodeInput: (context) => const InputQuestCodeScreen(),
   RouteName.notice: (context) => const NoticeScreen(),
   RouteName.libraryPhraseScreen: (context) => const LibraryPhraseScreen(),
+  RouteName.libraryReportListScreen: (context) => const ReportListScreen(),
   RouteName.searchUserScreen: (context) => const SearchUserScreen(),
 };
