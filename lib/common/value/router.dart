@@ -41,6 +41,7 @@ class RouteName {
   static const followScreen = "/follow";
   static const searchUserScreen = "/searchUser";
   static const libraryReportListScreen = "/library/reportList";
+  static const userProfileScreen = "/user-profile";
 }
 
 var namedRoutes = <String, WidgetBuilder>{

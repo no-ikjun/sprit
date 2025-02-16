@@ -27,6 +27,7 @@ import 'package:sprit/screens/search/detail_screen.dart';
 import 'package:sprit/screens/search/review_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/social/follow_screen.dart';
+import 'package:sprit/screens/social/porofile_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
 void main() async {
@@ -155,6 +156,12 @@ class MyApp extends StatelessWidget {
               final String redirect = settings.arguments as String;
               return MaterialPageRoute(
                 builder: (context) => SearchScreen(redirect: redirect),
+              );
+            case RouteName.userProfileScreen:
+              final String profileUuid = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) =>
+                    UserProfileScreen(profileUuid: profileUuid),
               );
             default:
               return MaterialPageRoute(

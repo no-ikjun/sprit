@@ -59,6 +59,31 @@ class ArticleService {
     return articleInfo;
   }
 
+  static Future<List<ArticleInfo>> getUserArticleList(
+    BuildContext context,
+    String userUuid,
+    int page,
+  ) async {
+    List<ArticleInfo> articleInfo = [];
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/article/user', queryParameters: {
+        'user_uuid': userUuid,
+        'page': page,
+      });
+      if (response.statusCode == 200) {
+        articleInfo = (response.data as List)
+            .map((e) => ArticleInfo.fromJson(e))
+            .toList();
+      } else {
+        debugPrint('사용자 게시글 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('사용자 게시글 조회 실패 $e');
+    }
+    return articleInfo;
+  }
+
   static Future<int> getLikeCount(
     BuildContext context,
     String articleUuid,

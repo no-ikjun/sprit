@@ -113,4 +113,25 @@ class FollowService {
       return [];
     }
   }
+
+  static Future<List<int>> getFollowerCount(
+    BuildContext context,
+    String userUuid,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.get('/follow/count', queryParameters: {
+        'user_uuid': userUuid,
+      });
+      if (response.statusCode == 200) {
+        return List<int>.from(response.data);
+      } else {
+        debugPrint('팔로워 수 조회 실패');
+        return [0, 0];
+      }
+    } catch (e) {
+      debugPrint('팔로워 수 조회 실패 : $e');
+      return [0, 0];
+    }
+  }
 }

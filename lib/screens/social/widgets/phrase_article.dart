@@ -12,6 +12,7 @@ import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/scalable_inkwell.dart';
@@ -150,38 +151,49 @@ class _PhraseArticleState extends State<PhraseArticle> {
         ),
         SizedBox(
           width: Scaler.width(0.85, context),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  "${dotenv.env['IMAGE_SERVER_URL'] ?? ''}${profileInfo?.image ?? ''}",
-                  width: 35,
-                  height: 35,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      SvgPicture.asset(
-                    'assets/images/default_profile.svg',
+          child: InkWell(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                RouteName.userProfileScreen,
+                arguments: profileInfo?.userUuid,
+              );
+            },
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.network(
+                    "${dotenv.env['IMAGE_SERVER_URL'] ?? ''}${profileInfo?.image ?? ''}",
                     width: 35,
                     height: 35,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        SvgPicture.asset(
+                      'assets/images/default_profile.svg',
+                      width: 35,
+                      height: 35,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Text(
-                profileInfo?.nickname ?? '',
-                style: TextStyles.articleMentStyle,
-              ),
-              Text(
-                '님이 문구를 공유했어요',
-                style: TextStyles.articleMentStyle.copyWith(
-                  color: ColorSet.semiDarkGrey,
+                const SizedBox(
+                  width: 8,
                 ),
-              ),
-            ],
+                Text(
+                  profileInfo?.nickname ?? '',
+                  style: TextStyles.articleMentStyle,
+                ),
+                Text(
+                  '님이 문구를 공유했어요',
+                  style: TextStyles.articleMentStyle.copyWith(
+                    color: ColorSet.semiDarkGrey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(
