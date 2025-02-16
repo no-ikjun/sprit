@@ -11,6 +11,7 @@ import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
+import 'package:sprit/widgets/scalable_inkwell.dart';
 
 Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
@@ -54,70 +55,68 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: Scaler.width(0.85, context),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: ColorSet.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            offset: const Offset(0, 0),
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              BookThumbnail(
-                imgUrl: thumbnail,
-                width: 34.62,
-                height: 50,
-              ),
-              const SizedBox(width: 8),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    bookTitle,
-                    style: TextStyles.myLibraryBookReportTitleStyle,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    widget.createdAt.substring(0, 10),
-                    style: TextStyles.myLibraryBookReportDateStyle,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          InkWell(
-            onTap: () {
-              AmplitudeService().logEvent(
-                AmplitudeEvent.libraryReportDetailClick,
-                context.read<UserInfoState>().userInfo.userUuid,
-                eventProperties: {
-                  'bookReportUuid': widget.reportUuid,
-                  'bookUuid': widget.bookUuid,
-                },
-              );
-              Navigator.pushNamed(
-                context,
-                RouteName.bookReport,
-                arguments: widget.reportUuid,
-              );
-            },
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            child: Row(
+    return ScalableInkWell(
+      onTap: () {
+        AmplitudeService().logEvent(
+          AmplitudeEvent.libraryReportDetailClick,
+          context.read<UserInfoState>().userInfo.userUuid,
+          eventProperties: {
+            'bookReportUuid': widget.reportUuid,
+            'bookUuid': widget.bookUuid,
+          },
+        );
+        Navigator.pushNamed(
+          context,
+          RouteName.bookReport,
+          arguments: widget.reportUuid,
+        );
+      },
+      child: Container(
+        width: Scaler.width(0.85, context),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: ColorSet.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              offset: const Offset(0, 0),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                BookThumbnail(
+                  imgUrl: thumbnail,
+                  width: 34.62,
+                  height: 50,
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      bookTitle,
+                      style: TextStyles.myLibraryBookReportTitleStyle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      widget.createdAt.substring(0, 10),
+                      style: TextStyles.myLibraryBookReportDateStyle,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
@@ -130,8 +129,8 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
