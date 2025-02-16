@@ -58,7 +58,7 @@ class _SocialScreenState extends State<SocialScreen> {
         getActiveQuests(context),
         getArticleList(context, userUuid, currentPage),
       ]);
-
+      currentPage++;
       if (!append) {
         // 초기 데이터 로드
         activeQuests = results[0] as List<QuestInfo>;
@@ -70,7 +70,6 @@ class _SocialScreenState extends State<SocialScreen> {
           hasMore = false;
         } else {
           articleInfo.addAll(newArticles);
-          currentPage++;
         }
       }
     } catch (e) {
