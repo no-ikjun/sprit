@@ -307,8 +307,6 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                           return const MyPhraseComponent();
                         case LibrarySection.report:
                           return const MyBookReportComponent();
-                        default:
-                          return Container();
                       }
                     })
                     .expand((widget) => [widget, const SizedBox(height: 35)])

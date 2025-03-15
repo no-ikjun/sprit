@@ -35,8 +35,6 @@ String getName(LibrarySection librarySection) {
       return '저장된 문구(스크랩)';
     case LibrarySection.report:
       return '내가 작성한 독후감';
-    default:
-      return '';
   }
 }
 
