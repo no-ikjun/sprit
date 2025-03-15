@@ -39,7 +39,7 @@ class ProfileInfo {
 }
 
 class ProfileService {
-  static Future<void> uploadProfileImage(
+  static Future<bool> uploadProfileImage(
     BuildContext context,
     XFile image,
   ) async {
@@ -54,11 +54,14 @@ class ProfileService {
       );
       if (response.statusCode == 201) {
         debugPrint('프로필 이미지 업로드 성공');
+        return true;
       } else {
         debugPrint('프로필 이미지 업로드 실패');
+        return false;
       }
     } catch (e) {
       debugPrint('프로필 이미지 업로드 실패 $e');
+      return false;
     }
   }
 

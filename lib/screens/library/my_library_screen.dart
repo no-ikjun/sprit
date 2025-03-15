@@ -36,50 +36,28 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
       source: ImageSource.gallery,
       imageQuality: 30,
     );
+    bool result = false;
     if (image != null) {
-      final file = File(image.path);
-
-      //파일 크기 제한 (5MB 이하만 허용)
-      const int maxSize = 5 * 1024 * 1024;
-      if (await file.length() > maxSize) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                '이미지 파일이 너무 큽니다. 5MB 이하 이미지를 선택해주세요.',
-                style: TextStyle(
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          );
-        }
-        return;
-      }
-
-      //이미지 확장자 확인
-      final List<String> allowedExtensions = ['jpg', 'jpeg', 'png'];
-      final String extension = image.path.split('.').last.toLowerCase();
-      if (!allowedExtensions.contains(extension)) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                '지원되지 않는 이미지 형식입니다.',
-                style: TextStyle(
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          );
-        }
-        return;
-      }
-      setState(() {
-        image0 = image;
-      });
       try {
-        await ProfileService.uploadProfileImage(context, image);
+        result = await ProfileService.uploadProfileImage(context, image);
+        if (!result) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  '오류가 발생했어요. 다른 이미지를 선택해주세요.',
+                  style: TextStyle(
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            );
+          }
+        } else {
+          setState(() {
+            image0 = image;
+          });
+        }
       } catch (e) {
         debugPrint('이미지 업로드 실패: $e');
         if (mounted) {
