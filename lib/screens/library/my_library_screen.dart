@@ -37,10 +37,64 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
       imageQuality: 30,
     );
     if (image != null) {
+      final file = File(image.path);
+
+      //파일 크기 제한 (5MB 이하만 허용)
+      const int maxSize = 5 * 1024 * 1024;
+      if (await file.length() > maxSize) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                '이미지 파일이 너무 큽니다. 5MB 이하 이미지를 선택해주세요.',
+                style: TextStyle(
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          );
+        }
+        return;
+      }
+
+      //이미지 확장자 확인
+      final List<String> allowedExtensions = ['jpg', 'jpeg', 'png'];
+      final String extension = image.path.split('.').last.toLowerCase();
+      if (!allowedExtensions.contains(extension)) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                '지원되지 않는 이미지 형식입니다.',
+                style: TextStyle(
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          );
+        }
+        return;
+      }
       setState(() {
         image0 = image;
       });
-      await ProfileService.uploadProfileImage(context, image);
+      try {
+        await ProfileService.uploadProfileImage(context, image);
+      } catch (e) {
+        debugPrint('이미지 업로드 실패: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                '이미지 업로드에 실패했습니다. 다시 시도해주세요.',
+                style: TextStyle(
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          );
+        }
+      }
     } else {
       debugPrint('이미지 선택 취소');
     }
