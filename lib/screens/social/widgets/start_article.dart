@@ -140,21 +140,30 @@ class _StartArticleState extends State<StartArticle> {
             highlightColor: Colors.transparent,
             child: Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image.network(
-                    "${dotenv.env['IMAGE_SERVER_URL'] ?? ''}${profileInfo?.image ?? ''}",
-                    width: 35,
-                    height: 35,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        SvgPicture.asset(
-                      'assets/images/default_profile.svg',
-                      width: 35,
-                      height: 35,
-                      fit: BoxFit.cover,
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: Image.network(
+                        "${dotenv.env['IMAGE_SERVER_URL'] ?? ''}${profileInfo?.image ?? ''}",
+                        width: 35,
+                        height: 35,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            SvgPicture.asset(
+                          'assets/images/default_profile.svg',
+                          width: 35,
+                          height: 35,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
+                    SvgPicture.asset(
+                      'assets/images/book_color_icon.svg',
+                      width: 12,
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 8),
                 Text(
