@@ -122,11 +122,21 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.profileInfo.nickname,
-                            style: TextStyles.followNicknameStyle),
-                        const Text(
-                          '기록 100개',
-                          style: TextStyles.followRecordStyle,
+                        SizedBox(
+                          width: Scaler.width(0.85, context) - 150,
+                          child: Text(
+                            widget.profileInfo.nickname,
+                            style: TextStyles.followNicknameStyle,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(
+                          width: Scaler.width(0.85, context) - 150,
+                          child: Text(
+                            widget.profileInfo.description,
+                            style: TextStyles.followRecordStyle,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),

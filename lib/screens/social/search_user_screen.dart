@@ -115,56 +115,6 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
               await _onRefresh();
             },
           ),
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 8,
-              ),
-              SizedBox(
-                width: Scaler.width(0.85, context),
-                height: 45,
-                child: TextField(
-                  controller: _searchController,
-                  textInputAction: TextInputAction.search,
-                  onSubmitted: (value) async {
-                    await fetchData();
-                  },
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    hintText: '닉네임 검색',
-                    hintStyle: TextStyles.textFieldStyle.copyWith(
-                      color: ColorSet.grey,
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: ColorSet.grey, width: 1.0),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(10),
-                    filled: true,
-                    fillColor: Colors.white,
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: ColorSet.border, width: 1.0),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: ColorSet.grey,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-        ),
         profileList.isEmpty
             ? SliverFillRemaining(
                 hasScrollBody: false,
@@ -225,6 +175,49 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
           children: [
             const CustomAppBar(
               label: '사용자 검색',
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            SizedBox(
+              width: Scaler.width(0.85, context),
+              height: 45,
+              child: TextField(
+                controller: _searchController,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) async {
+                  await fetchData();
+                },
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: '닉네임 검색',
+                  hintStyle: TextStyles.textFieldStyle.copyWith(
+                    color: ColorSet.grey,
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: ColorSet.grey, width: 1.0),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.all(10),
+                  filled: true,
+                  fillColor: Colors.white,
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: ColorSet.border, width: 1.0),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: ColorSet.grey,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Expanded(
               child: Scrollbar(
