@@ -490,4 +490,40 @@ class RecordService {
     }
     return result;
   }
+
+  static Future<String> addRecordAfterRead(
+    BuildContext context,
+    String bookUuid,
+    String goalType,
+    int readTime,
+    int pageStart,
+    int pageEnd,
+    DateTime startTime,
+    DateTime endTime,
+  ) async {
+    final dio = await authDio(context);
+    try {
+      final response = await dio.post(
+        '/record/add',
+        data: {
+          'book_uuid': bookUuid,
+          'goal_type': goalType,
+          'read_time': readTime,
+          'page_start': pageStart,
+          'page_end': pageEnd,
+          'start_time': startTime.toIso8601String(),
+          'end_time': endTime.toIso8601String(),
+        },
+      );
+      if (response.statusCode == 201) {
+        return response.data as String;
+      } else {
+        debugPrint('기록 생성 실패');
+        return '';
+      }
+    } catch (e) {
+      debugPrint('기록 생성 실패: $e');
+      return '';
+    }
+  }
 }

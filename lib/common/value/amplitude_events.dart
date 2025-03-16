@@ -64,6 +64,7 @@ class AmplitudeEvent {
   static const String recordAddReportButton = "RECORD_ADD_REPORT_BUTTON";
   static const String recordSaveReportButton = "RECORD_SAVE_REPORT_BUTTON";
   static const String recordReviewSaveButton = "RECORD_REVIEW_SAVE_BUTTON";
+  static const String recordAddButton = "RECORD_ADD_BUTTON";
 
   //Analytics Screen
   static const String analyticsToggleValue = "ANALYTICS_TOGGLE_VALUE";

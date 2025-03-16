@@ -11,7 +11,7 @@ class TextStyles {
 
   static const TextStyle buttonLabelStyle = TextStyle(
     color: ColorSet.white,
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: FontWeight.w500,
     fontFamily: "IBMPlexSans",
   );
@@ -444,6 +444,34 @@ class TextStyles {
     color: ColorSet.text,
     fontSize: 20,
     fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle readRecordSubTitleStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle readRecordDateStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle readRecordTimeStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle readRecordButtonLabelStyle = TextStyle(
+    color: ColorSet.semiDarkGrey,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
     fontFamily: "IBMPlexSans",
   );
 
