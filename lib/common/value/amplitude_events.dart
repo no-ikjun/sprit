@@ -19,6 +19,7 @@ class AmplitudeEvent {
 
   //Nav Drawer
   static const String drawerNoticeClick = "DRAWER_NOTICE_CLICK";
+  static const String drawerSettingClick = "DRAWER_SETTING_CLICK";
   static const String drawerProfileClick = "DRAWER_PROFILE_CLICK";
   static const String drawerQuestionClick = "DRAWER_QUESTION_CLICK";
   static const String drawerLogoutClick = "DRAWER_LOGOUT_CLICK";

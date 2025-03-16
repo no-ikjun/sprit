@@ -19,6 +19,7 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/book/home_book_select.dart';
 import 'package:sprit/popups/home/version_check.dart';
 import 'package:sprit/providers/new_notice.dart';
@@ -390,7 +391,10 @@ class _HomePageState extends State<HomePage> {
                           AmplitudeEvent.homeSearchButton,
                           context.read<UserInfoState>().userInfo.userUuid,
                         );
-                        Navigator.pushNamed(context, '/search');
+                        Navigator.pushNamed(
+                          context,
+                          RouteName.addRecordScreen,
+                        );
                       },
                       child: Container(
                         width: Scaler.width(0.41, context),
@@ -461,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 3,
                                 ),
                                 Text(
-                                  '이미 읽은 책을\n기록으로 남겨보세요!',
+                                  '이전에 읽은 책을\n기록으로 남기세요!',
                                   style: TextStyles.homeButtonLabelStyle,
                                 ),
                               ],
@@ -493,7 +497,11 @@ class _HomePageState extends State<HomePage> {
                           AmplitudeEvent.homeNotificationButton,
                           context.read<UserInfoState>().userInfo.userUuid,
                         );
-                        Navigator.pushNamed(context, '/notification');
+                        Navigator.pushNamed(
+                          context,
+                          RouteName.recordSetting,
+                          arguments: '',
+                        );
                       },
                       child: Container(
                         width: Scaler.width(0.41, context),
@@ -520,14 +528,14 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '독서 알림설정',
+                                  '독서 시작하기',
                                   style: TextStyles.homeButtonTitleStyle,
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
                                 Text(
-                                  '꾸준한 독서를 위해\n알림을 받으세요!',
+                                  '독서 타이머와 함께\n기록을 시작하세요!',
                                   style: TextStyles.homeButtonLabelStyle,
                                 ),
                               ],
@@ -536,14 +544,14 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 const SizedBox(
-                                  height: 10,
+                                  height: 12,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Image.asset(
-                                      'assets/images/3d_bell.png',
-                                      width: Scaler.width(0.11, context),
+                                      'assets/images/3d_clock.png',
+                                      width: Scaler.width(0.10, context),
                                     ),
                                   ],
                                 ),

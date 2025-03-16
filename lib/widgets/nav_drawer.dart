@@ -116,29 +116,36 @@ class NavDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // const SizedBox(
-                  //   height: 23,
-                  // ),
-                  // InkWell(
-                  //   highlightColor: Colors.transparent,
-                  //   splashColor: Colors.transparent,
-                  //   onTap: () {},
-                  //   child: Row(
-                  //     children: [
-                  //       SvgPicture.asset(
-                  //         'assets/images/setting_icon.svg',
-                  //         width: 17,
-                  //       ),
-                  //       const SizedBox(
-                  //         width: 15,
-                  //       ),
-                  //       const Text(
-                  //         '환경설정',
-                  //         style: TextStyles.navDrawerLabelStyle,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  const SizedBox(
+                    height: 23,
+                  ),
+                  InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      AmplitudeService().logEvent(
+                        AmplitudeEvent.drawerSettingClick,
+                        context.read<UserInfoState>().userInfo.userUuid,
+                      );
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/notification');
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/setting_semidark.svg',
+                          width: 18,
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        const Text(
+                          '알림설정',
+                          style: TextStyles.navDrawerLabelStyle,
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(
                     height: 23,
                   ),
