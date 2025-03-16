@@ -52,8 +52,13 @@ Future<void> showBookInfo(
         ModalRoute.withName(RouteName.home), // 홈 화면(RouteName.home)만 남기고 제거
         arguments: bookInfo.bookUuid,
       );
-    } else if (redirect == 'prevRecord') {
-      //TODO: 이전 기록 등록 화면으로 이동
+    } else if (redirect == 'addRecord') {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteName.addRecordScreen,
+        ModalRoute.withName(RouteName.home),
+        arguments: bookInfo.bookUuid,
+      );
     } else {
       Navigator.pushNamed(
         context,
@@ -69,8 +74,13 @@ Future<void> showBookInfo(
         ModalRoute.withName(RouteName.home), // 홈 화면(RouteName.home)만 남기고 제거
         arguments: bookInfo.bookUuid,
       );
-    } else if (redirect == 'prevRecord') {
-      //TODO: 이전 기록 등록 화면으로 이동
+    } else if (redirect == 'addRecord') {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteName.addRecordScreen,
+        ModalRoute.withName(RouteName.home), // 홈 화면(RouteName.home)만 남기고 제거
+        arguments: bookInfo.bookUuid,
+      );
     } else {
       Navigator.pushNamed(
         context,

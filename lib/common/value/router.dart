@@ -11,7 +11,6 @@ import 'package:sprit/screens/notification/ment_setting_screen.dart';
 import 'package:sprit/screens/notification/notification_screen.dart';
 import 'package:sprit/screens/notification/time_setting_screen.dart';
 import 'package:sprit/screens/quest/my_quest_screen.dart';
-import 'package:sprit/screens/read/add_record_screen.dart';
 import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/screens/social/search_user_screen.dart';
@@ -63,5 +62,4 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.libraryPhraseScreen: (context) => const LibraryPhraseScreen(),
   RouteName.libraryReportListScreen: (context) => const ReportListScreen(),
   RouteName.searchUserScreen: (context) => const SearchUserScreen(),
-  RouteName.addRecordScreen: (context) => const AddRecordScreen(),
 };
