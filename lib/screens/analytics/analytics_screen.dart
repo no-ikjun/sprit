@@ -138,7 +138,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   SizedBox(
                     width: Scaler.width(0.85, context),
                     child: const Text(
-                      '독서 기록',
+                      '기록',
                       style: TextStyles.analyticsTitleStyle,
                     ),
                   ),

@@ -97,7 +97,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '독서기록',
+                      '기록',
                       style: TextStyles.bottomAppBarLabelStyle.copyWith(
                         color: (widget.selectedIndex == 1)
                             ? ColorSet.primaryLight
