@@ -39,6 +39,7 @@ class PhraseArticle extends StatefulWidget {
   final String bookUuid;
   final String data;
   final String createdAt;
+  final bool clickable;
   const PhraseArticle({
     super.key,
     required this.articleUuid,
@@ -46,6 +47,7 @@ class PhraseArticle extends StatefulWidget {
     required this.bookUuid,
     required this.data,
     required this.createdAt,
+    this.clickable = true,
   });
 
   @override
@@ -142,8 +144,9 @@ class _PhraseArticleState extends State<PhraseArticle> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
-                  offset: const Offset(0, 2),
+                  offset: const Offset(0, 0),
                   blurRadius: 4,
+                  spreadRadius: 0,
                 ),
               ],
             ),
@@ -163,11 +166,13 @@ class _PhraseArticleState extends State<PhraseArticle> {
           width: Scaler.width(0.85, context),
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(
-                context,
-                RouteName.userProfileScreen,
-                arguments: profileInfo?.userUuid,
-              );
+              widget.clickable
+                  ? Navigator.pushNamed(
+                      context,
+                      RouteName.userProfileScreen,
+                      arguments: profileInfo?.userUuid,
+                    )
+                  : null;
             },
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -227,8 +232,9 @@ class _PhraseArticleState extends State<PhraseArticle> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                offset: const Offset(0, 2),
+                offset: const Offset(0, 0),
                 blurRadius: 4,
+                spreadRadius: 0,
               ),
             ],
           ),

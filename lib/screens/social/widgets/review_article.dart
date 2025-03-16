@@ -40,6 +40,7 @@ class ReviewArticle extends StatefulWidget {
   final String bookUuid;
   final String data;
   final String createdAt;
+  final bool clickable;
   const ReviewArticle({
     super.key,
     required this.articleUuid,
@@ -47,6 +48,7 @@ class ReviewArticle extends StatefulWidget {
     required this.bookUuid,
     required this.data,
     required this.createdAt,
+    this.clickable = true,
   });
 
   @override
@@ -143,8 +145,9 @@ class _ReviewArticleState extends State<ReviewArticle> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
-                  offset: const Offset(0, 2),
+                  offset: const Offset(0, 0),
                   blurRadius: 4,
+                  spreadRadius: 0,
                 ),
               ],
             ),
@@ -164,11 +167,13 @@ class _ReviewArticleState extends State<ReviewArticle> {
           width: Scaler.width(0.85, context),
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(
-                context,
-                RouteName.userProfileScreen,
-                arguments: profileInfo?.userUuid,
-              );
+              widget.clickable
+                  ? Navigator.pushNamed(
+                      context,
+                      RouteName.userProfileScreen,
+                      arguments: profileInfo?.userUuid,
+                    )
+                  : null;
             },
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -228,8 +233,9 @@ class _ReviewArticleState extends State<ReviewArticle> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                offset: const Offset(0, 2),
+                offset: const Offset(0, 0),
                 blurRadius: 4,
+                spreadRadius: 0,
               ),
             ],
           ),

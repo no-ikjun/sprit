@@ -20,12 +20,14 @@ class StartArticle extends StatefulWidget {
   final String userUuid;
   final String bookUuid;
   final String createdAt;
+  final bool clickable;
   const StartArticle({
     super.key,
     required this.articleUuid,
     required this.userUuid,
     required this.bookUuid,
     required this.createdAt,
+    this.clickable = true,
   });
 
   @override
@@ -121,8 +123,9 @@ class _StartArticleState extends State<StartArticle> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
-                  offset: const Offset(0, 2),
+                  offset: const Offset(0, 0),
                   blurRadius: 4,
+                  spreadRadius: 0,
                 ),
               ],
             ),
@@ -140,11 +143,13 @@ class _StartArticleState extends State<StartArticle> {
           width: Scaler.width(0.85, context),
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(
-                context,
-                RouteName.userProfileScreen,
-                arguments: profileInfo?.userUuid,
-              );
+              widget.clickable
+                  ? Navigator.pushNamed(
+                      context,
+                      RouteName.userProfileScreen,
+                      arguments: profileInfo?.userUuid,
+                    )
+                  : null;
             },
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -200,8 +205,9 @@ class _StartArticleState extends State<StartArticle> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                offset: const Offset(0, 2),
+                offset: const Offset(0, 0),
                 blurRadius: 4,
+                spreadRadius: 0,
               ),
             ],
           ),
