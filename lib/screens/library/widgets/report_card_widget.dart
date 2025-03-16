@@ -91,7 +91,7 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
-              width: Scaler.width(0.6, context) - 20,
+              width: Scaler.width(0.7, context),
               child: Row(
                 children: [
                   BookThumbnail(
@@ -101,7 +101,7 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
                   ),
                   const SizedBox(width: 8),
                   SizedBox(
-                    width: Scaler.width(0.6, context) - 65,
+                    width: Scaler.width(0.6, context) - 10,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,10 +124,6 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  '자세히 보기',
-                  style: TextStyles.myLibraryBookReportButtonStyle,
-                ),
                 SvgPicture.asset(
                   'assets/images/right_arrow_grey.svg',
                   width: 18,
