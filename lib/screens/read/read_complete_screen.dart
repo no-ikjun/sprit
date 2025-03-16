@@ -67,9 +67,7 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
         borderRadius: BorderRadius.circular(20),
       ),
       builder: (context) {
-        TextEditingController textarea = TextEditingController();
         return BookReportModal(
-          textarea: textarea,
           bookUuid: context
               .read<SelectedBookInfoState>()
               .getSelectedBookInfo

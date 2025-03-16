@@ -127,6 +127,7 @@ class _BookReportScreenState extends State<BookReportScreen> {
                               style: TextStyles.myLibraryBookReportTimeStyle
                                   .copyWith(
                                 color: ColorSet.semiDarkGrey,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],

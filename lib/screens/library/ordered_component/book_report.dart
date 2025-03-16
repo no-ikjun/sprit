@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,7 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
-import 'package:sprit/screens/library/widgets/book_report_content.dart';
+import 'package:sprit/screens/library/widgets/report_card_widget.dart';
 
 Future<List<BookReportInfo>> getBookReportByUserUuid(
   BuildContext context,
@@ -93,71 +92,72 @@ class _MyBookReportComponentState extends State<MyBookReportComponent> {
         const SizedBox(
           height: 8,
         ),
-        SizedBox(
-          width: Scaler.width(1, context),
-          child: CarouselSlider.builder(
-            itemCount:
-                (bookReportInfoList.length > 5) ? 5 : bookReportInfoList.length,
-            options: CarouselOptions(
-              viewportFraction: 0.87,
-              autoPlay: false,
-              enlargeCenterPage: false,
-              enableInfiniteScroll: false,
-              onPageChanged: (index, reason) => {
-                setState(() {
-                  reportCurrent = index;
-                })
-              },
-            ),
-            itemBuilder: (context, index, realIndex) => Container(
-              width: Scaler.width(0.85, context),
-              height: 296,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 11,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: ColorSet.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 0),
+        bookReportInfoList.isNotEmpty
+            ? SizedBox(
+                width: Scaler.width(1, context),
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      itemCount: bookReportInfoList.length > 5
+                          ? 5
+                          : bookReportInfoList.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            ReportCardWidget(
+                              bookUuid: bookReportInfoList[index].bookUuid,
+                              reportUuid:
+                                  bookReportInfoList[index].bookReportUuid,
+                              createdAt: bookReportInfoList[index].createdAt,
+                              report: bookReportInfoList[index].report,
+                            ),
+                            index != bookReportInfoList.length - 1
+                                ? const SizedBox(
+                                    height: 8,
+                                  )
+                                : Container(),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                width: Scaler.width(0.85, context),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 20,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: ColorSet.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: SizedBox(
+                  width: Scaler.width(0.85, context),
+                  height: 35,
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '독후감이 아직 없어요 📑',
+                          style: TextStyles.questButtonStyle,
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-              child: BookReportContent(
-                bookUuid: bookReportInfoList[index].bookUuid,
-                reportUuid: bookReportInfoList[index].bookReportUuid,
-                report: bookReportInfoList[index].report,
-                createdAt: bookReportInfoList[index].createdAt,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            bookReportInfoList.length,
-            (index) => Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.symmetric(
-                horizontal: 4,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: reportCurrent == index
-                    ? ColorSet.primary
-                    : ColorSet.lightGrey,
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }

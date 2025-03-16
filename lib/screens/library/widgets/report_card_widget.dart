@@ -91,7 +91,7 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
-              width: Scaler.width(0.6, context),
+              width: Scaler.width(0.6, context) - 20,
               child: Row(
                 children: [
                   BookThumbnail(
@@ -100,20 +100,23 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
                     height: 50,
                   ),
                   const SizedBox(width: 8),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        bookTitle,
-                        style: TextStyles.myLibraryBookReportTitleStyle,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        widget.createdAt.substring(0, 10),
-                        style: TextStyles.myLibraryBookReportDateStyle,
-                      ),
-                    ],
+                  SizedBox(
+                    width: Scaler.width(0.6, context) - 65,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bookTitle,
+                          style: TextStyles.myLibraryBookReportTitleStyle,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          widget.createdAt.substring(0, 10),
+                          style: TextStyles.myLibraryBookReportDateStyle,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

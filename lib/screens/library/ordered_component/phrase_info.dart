@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/phrase.dart';
+import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
@@ -92,121 +93,78 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
         const SizedBox(
           height: 8,
         ),
-        SizedBox(
-          width: Scaler.width(0.85, context),
-          child: ListView.builder(
-            itemCount: phraseInfoList.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  LibraryPhraseWidget(
-                    phraseUuid: phraseInfoList[index].phraseUuid,
-                    phrase: phraseInfoList[index].phrase,
-                    bookTitle: phraseInfoList[index].bookTitle,
-                    bookThumbnail: phraseInfoList[index].bookThumbnail,
-                    page: phraseInfoList[index].page,
-                    callback: () async {
-                      setState(() {
-                        phraseInfoList = [];
-                      });
-                      await getPhraseForLibraryScreen(
-                        context,
-                      ).then((value) {
-                        setState(() {
-                          phraseInfoList = value.phraseLibraryList;
-                        });
-                      });
-                    },
+        phraseInfoList.isNotEmpty
+            ? SizedBox(
+                width: Scaler.width(0.85, context),
+                child: ListView.builder(
+                  itemCount: phraseInfoList.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        LibraryPhraseWidget(
+                          phraseUuid: phraseInfoList[index].phraseUuid,
+                          phrase: phraseInfoList[index].phrase,
+                          bookTitle: phraseInfoList[index].bookTitle,
+                          bookThumbnail: phraseInfoList[index].bookThumbnail,
+                          page: phraseInfoList[index].page,
+                          callback: () async {
+                            setState(() {
+                              phraseInfoList = [];
+                            });
+                            await getPhraseForLibraryScreen(
+                              context,
+                            ).then((value) {
+                              setState(() {
+                                phraseInfoList = value.phraseLibraryList;
+                              });
+                            });
+                          },
+                        ),
+                        index != phraseInfoList.length - 1
+                            ? const SizedBox(
+                                height: 8,
+                              )
+                            : Container(),
+                      ],
+                    );
+                  },
+                ),
+              )
+            : Container(
+                width: Scaler.width(0.85, context),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 20,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: ColorSet.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: SizedBox(
+                  width: Scaler.width(0.85, context),
+                  height: 35,
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '스크랩된 문구가 없어요 💬',
+                          style: TextStyles.questButtonStyle,
+                        ),
+                      ],
+                    ),
                   ),
-                  index != phraseInfoList.length - 1
-                      ? const SizedBox(
-                          height: 8,
-                        )
-                      : Container(),
-                ],
-              );
-            },
-          ),
-        ),
-        // phraseMoreAvailable
-        //     ? Column(
-        //         children: [
-        //           const SizedBox(
-        //             height: 15,
-        //           ),
-        //           InkWell(
-        //             onTap: () async {
-        //               AmplitudeService().logEvent(
-        //                 AmplitudeEvent.libraryPhraseShowMore,
-        //                 context.read<UserInfoState>().userInfo.userUuid,
-        //               );
-        //               await getPhraseForLibrary(
-        //                 context,
-        //                 phraseCurrentPage + 1,
-        //               ).then((value) {
-        //                 setState(() {
-        //                   phraseInfoList.addAll(value.phraseLibraryList);
-        //                   phraseMoreAvailable = value.moreAvailable;
-        //                   phraseCurrentPage++;
-        //                 });
-        //               });
-        //             },
-        //             splashColor: Colors.transparent,
-        //             highlightColor: Colors.transparent,
-        //             child: Row(
-        //               mainAxisAlignment: MainAxisAlignment.center,
-        //               children: [
-        //                 const Text(
-        //                   '더보기',
-        //                   style: TextStyles.myLibraryShowMoreStyle,
-        //                 ),
-        //                 SvgPicture.asset(
-        //                   'assets/images/show_more_grey.svg',
-        //                   width: 21,
-        //                 )
-        //               ],
-        //             ),
-        //           ),
-        //         ],
-        //       )
-        //     : phraseInfoList.length > 3
-        //         ? Column(
-        //             children: [
-        //               const SizedBox(
-        //                 height: 15,
-        //               ),
-        //               InkWell(
-        //                 onTap: () async {
-        //                   setState(() {
-        //                     phraseInfoList = phraseInfoList.sublist(0, 3);
-        //                     phraseMoreAvailable = true;
-        //                     phraseCurrentPage = 1;
-        //                   });
-        //                 },
-        //                 splashColor: Colors.transparent,
-        //                 highlightColor: Colors.transparent,
-        //                 child: Row(
-        //                   mainAxisAlignment: MainAxisAlignment.center,
-        //                   children: [
-        //                     const Text(
-        //                       '숨기기',
-        //                       style: TextStyles.myLibraryShowMoreStyle,
-        //                     ),
-        //                     Transform.rotate(
-        //                       angle: 180 * math.pi / 180,
-        //                       child: SvgPicture.asset(
-        //                         'assets/images/show_more_grey.svg',
-        //                         width: 21,
-        //                       ),
-        //                     )
-        //                   ],
-        //                 ),
-        //               ),
-        //             ],
-        //           )
-        //         : Container(),
+                ),
+              ),
       ],
     );
   }

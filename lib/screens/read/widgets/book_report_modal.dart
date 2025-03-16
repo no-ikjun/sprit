@@ -21,11 +21,8 @@ Future<bool> setBookReport(
 class BookReportModal extends StatefulWidget {
   const BookReportModal({
     super.key,
-    required this.textarea,
     required this.bookUuid,
   });
-
-  final TextEditingController textarea;
   final String bookUuid;
 
   @override
@@ -33,10 +30,23 @@ class BookReportModal extends StatefulWidget {
 }
 
 class _BookReportModalState extends State<BookReportModal> {
+  late TextEditingController _controller;
   String bookReport = '';
 
   bool isLoading = false;
   bool isSubmitted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future<void> submitBookReport() async {
     setState(() {
@@ -170,7 +180,7 @@ class _BookReportModalState extends State<BookReportModal> {
                     SizedBox(
                       width: Scaler.width(0.8, context),
                       child: TextField(
-                        controller: widget.textarea,
+                        controller: _controller,
                         onChanged: (value) {
                           setState(() {
                             bookReport = value;
