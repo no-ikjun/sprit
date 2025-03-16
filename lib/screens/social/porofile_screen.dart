@@ -57,6 +57,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   bool articleLoading = false;
 
   Future<void> _fetchData() async {
+    page = 1;
+    hasMore = true;
     try {
       final newProfileInfo = await getProfileInfo(context, widget.profileUuid);
       final newArticles = await getUserArticleList(
