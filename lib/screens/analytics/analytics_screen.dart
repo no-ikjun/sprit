@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:provider/provider.dart';
@@ -335,10 +336,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     height: 90,
                                     child: SwipeDetector(
                                       onSwipeRight: (offset) {
+                                        HapticFeedback.lightImpact();
                                         context.read<AnalyticsIndex>().reset();
                                         _loadLastWeek();
                                       },
                                       onSwipeLeft: (offset) {
+                                        HapticFeedback.lightImpact();
                                         context.read<AnalyticsIndex>().reset();
                                         if (backWeek == 0) return;
                                         _loadNextWeek();
