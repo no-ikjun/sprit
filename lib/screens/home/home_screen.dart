@@ -278,9 +278,49 @@ class _HomePageState extends State<HomePage> {
                                   return Row(
                                     children: [
                                       (index == 0)
-                                          ? SizedBox(
-                                              width:
-                                                  Scaler.width(0.075, context),
+                                          ? Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: Scaler.width(
+                                                      0.075, context),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    AmplitudeService().logEvent(
+                                                      AmplitudeEvent
+                                                          .homeBookAddButton,
+                                                      context
+                                                          .read<UserInfoState>()
+                                                          .userInfo
+                                                          .userUuid,
+                                                    );
+                                                    Navigator.pushNamed(
+                                                        context, '/search');
+                                                  },
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  child: Container(
+                                                    width: 90,
+                                                    height: 130,
+                                                    clipBehavior: Clip.hardEdge,
+                                                    decoration: BoxDecoration(
+                                                      color: ColorSet.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Image.asset(
+                                                      'assets/images/home_plus.png',
+                                                      width: 90,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                              ],
                                             )
                                           : const SizedBox(
                                               width: 0,
@@ -320,52 +360,12 @@ class _HomePageState extends State<HomePage> {
                                             imgUrl: bookInfo[index].thumbnail),
                                       ),
                                       (index == bookInfo.length - 1)
-                                          ? Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                InkWell(
-                                                  onTap: () {
-                                                    AmplitudeService().logEvent(
-                                                      AmplitudeEvent
-                                                          .homeBookAddButton,
-                                                      context
-                                                          .read<UserInfoState>()
-                                                          .userInfo
-                                                          .userUuid,
-                                                    );
-                                                    Navigator.pushNamed(
-                                                        context, '/search');
-                                                  },
-                                                  splashColor:
-                                                      Colors.transparent,
-                                                  highlightColor:
-                                                      Colors.transparent,
-                                                  child: Container(
-                                                    width: 90,
-                                                    height: 130,
-                                                    clipBehavior: Clip.hardEdge,
-                                                    decoration: BoxDecoration(
-                                                      color: ColorSet.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    child: Image.asset(
-                                                      'assets/images/home_plus.png',
-                                                      width: 90,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: Scaler.width(
-                                                      0.075, context),
-                                                ),
-                                              ],
+                                          ? SizedBox(
+                                              width:
+                                                  Scaler.width(0.075, context),
                                             )
                                           : const SizedBox(
-                                              width: 10,
+                                              width: 8,
                                             ),
                                     ],
                                   );
