@@ -178,7 +178,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.recordCompleteButton,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   setState(() {
                     ischecked = !ischecked;
@@ -215,7 +218,12 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                           onTap: () {
                             AmplitudeService().logEvent(
                               AmplitudeEvent.recordAddReportButton,
-                              context.read<UserInfoState>().userInfo.userUuid,
+                              properties: {
+                                'userUuid': context
+                                    .read<UserInfoState>()
+                                    .userInfo
+                                    .userUuid,
+                              },
                             );
                             _showReportModal(
                               context,
@@ -277,7 +285,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                       onPressed: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.recordShareButton,
-                          context.read<UserInfoState>().userInfo.userUuid,
+                          properties: {
+                            'userUuid':
+                                context.read<UserInfoState>().userInfo.userUuid,
+                          },
                         );
                         _showShareModal(
                           context,
@@ -301,7 +312,10 @@ class _ReadCompleteScreenState extends State<ReadCompleteScreen> {
                       onPressed: () async {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.recordGoHome,
-                          context.read<UserInfoState>().userInfo.userUuid,
+                          properties: {
+                            'userUuid':
+                                context.read<UserInfoState>().userInfo.userUuid,
+                          },
                         );
                         if (ischecked) {
                           await updateBookLibraryState(

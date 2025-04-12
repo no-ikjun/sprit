@@ -78,8 +78,12 @@ class _MyBookInfoComponentState extends State<MyBookInfoComponent> {
               InkWell(
                 onTap: () {
                   AmplitudeService().logEvent(
-                      AmplitudeEvent.libraryMyBookChoiceButton,
-                      context.read<UserInfoState>().userInfo.userUuid);
+                    AmplitudeEvent.libraryMyBookChoiceButton,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
+                  );
                   showModal(
                       context,
                       LibraryStateSelect(
@@ -208,10 +212,12 @@ class _MyBookInfoComponentState extends State<MyBookInfoComponent> {
                                 onTap: () async {
                                   AmplitudeService().logEvent(
                                     AmplitudeEvent.libraryMyBookShowMore,
-                                    context
-                                        .read<UserInfoState>()
-                                        .userInfo
-                                        .userUuid,
+                                    properties: {
+                                      'userUuid': context
+                                          .read<UserInfoState>()
+                                          .userInfo
+                                          .userUuid,
+                                    },
                                   );
                                   await getBookLibraryByState(
                                     context,

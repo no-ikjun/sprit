@@ -45,7 +45,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuHomeClick,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   widget.onItemTapped(0);
                 },
@@ -80,7 +83,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuAnalyticsClick,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   widget.onItemTapped(1);
                 },
@@ -116,7 +122,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuSocialClick,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   widget.onItemTapped(2);
                 },
@@ -151,7 +160,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.menuLibraryClick,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   widget.onItemTapped(3);
                 },
@@ -190,7 +202,9 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               onTap: () {
                 AmplitudeService().logEvent(
                   AmplitudeEvent.menuRecordClick,
-                  context.read<UserInfoState>().userInfo.userUuid,
+                  properties: {
+                    'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+                  },
                 );
                 Navigator.pushNamed(
                   context,

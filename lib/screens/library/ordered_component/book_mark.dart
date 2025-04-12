@@ -174,7 +174,10 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                     onTap: () async {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.libraryBookmarkShowMore,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       await getBookMark(
                         context,

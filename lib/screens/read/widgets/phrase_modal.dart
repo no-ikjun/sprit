@@ -434,10 +434,12 @@ class _PhraseModalState extends State<PhraseModal> {
                                 onPressed: () async {
                                   AmplitudeService().logEvent(
                                     AmplitudeEvent.recordSavePhrase,
-                                    context
-                                        .read<UserInfoState>()
-                                        .userInfo
-                                        .userUuid,
+                                    properties: {
+                                      'userUuid': context
+                                          .read<UserInfoState>()
+                                          .userInfo
+                                          .userUuid,
+                                    },
                                   );
                                   setState(() {
                                     nextStep = true;

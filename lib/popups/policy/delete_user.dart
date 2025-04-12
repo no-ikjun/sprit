@@ -64,7 +64,10 @@ class DeleteUser extends StatelessWidget {
                 onPressed: () async {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.profileDeleteConfirm,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   //access token 삭제
                   const storage = FlutterSecureStorage();

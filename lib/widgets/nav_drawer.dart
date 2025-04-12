@@ -69,7 +69,10 @@ class NavDrawer extends StatelessWidget {
                     onTap: () {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.drawerNoticeClick,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       Navigator.pop(context);
                       Navigator.pushNamed(context, RouteName.notice);
@@ -125,7 +128,10 @@ class NavDrawer extends StatelessWidget {
                     onTap: () {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.drawerSettingClick,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       Navigator.pop(context);
                       Navigator.pushNamed(context, '/notification');
@@ -155,7 +161,10 @@ class NavDrawer extends StatelessWidget {
                     onTap: () {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.drawerProfileClick,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       Navigator.pop(context);
                       Navigator.pushNamed(context, RouteName.profile);
@@ -185,7 +194,10 @@ class NavDrawer extends StatelessWidget {
                     onTap: () {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.drawerQuestionClick,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       Uri url = Uri(
                         scheme: 'mailto',
@@ -223,7 +235,10 @@ class NavDrawer extends StatelessWidget {
                     onTap: () async {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.drawerLogoutClick,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       showModal(context, const LogoutConfirm(), false);
                     },

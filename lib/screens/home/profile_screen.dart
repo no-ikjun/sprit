@@ -127,10 +127,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onTap: () {
                                     AmplitudeService().logEvent(
                                       AmplitudeEvent.profileChangeNickname,
-                                      context
-                                          .read<UserInfoState>()
-                                          .userInfo
-                                          .userUuid,
+                                      properties: {
+                                        'userUuid': context
+                                            .read<UserInfoState>()
+                                            .userInfo
+                                            .userUuid,
+                                      },
                                     );
                                     showModal(
                                       context,
@@ -222,10 +224,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           AmplitudeService().logEvent(
                                             AmplitudeEvent
                                                 .profileChangePassword,
-                                            context
-                                                .read<UserInfoState>()
-                                                .userInfo
-                                                .userUuid,
+                                            properties: {
+                                              'userUuid': context
+                                                  .read<UserInfoState>()
+                                                  .userInfo
+                                                  .userUuid,
+                                            },
                                           );
                                           showModal(
                                             context,
@@ -314,7 +318,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               AmplitudeService().logEvent(
                                 AmplitudeEvent.profileLogoutClick,
-                                context.read<UserInfoState>().userInfo.userUuid,
+                                properties: {
+                                  'userUuid': context
+                                      .read<UserInfoState>()
+                                      .userInfo
+                                      .userUuid,
+                                },
                               );
                               showModal(context, const LogoutConfirm(), false);
                             },
@@ -335,7 +344,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onTap: () {
                 AmplitudeService().logEvent(
                   AmplitudeEvent.profileDeleteClick,
-                  context.read<UserInfoState>().userInfo.userUuid,
+                  properties: {
+                    'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+                  },
                 );
                 showModal(context, const DeleteUser(), false);
               },

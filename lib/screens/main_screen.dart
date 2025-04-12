@@ -40,7 +40,9 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     AmplitudeService().logEvent(
       'Sign Up',
-      context.read<UserInfoState>().userInfo.userUuid,
+      properties: {
+        'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+      },
     );
   }
 

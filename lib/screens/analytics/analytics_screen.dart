@@ -175,8 +175,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 onLeftTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.analyticsToggleValue,
-                    context.read<UserInfoState>().userInfo.userUuid,
-                    eventProperties: {
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
                       'value': 'week',
                     },
                   );
@@ -187,8 +188,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 onRightTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.analyticsToggleValue,
-                    context.read<UserInfoState>().userInfo.userUuid,
-                    eventProperties: {
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
                       'value': 'day',
                     },
                   );

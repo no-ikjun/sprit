@@ -61,7 +61,10 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.libraryPhraseShowMore,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   Navigator.pushNamed(
                     context,

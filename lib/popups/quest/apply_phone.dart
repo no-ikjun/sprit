@@ -119,7 +119,10 @@ class _QuestApplyPhoneState extends State<QuestApplyPhone> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.questAgreePhoneNumber,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   setState(() {
                     isAllowed = !isAllowed;
@@ -187,7 +190,12 @@ class _QuestApplyPhoneState extends State<QuestApplyPhone> {
                         if (isAllowed) {
                           AmplitudeService().logEvent(
                             AmplitudeEvent.questInputPhoneNumber,
-                            context.read<UserInfoState>().userInfo.userUuid,
+                            properties: {
+                              'userUuid': context
+                                  .read<UserInfoState>()
+                                  .userInfo
+                                  .userUuid,
+                            },
                           );
                           await QuestService.applyQuest(
                             context,

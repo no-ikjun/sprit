@@ -276,7 +276,10 @@ class _RecordShareModalState extends State<RecordShareModal> {
                 onPressed: () async {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.recordShareModalButton,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   saveImage(_imageFile!);
                 },

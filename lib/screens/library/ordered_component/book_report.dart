@@ -60,7 +60,10 @@ class _MyBookReportComponentState extends State<MyBookReportComponent> {
                 onTap: () {
                   AmplitudeService().logEvent(
                     AmplitudeEvent.libraryReportShowMore,
-                    context.read<UserInfoState>().userInfo.userUuid,
+                    properties: {
+                      'userUuid':
+                          context.read<UserInfoState>().userInfo.userUuid,
+                    },
                   );
                   Navigator.pushNamed(
                     context,

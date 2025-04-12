@@ -126,8 +126,11 @@ class _MyBookInfoWidgetState extends State<MyBookInfoWidget> {
                           onTap: () {
                             AmplitudeService().logEvent(
                               AmplitudeEvent.libraryMyBookChoice,
-                              context.read<UserInfoState>().userInfo.userUuid,
-                              eventProperties: {
+                              properties: {
+                                'userUuid': context
+                                    .read<UserInfoState>()
+                                    .userInfo
+                                    .userUuid,
                                 'bookUuid': bookInfo.bookUuid,
                                 'bookTitle': bookInfo.title,
                                 'bookState': widget.state,

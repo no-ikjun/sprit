@@ -151,8 +151,11 @@ class _BookReportScreenState extends State<BookReportScreen> {
                         onTap: () {
                           AmplitudeService().logEvent(
                             AmplitudeEvent.libraryReportDetailEdit,
-                            context.read<UserInfoState>().userInfo.userUuid,
-                            eventProperties: {
+                            properties: {
+                              'userUuid': context
+                                  .read<UserInfoState>()
+                                  .userInfo
+                                  .userUuid,
                               'bookReportUuid': bookReportInfo.bookReportUuid,
                               'bookUuid': bookReportInfo.bookUuid,
                             },

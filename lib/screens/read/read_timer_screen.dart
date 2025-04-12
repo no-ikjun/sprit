@@ -304,11 +304,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                       if (_isRunning) {
                                         AmplitudeService().logEvent(
                                           AmplitudeEvent.recordPauseButton,
-                                          context
-                                              .read<UserInfoState>()
-                                              .userInfo
-                                              .userUuid,
-                                          eventProperties: {
+                                          properties: {
+                                            'userUuid': context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
                                             'recordUuid':
                                                 selectedRecordInfo.recordUuid,
                                           },
@@ -317,11 +317,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                       } else {
                                         AmplitudeService().logEvent(
                                           AmplitudeEvent.recordPlayButton,
-                                          context
-                                              .read<UserInfoState>()
-                                              .userInfo
-                                              .userUuid,
-                                          eventProperties: {
+                                          properties: {
+                                            'userUuid': context
+                                                .read<UserInfoState>()
+                                                .userInfo
+                                                .userUuid,
                                             'recordUuid':
                                                 selectedRecordInfo.recordUuid,
                                           },
@@ -360,8 +360,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             onTap: () {
                               AmplitudeService().logEvent(
                                 AmplitudeEvent.recordAddPhraseButton,
-                                context.read<UserInfoState>().userInfo.userUuid,
-                                eventProperties: {
+                                properties: {
+                                  'userUuid': context
+                                      .read<UserInfoState>()
+                                      .userInfo
+                                      .userUuid,
                                   'recordUuid': selectedRecordInfo.recordUuid,
                                 },
                               );
@@ -433,8 +436,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             onTap: () async {
                               AmplitudeService().logEvent(
                                 AmplitudeEvent.recordCloseButton,
-                                context.read<UserInfoState>().userInfo.userUuid,
-                                eventProperties: {
+                                properties: {
+                                  'userUuid': context
+                                      .read<UserInfoState>()
+                                      .userInfo
+                                      .userUuid,
                                   'recordUuid': selectedRecordInfo.recordUuid,
                                 },
                               );
@@ -487,7 +493,12 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                             onTap: () {
                               AmplitudeService().logEvent(
                                 AmplitudeEvent.recordEndButton,
-                                context.read<UserInfoState>().userInfo.userUuid,
+                                properties: {
+                                  'userUuid': context
+                                      .read<UserInfoState>()
+                                      .userInfo
+                                      .userUuid,
+                                },
                               );
                               if (selectedRecordInfo.goalType == 'TIME') {
                                 showModal(

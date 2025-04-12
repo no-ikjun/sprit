@@ -202,8 +202,8 @@ class _LibraryStateSelectState extends State<LibraryStateSelect> {
             widget.callback();
             AmplitudeService().logEvent(
               AmplitudeEvent.libraryMyBookState,
-              context.read<UserInfoState>().userInfo.userUuid,
-              eventProperties: {
+              properties: {
+                'userUuid': context.read<UserInfoState>().userInfo.userUuid,
                 'state': bookLibraryByStateListStateList.toString(),
               },
             );

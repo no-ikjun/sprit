@@ -236,10 +236,12 @@ class _HomePageState extends State<HomePage> {
                                   onTap: () {
                                     AmplitudeService().logEvent(
                                       AmplitudeEvent.homeBookAddButton,
-                                      context
-                                          .read<UserInfoState>()
-                                          .userInfo
-                                          .userUuid,
+                                      properties: {
+                                        'userUuid': context
+                                            .read<UserInfoState>()
+                                            .userInfo
+                                            .userUuid,
+                                      },
                                     );
                                     Navigator.pushNamed(
                                       context,
@@ -290,10 +292,13 @@ class _HomePageState extends State<HomePage> {
                                                     AmplitudeService().logEvent(
                                                       AmplitudeEvent
                                                           .homeBookAddButton,
-                                                      context
-                                                          .read<UserInfoState>()
-                                                          .userInfo
-                                                          .userUuid,
+                                                      properties: {
+                                                        'userUuid': context
+                                                            .read<
+                                                                UserInfoState>()
+                                                            .userInfo
+                                                            .userUuid,
+                                                      },
                                                     );
                                                     Navigator.pushNamed(
                                                         context, '/search');
@@ -330,12 +335,12 @@ class _HomePageState extends State<HomePage> {
                                         onTap: () {
                                           AmplitudeService().logEvent(
                                               AmplitudeEvent.homeReadingBook,
-                                              context
-                                                  .read<UserInfoState>()
-                                                  .userInfo
-                                                  .userUuid,
-                                              eventProperties: {
-                                                "book_uuid":
+                                              properties: {
+                                                'userUuid': context
+                                                    .read<UserInfoState>()
+                                                    .userInfo
+                                                    .userUuid,
+                                                'book_uuid':
                                                     bookInfo[index].bookUuid
                                               });
                                           showModal(
@@ -389,7 +394,10 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.homeSearchButton,
-                          context.read<UserInfoState>().userInfo.userUuid,
+                          properties: {
+                            'userUuid':
+                                context.read<UserInfoState>().userInfo.userUuid,
+                          },
                         );
                         Navigator.pushNamed(
                           context,
@@ -496,7 +504,10 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.homeNotificationButton,
-                          context.read<UserInfoState>().userInfo.userUuid,
+                          properties: {
+                            'userUuid':
+                                context.read<UserInfoState>().userInfo.userUuid,
+                          },
                         );
                         Navigator.pushNamed(
                           context,
@@ -590,11 +601,15 @@ class _HomePageState extends State<HomePage> {
                             ScalableInkWell(
                           onTap: () {
                             AmplitudeService().logEvent(
-                                AmplitudeEvent.homeBannerClick,
-                                context.read<UserInfoState>().userInfo.userUuid,
-                                eventProperties: {
-                                  "banner_url": bannerInfo[index].clickUrl
-                                });
+                              AmplitudeEvent.homeBannerClick,
+                              properties: {
+                                'userUuid': context
+                                    .read<UserInfoState>()
+                                    .userInfo
+                                    .userUuid,
+                                'banner_url': bannerInfo[index].clickUrl,
+                              },
+                            );
                             Uri url = Uri.parse(bannerInfo[index].clickUrl);
                             launchUrl(url);
                           },
@@ -705,17 +720,17 @@ class _HomePageState extends State<HomePage> {
                                       onTap: () async {
                                         setState(() {
                                           AmplitudeService().logEvent(
-                                              AmplitudeEvent
-                                                  .homePopularBookClick,
-                                              context
+                                            AmplitudeEvent.homePopularBookClick,
+                                            properties: {
+                                              'userUuid': context
                                                   .read<UserInfoState>()
                                                   .userInfo
                                                   .userUuid,
-                                              eventProperties: {
-                                                "book_uuid":
-                                                    popularBookInfo[index]
-                                                        .bookUuid
-                                              });
+                                              'book_uuid':
+                                                  popularBookInfo[index]
+                                                      .bookUuid
+                                            },
+                                          );
                                           _isLoading = true;
                                         });
                                         await showBookInfo(
@@ -810,7 +825,10 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {
                       AmplitudeService().logEvent(
                         AmplitudeEvent.homeHamburgerClick,
-                        context.read<UserInfoState>().userInfo.userUuid,
+                        properties: {
+                          'userUuid':
+                              context.read<UserInfoState>().userInfo.userUuid,
+                        },
                       );
                       Scaffold.of(context).openEndDrawer();
                     },

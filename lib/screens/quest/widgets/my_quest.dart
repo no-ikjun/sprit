@@ -93,7 +93,9 @@ class MyQuestsWidget extends StatelessWidget {
             onTap: () {
               AmplitudeService().logEvent(
                 AmplitudeEvent.questShowAll,
-                context.read<UserInfoState>().userInfo.userUuid,
+                properties: {
+                  'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+                },
               );
               Navigator.pushNamed(context, RouteName.myQuest);
             },

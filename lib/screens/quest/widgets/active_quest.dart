@@ -97,9 +97,10 @@ class _ActiveQuestsWidgetState extends State<ActiveQuestsWidget> {
                       onTap: () {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.questDetailClick,
-                          context.read<UserInfoState>().userInfo.userUuid,
-                          eventProperties: {
-                            'quest_uuid': widget.activeQuests[index].questUuid
+                          properties: {
+                            'userUuid':
+                                context.read<UserInfoState>().userInfo.userUuid,
+                            'questUuid': widget.activeQuests[index].questUuid,
                           },
                         );
                         Navigator.pushNamed(

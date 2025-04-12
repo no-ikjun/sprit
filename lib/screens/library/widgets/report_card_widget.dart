@@ -58,10 +58,10 @@ class _ReportCardWidgetState extends State<ReportCardWidget> {
       onTap: () {
         AmplitudeService().logEvent(
           AmplitudeEvent.libraryReportDetailClick,
-          context.read<UserInfoState>().userInfo.userUuid,
-          eventProperties: {
-            'bookReportUuid': widget.reportUuid,
+          properties: {
+            'userUuid': context.read<UserInfoState>().userInfo.userUuid,
             'bookUuid': widget.bookUuid,
+            'bookReportUuid': widget.reportUuid,
           },
         );
         Navigator.pushNamed(

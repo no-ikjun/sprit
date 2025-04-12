@@ -162,7 +162,9 @@ class _QuestBottomInfoState extends State<QuestBottomInfo> {
               if (applyInfo.applyUuid == '') {
                 AmplitudeService().logEvent(
                   AmplitudeEvent.questApplyButton,
-                  context.read<UserInfoState>().userInfo.userUuid,
+                  properties: {
+                    'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+                  },
                 );
                 showModal(
                   context,

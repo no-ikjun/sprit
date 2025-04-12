@@ -83,8 +83,9 @@ class _LibraryPhraseWidgetState extends State<LibraryPhraseWidget> {
       if (value == 0) {
         AmplitudeService().logEvent(
           AmplitudeEvent.libraryPhraseUpdate,
-          context.read<UserInfoState>().userInfo.userUuid,
-          eventProperties: {
+          properties: {
+            'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+            'bookUuid': widget.phraseUuid,
             'bookTitle': widget.bookTitle,
             'phrase': widget.phrase,
           },
@@ -103,8 +104,9 @@ class _LibraryPhraseWidgetState extends State<LibraryPhraseWidget> {
       if (value == 1) {
         AmplitudeService().logEvent(
           AmplitudeEvent.libraryPhraseDelete,
-          context.read<UserInfoState>().userInfo.userUuid,
-          eventProperties: {
+          properties: {
+            'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+            'bookUuid': widget.phraseUuid,
             'bookTitle': widget.bookTitle,
             'phrase': widget.phrase,
           },

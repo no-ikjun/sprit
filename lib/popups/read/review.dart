@@ -257,7 +257,9 @@ class _ReviewModalState extends State<ReviewModal> {
           onPressed: () async {
             AmplitudeService().logEvent(
               AmplitudeEvent.recordReviewSaveButton,
-              context.read<UserInfoState>().userInfo.userUuid,
+              properties: {
+                'userUuid': context.read<UserInfoState>().userInfo.userUuid,
+              },
             );
             await setReview(
               context,

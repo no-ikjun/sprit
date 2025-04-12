@@ -221,7 +221,10 @@ class _BookReportModalState extends State<BookReportModal> {
                       onPressed: () async {
                         AmplitudeService().logEvent(
                           AmplitudeEvent.recordSaveReportButton,
-                          context.read<UserInfoState>().userInfo.userUuid,
+                          properties: {
+                            'userUuid':
+                                context.read<UserInfoState>().userInfo.userUuid,
+                          },
                         );
                         await submitBookReport();
                       },

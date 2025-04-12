@@ -1,4 +1,5 @@
 {
   "cmake.configureOnOpen": true,
-  "cmake.ignoreCMakeListsMissing": true
+  "cmake.ignoreCMakeListsMissing": true,
+  "dart.flutterSdkPath": "~/development/flutter"
 }

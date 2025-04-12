@@ -136,11 +136,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                               AmplitudeService().logEvent(
                                                 AmplitudeEvent
                                                     .recordSelectButton,
-                                                context
-                                                    .read<UserInfoState>()
-                                                    .userInfo
-                                                    .userUuid,
-                                                eventProperties: {
+                                                properties: {
+                                                  'userUuid': context
+                                                      .read<UserInfoState>()
+                                                      .userInfo
+                                                      .userUuid,
                                                   'state': 'READING',
                                                 },
                                               );
@@ -198,11 +198,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                               AmplitudeService().logEvent(
                                                 AmplitudeEvent
                                                     .recordSelectButton,
-                                                context
-                                                    .read<UserInfoState>()
-                                                    .userInfo
-                                                    .userUuid,
-                                                eventProperties: {
+                                                properties: {
+                                                  'userUuid': context
+                                                      .read<UserInfoState>()
+                                                      .userInfo
+                                                      .userUuid,
                                                   'state': 'BEFORE',
                                                 },
                                               );
@@ -260,11 +260,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                               AmplitudeService().logEvent(
                                                 AmplitudeEvent
                                                     .recordSelectButton,
-                                                context
-                                                    .read<UserInfoState>()
-                                                    .userInfo
-                                                    .userUuid,
-                                                eventProperties: {
+                                                properties: {
+                                                  'userUuid': context
+                                                      .read<UserInfoState>()
+                                                      .userInfo
+                                                      .userUuid,
                                                   'state': 'AFTER',
                                                 },
                                               );
@@ -320,10 +320,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                         onTap: () {
                                           AmplitudeService().logEvent(
                                             AmplitudeEvent.recordSelectSearch,
-                                            context
-                                                .read<UserInfoState>()
-                                                .userInfo
-                                                .userUuid,
+                                            properties: {
+                                              'userUuid': context
+                                                  .read<UserInfoState>()
+                                                  .userInfo
+                                                  .userUuid,
+                                            },
                                           );
                                           Navigator.push(
                                             context,
@@ -629,8 +631,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         onLeftTap: () {
                           AmplitudeService().logEvent(
                             AmplitudeEvent.recordGoalType,
-                            context.read<UserInfoState>().userInfo.userUuid,
-                            eventProperties: {
+                            properties: {
+                              'userUuid': context
+                                  .read<UserInfoState>()
+                                  .userInfo
+                                  .userUuid,
                               'goalType': 'TIME',
                             },
                           );
@@ -641,8 +646,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         onRightTap: () {
                           AmplitudeService().logEvent(
                             AmplitudeEvent.recordGoalType,
-                            context.read<UserInfoState>().userInfo.userUuid,
-                            eventProperties: {
+                            properties: {
+                              'userUuid': context
+                                  .read<UserInfoState>()
+                                  .userInfo
+                                  .userUuid,
                               'goalType': 'PAGE',
                             },
                           );
@@ -832,11 +840,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                     onPressed: () async {
                                       AmplitudeService().logEvent(
                                         AmplitudeEvent.recordAddButton,
-                                        context
-                                            .read<UserInfoState>()
-                                            .userInfo
-                                            .userUuid,
-                                        eventProperties: {
+                                        properties: {
+                                          'userUuid': context
+                                              .read<UserInfoState>()
+                                              .userInfo
+                                              .userUuid,
                                           'goalType': 'PAGE',
                                           'startPage': startPage,
                                         },
@@ -1149,12 +1157,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                     onPressed: () async {
                                       AmplitudeService().logEvent(
                                         AmplitudeEvent.recordAddButton,
-                                        context
-                                            .read<UserInfoState>()
-                                            .userInfo
-                                            .userUuid,
-                                        eventProperties: {
-                                          'goalType': 'PAGE',
+                                        properties: {
+                                          'userUuid': context
+                                              .read<UserInfoState>()
+                                              .userInfo
+                                              .userUuid,
+                                          'goalType': 'TIME',
                                           'startPage': startPage,
                                         },
                                       );
