@@ -10,14 +10,14 @@ class CustomSwitch extends StatelessWidget {
   final double padding;
   final double toggleSize;
   const CustomSwitch({
-    Key? key,
+    super.key,
     required this.onToggle,
     required this.switchValue,
     this.width = 44,
     this.height = 26,
     this.padding = 3,
     this.toggleSize = 20,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

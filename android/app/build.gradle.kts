@@ -1,65 +1,44 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val keystoreProperties = Properties().apply {
-    val keystoreFile = rootProject.file("key.properties")
-    if (keystoreFile.exists()) {
-        load(FileInputStream(keystoreFile))
-    }
-}
 
 android {
     namespace = "com.ikjunchoi_android.sprit"
-    compileSdk = 35
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
-    defaultConfig {
-        applicationId = "com.ikjunchoi_android.sprit"
-        minSdk = 23
-        targetSdk = 35
-        versionCode = 50
-        versionName = "2.0"
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+
+    defaultConfig {
+        applicationId = "com.ikjunchoi_android.sprit"
+        minSdk = 23
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
 }
 
+flutter {
+    source = "../.."
+}
+
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

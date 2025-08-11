@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/common/ui/text_styles.dart';

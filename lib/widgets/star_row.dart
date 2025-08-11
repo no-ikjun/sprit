@@ -7,11 +7,11 @@ class StarRowWidget extends StatelessWidget {
   final double size;
 
   const StarRowWidget({
-    Key? key,
+    super.key,
     required this.star,
     this.gap = 3,
     this.size = 18,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

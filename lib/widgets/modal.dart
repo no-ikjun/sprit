@@ -54,7 +54,7 @@ class Modal extends StatelessWidget {
                                 splashRadius: 22,
                                 iconSize: 23,
                                 style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
+                                  padding: WidgetStateProperty.all(
                                     const EdgeInsets.all(0),
                                   ),
                                   splashFactory: NoSplash.splashFactory,
