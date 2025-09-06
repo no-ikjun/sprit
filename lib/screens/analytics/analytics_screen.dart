@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
@@ -20,6 +21,7 @@ import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
 import 'package:sprit/screens/analytics/widgets/graph_slider.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/widgets/toggle_button.dart';
+import 'package:sprit/providers/scroll_to_top.dart';
 // import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 
 Future<List<List<BookRecordHistory>>> getBookRecordHistory(
@@ -525,7 +527,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
     return SafeArea(
       maintainBottomViewPadding: true,
-      child: scrollView,
+      child: Consumer<ScrollToTopProvider>(
+        builder: (context, stt, child) {
+          if (stt.triggeredIndex == 1) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final controller = PrimaryScrollController.of(context);
+              controller.animateTo(
+                0.0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+              stt.clear();
+            });
+          }
+          return ScrollsToTop(
+            onScrollsToTop: (event) async {
+              final controller = PrimaryScrollController.of(context);
+              controller.animateTo(
+                0.0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            },
+            child: child!,
+          );
+        },
+        child: scrollView,
+      ),
     );
   }
 }

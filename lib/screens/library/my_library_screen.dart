@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:sprit/apis/services/follow.dart';
 import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
@@ -19,6 +20,7 @@ import 'package:sprit/screens/library/ordered_component/book_report.dart';
 import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
 import 'package:sprit/screens/library/ordered_component/phrase_info.dart';
 import 'package:sprit/widgets/remove_glow.dart';
+import 'package:sprit/providers/scroll_to_top.dart';
 
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
@@ -365,7 +367,33 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
       maintainBottomViewPadding: true,
       child: ScrollConfiguration(
         behavior: RemoveGlow(),
-        child: scrollView,
+        child: Consumer<ScrollToTopProvider>(
+          builder: (context, stt, child) {
+            if (stt.triggeredIndex == 3) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final controller = PrimaryScrollController.of(context);
+                controller.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+                stt.clear();
+              });
+            }
+            return ScrollsToTop(
+              onScrollsToTop: (event) async {
+                final controller = PrimaryScrollController.of(context);
+                controller.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              },
+              child: child!,
+            );
+          },
+          child: scrollView,
+        ),
       ),
     );
   }

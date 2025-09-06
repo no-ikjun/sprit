@@ -16,6 +16,7 @@ import 'package:sprit/providers/library_book_state.dart';
 import 'package:sprit/providers/library_section_order.dart';
 import 'package:sprit/providers/navigation.dart';
 import 'package:sprit/providers/new_notice.dart';
+import 'package:sprit/providers/scroll_to_top.dart';
 import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
@@ -81,6 +82,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LibraryBookListState()),
         ChangeNotifierProvider(create: (_) => AnalyticsIndex()),
         ChangeNotifierProvider(create: (_) => NewNoticeState()),
+        ChangeNotifierProvider(create: (_) => ScrollToTopProvider()),
       ],
       child: const MyApp(),
     ),
