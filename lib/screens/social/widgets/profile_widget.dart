@@ -5,8 +5,10 @@ import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/follow.dart';
 import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/social/widgets/follow_button.dart';
+import 'package:sprit/widgets/scalable_inkwell.dart';
 
 Future<void> followUser(
   BuildContext context,
@@ -98,63 +100,72 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           height: 12,
         ),
         Center(
-          child: SizedBox(
-            width: Scaler.width(0.85, context),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: Image.network(
-                        'https://d3ob3cint7tr3s.cloudfront.net/${widget.profileInfo.image}',
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: Scaler.width(0.85, context) - 150,
-                          child: Text(
-                            widget.profileInfo.nickname,
-                            style: TextStyles.followNicknameStyle,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+          child: ScalableInkWell(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                RouteName.userProfileScreen,
+                arguments: widget.profileInfo.userUuid,
+              );
+            },
+            child: SizedBox(
+              width: Scaler.width(0.85, context),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Image.network(
+                          'https://d3ob3cint7tr3s.cloudfront.net/${widget.profileInfo.image}',
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
                         ),
-                        SizedBox(
-                          width: Scaler.width(0.85, context) - 150,
-                          child: Text(
-                            widget.profileInfo.description,
-                            style: TextStyles.followRecordStyle,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                isLoading
-                    ? Container()
-                    : FollowButton(
-                        isFollowing: isFollowing,
-                        onPressed: () async {
-                          if (isFollowing) {
-                            await unfollow(context);
-                          } else {
-                            await follow(context);
-                          }
-                        },
                       ),
-              ],
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: Scaler.width(0.85, context) - 150,
+                            child: Text(
+                              widget.profileInfo.nickname,
+                              style: TextStyles.followNicknameStyle,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(
+                            width: Scaler.width(0.85, context) - 150,
+                            child: Text(
+                              widget.profileInfo.description,
+                              style: TextStyles.followRecordStyle,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  isLoading
+                      ? Container()
+                      : FollowButton(
+                          isFollowing: isFollowing,
+                          onPressed: () async {
+                            if (isFollowing) {
+                              await unfollow(context);
+                            } else {
+                              await follow(context);
+                            }
+                          },
+                        ),
+                ],
+              ),
             ),
           ),
         ),
