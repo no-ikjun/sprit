@@ -45,39 +45,77 @@ class _SocialScreenState extends State<SocialScreen> {
   List<QuestInfo> activeQuests = [];
   List<ArticleInfo> articleInfo = [];
 
-  Future<void> _fetchData({bool append = false}) async {
-    if (!hasMore || isLoading) return;
+  final int pageSize = 10;
 
-    setState(() {
-      isLoading = true;
-    });
+  Future<void> _fetchData({bool append = false, bool refresh = false}) async {
+    // append에서만 hasMore 차단; init/refresh는 항상 1페이지 다시 받음
+    if ((append && !hasMore) || isLoading) return;
 
-    String userUuid = context.read<UserInfoState>().userInfo.userUuid;
+    setState(() => isLoading = true);
+
     try {
+      final userUuid = context.read<UserInfoState>().userInfo.userUuid;
+
+      // 어떤 페이지를 받을지 결정
+      final int pageToLoad = refresh ? 1 : currentPage;
+
       final results = await Future.wait([
         getActiveQuests(context),
-        getArticleList(context, userUuid, currentPage),
+        getArticleList(context, userUuid, pageToLoad),
       ]);
-      currentPage++;
-      if (!append) {
-        // 초기 데이터 로드
-        activeQuests = results[0] as List<QuestInfo>;
-        articleInfo = results[1] as List<ArticleInfo>;
-      } else {
-        // 추가 데이터 로드
-        final newArticles = results[1] as List<ArticleInfo>;
-        if (newArticles.isEmpty) {
-          hasMore = false;
+
+      final fetchedQuests = results[0] as List<QuestInfo>;
+      final fetchedArticles = results[1] as List<ArticleInfo>;
+
+      if (!mounted) return;
+
+      setState(() {
+        // 퀘스트는 항상 최신으로 교체
+        activeQuests = fetchedQuests;
+
+        if (refresh) {
+          // === 새로고침: 서버의 1페이지를 기준으로 상단을 재정렬 + 신규글 반영 ===
+          // 1) 서버 1페이지(fetched)가 최상단이 되도록 배치
+          final fetchedIds = fetchedArticles.map((e) => e.articleUuid).toSet();
+          // 2) 기존 리스트에서 1페이지에 포함된 항목 제거(중복 방지)
+          final rest = articleInfo
+              .where((a) => !fetchedIds.contains(a.articleUuid))
+              .toList();
+          // 3) 합치기: 서버 1페이지 + 나머지
+          articleInfo = [...fetchedArticles, ...rest];
+
+          // 다음 무한스크롤은 2페이지부터
+          currentPage = 2;
+          // hasMore는 1페이지 수로 판정 (가장 안전한 휴리스틱)
+          hasMore = fetchedArticles.length == pageSize;
+        } else if (append) {
+          // === 무한스크롤: 뒤에 붙이되 중복 제거 ===
+          if (fetchedArticles.isEmpty) {
+            hasMore = false;
+          } else {
+            final existingIds = articleInfo.map((a) => a.articleUuid).toSet();
+            final onlyNew = fetchedArticles
+                .where((a) => !existingIds.contains(a.articleUuid))
+                .toList();
+            articleInfo.addAll(onlyNew);
+
+            // 다음 페이지로 증가
+            currentPage += 1;
+
+            // hasMore 판정
+            hasMore = fetchedArticles.length == pageSize;
+          }
         } else {
-          articleInfo.addAll(newArticles);
+          // === 초기 로드 ===
+          articleInfo = fetchedArticles;
+          currentPage = 2;
+          hasMore = fetchedArticles.length == pageSize;
         }
-      }
+      });
     } catch (e) {
       debugPrint("데이터 로드 실패: $e");
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
