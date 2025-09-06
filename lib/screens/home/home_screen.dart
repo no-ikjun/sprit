@@ -121,19 +121,34 @@ class _HomePageState extends State<HomePage> {
       getLatestNoticeUuid(context),
       getLatestVersion(context),
     ]);
+
+    if (!mounted) return;
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
-      bookInfo = results[0] as List<BookInfo>;
-      context.read<UserInfoState>().updateUserInfo(results[1] as UserInfo);
-      bannerInfo = results[2] as List<BannerInfo>;
-      final popularBooksResult = results[3] as Map<String, dynamic>;
-      popularBookInfo = popularBooksResult['books'] as List<BookInfo>;
-      moreAvailable = popularBooksResult['more_available'] as bool;
+      // 새 데이터 반영 + 관련 상태 초기화
+      bannerCurrent = 0;
       currentPage = 1;
-      if ((prefs.getString('noticeUuid') ?? '') != results[4] as String) {
-        context.read<NewNoticeState>().updateNewNotice(true);
-      }
+      moreLoading = false;
+      isLoadingPopularBook = false;
+
+      bookInfo = List<BookInfo>.from(results[0] as List<BookInfo>);
+      context.read<UserInfoState>().updateUserInfo(results[1] as UserInfo);
+
+      bannerInfo = List<BannerInfo>.from(results[2] as List<BannerInfo>);
+
+      final popularBooksResult = results[3] as Map<String, dynamic>;
+      popularBookInfo =
+          List<BookInfo>.from(popularBooksResult['books'] as List<BookInfo>);
+      moreAvailable = popularBooksResult['more_available'] as bool;
+
+      final latestNoticeUuid = results[4] as String;
+      final prev = prefs.getString('noticeUuid') ?? '';
+      context.read<NewNoticeState>().updateNewNotice(prev != latestNoticeUuid);
     });
+
+    await prefs.setString('noticeUuid', results[4] as String);
   }
 
   @override

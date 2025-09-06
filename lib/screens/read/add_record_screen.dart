@@ -14,8 +14,10 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/amplitude_events.dart';
+import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/read/record_alert.dart';
 import 'package:sprit/providers/user_info.dart';
+import 'package:sprit/screens/main_screen.dart';
 import 'package:sprit/screens/read/widgets/selected_book_by_info.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
@@ -914,7 +916,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                               false,
                                             );
                                           } else {
-                                            Navigator.pop(context);
+                                            Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              RouteName.home,
+                                              (route) => false,
+                                            );
                                             showModal(
                                               context,
                                               const RecordAlert(
@@ -1217,7 +1223,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                               false,
                                             );
                                           } else {
-                                            Navigator.pop(context);
+                                            Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              RouteName.home,
+                                              (route) => false,
+                                            );
                                             showModal(
                                               context,
                                               const RecordAlert(
