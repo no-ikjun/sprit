@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
+import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:sprit/amplitude_service.dart';
 import 'package:sprit/apis/services/record.dart';
 import 'package:sprit/common/ui/color_set.dart';
@@ -39,6 +40,7 @@ class AnalyticsScreen extends StatefulWidget {
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
   CarouselController carouselController = CarouselController();
+  final ScrollController _scrollController = ScrollController();
 
   String toggleValue = 'week';
 
@@ -525,7 +527,21 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
     return SafeArea(
       maintainBottomViewPadding: true,
-      child: scrollView,
+      child: ScrollsToTop(
+        onScrollsToTop: (event) async {
+          if (!mounted || !_scrollController.hasClients) return;
+          try {
+            await _scrollController.animateTo(
+              _scrollController.position.minScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          } catch (e) {
+            debugPrint("scroll-to-top failed: $e");
+          }
+        },
+        child: scrollView,
+      ),
     );
   }
 }

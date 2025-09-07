@@ -49,7 +49,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                           context.read<UserInfoState>().userInfo.userUuid,
                     },
                   );
-                  widget.onItemTapped(0);
+                  if (widget.selectedIndex == 0) {
+                    widget.onItemTapped(0);
+                  } else {
+                    widget.onItemTapped(0);
+                  }
                 },
                 scale: 0.85,
                 child: Column(
@@ -87,7 +91,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                           context.read<UserInfoState>().userInfo.userUuid,
                     },
                   );
-                  widget.onItemTapped(1);
+                  if (widget.selectedIndex == 1) {
+                    widget.onItemTapped(1);
+                  } else {
+                    widget.onItemTapped(1);
+                  }
                 },
                 scale: 0.85,
                 child: Column(
@@ -126,7 +134,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                           context.read<UserInfoState>().userInfo.userUuid,
                     },
                   );
-                  widget.onItemTapped(2);
+                  if (widget.selectedIndex == 2) {
+                    widget.onItemTapped(2);
+                  } else {
+                    widget.onItemTapped(2);
+                  }
                 },
                 scale: 0.85,
                 child: Column(
@@ -164,7 +176,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                           context.read<UserInfoState>().userInfo.userUuid,
                     },
                   );
-                  widget.onItemTapped(3);
+                  if (widget.selectedIndex == 3) {
+                    widget.onItemTapped(3);
+                  } else {
+                    widget.onItemTapped(3);
+                  }
                 },
                 scale: 0.85,
                 child: Column(

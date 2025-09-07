@@ -33,6 +33,7 @@ import 'package:sprit/widgets/loader.dart';
 import 'package:sprit/widgets/native_ad.dart';
 import 'package:sprit/widgets/scalable_inkwell.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:scrolls_to_top/scrolls_to_top.dart';
 
 //현재 독서 중인 책 정보 불러오기
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
@@ -193,6 +194,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Widget scrollView = CustomScrollView(
       controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         CupertinoSliverRefreshControl(
           onRefresh: _onRefresh,
@@ -853,7 +855,21 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: ScrollConfiguration(
                   behavior: const ScrollBehavior(),
-                  child: scrollView,
+                  child: ScrollsToTop(
+                    onScrollsToTop: (event) async {
+                      if (!mounted || !_scrollController.hasClients) return;
+                      try {
+                        await _scrollController.animateTo(
+                          _scrollController.position.minScrollExtent,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                        );
+                      } catch (e) {
+                        debugPrint("scroll-to-top failed: $e");
+                      }
+                    },
+                    child: scrollView,
+                  ),
                 ),
               ),
             ],

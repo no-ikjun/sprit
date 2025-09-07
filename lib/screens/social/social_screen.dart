@@ -16,6 +16,7 @@ import 'package:sprit/screens/social/widgets/phrase_article.dart';
 import 'package:sprit/screens/social/widgets/review_article.dart';
 import 'package:sprit/screens/social/widgets/start_article.dart';
 import 'package:sprit/widgets/remove_glow.dart';
+import 'package:scrolls_to_top/scrolls_to_top.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
@@ -284,7 +285,21 @@ class _SocialScreenState extends State<SocialScreen> {
           Expanded(
             child: ScrollConfiguration(
               behavior: RemoveGlow(),
-              child: scrollView,
+              child: ScrollsToTop(
+                onScrollsToTop: (event) async {
+                  if (!mounted || !_scrollController.hasClients) return;
+                  try {
+                    await _scrollController.animateTo(
+                      _scrollController.position.minScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  } catch (e) {
+                    debugPrint("scroll-to-top failed: $e");
+                  }
+                },
+                child: scrollView,
+              ),
             ),
           ),
         ],
