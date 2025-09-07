@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:dio/dio.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -7,8 +9,11 @@ import "package:sprit/screens/login/login_screen.dart";
 
 Future<Dio> authDio(BuildContext context, {String? contentType}) async {
   var dio = Dio();
-  dio.options.baseUrl =
-      (kReleaseMode) ? dotenv.env["BASE_URL"]! : dotenv.env["DEBUG_BASE_URL"]!;
+  dio.options.baseUrl = (kReleaseMode)
+      ? dotenv.env["BASE_URL"]!
+      : Platform.isAndroid
+          ? dotenv.env["DEBUG_BASE_URL_ANDROID"]!
+          : dotenv.env["DEBUG_BASE_URL"]!;
   dio.options.contentType = contentType ?? 'application/json';
 
   const storage = FlutterSecureStorage();
