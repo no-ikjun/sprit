@@ -19,8 +19,6 @@ import 'package:sprit/screens/library/ordered_component/book_mark.dart';
 import 'package:sprit/screens/library/ordered_component/book_report.dart';
 import 'package:sprit/screens/library/ordered_component/my_book_info.dart';
 import 'package:sprit/screens/library/ordered_component/phrase_info.dart';
-import 'package:sprit/widgets/remove_glow.dart';
-import 'package:sprit/providers/scroll_to_top.dart';
 
 class MyLibraryScreen extends StatefulWidget {
   const MyLibraryScreen({super.key});
@@ -30,6 +28,8 @@ class MyLibraryScreen extends StatefulWidget {
 }
 
 class _MyLibraryScreenState extends State<MyLibraryScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   final ImagePicker picker = ImagePicker();
   XFile? image0;
 
@@ -123,6 +123,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
       );
     }
     Widget scrollView = CustomScrollView(
+      controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: <Widget>[
         CupertinoSliverRefreshControl(
@@ -366,31 +367,19 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
     return SafeArea(
       maintainBottomViewPadding: true,
       child: ScrollConfiguration(
-        behavior: RemoveGlow(),
-        child: Consumer<ScrollToTopProvider>(
-          builder: (context, stt, child) {
-            if (stt.triggeredIndex == 3) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                final controller = PrimaryScrollController.of(context);
-                controller.animateTo(
-                  0.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-                stt.clear();
-              });
+        behavior: const ScrollBehavior(),
+        child: ScrollsToTop(
+          onScrollsToTop: (event) async {
+            if (!mounted || !_scrollController.hasClients) return;
+            try {
+              await _scrollController.animateTo(
+                _scrollController.position.minScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            } catch (e) {
+              debugPrint("scroll-to-top failed: $e");
             }
-            return ScrollsToTop(
-              onScrollsToTop: (event) async {
-                final controller = PrimaryScrollController.of(context);
-                controller.animateTo(
-                  0.0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              },
-              child: child!,
-            );
           },
           child: scrollView,
         ),

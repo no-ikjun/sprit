@@ -16,7 +16,6 @@ import 'package:sprit/screens/social/widgets/phrase_article.dart';
 import 'package:sprit/screens/social/widgets/review_article.dart';
 import 'package:sprit/screens/social/widgets/start_article.dart';
 import 'package:sprit/widgets/remove_glow.dart';
-import 'package:sprit/providers/scroll_to_top.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
@@ -286,32 +285,18 @@ class _SocialScreenState extends State<SocialScreen> {
           Expanded(
             child: ScrollConfiguration(
               behavior: RemoveGlow(),
-              child: Consumer<ScrollToTopProvider>(
-                builder: (context, stt, child) {
-                  if (stt.triggeredIndex == 2) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (_scrollController.hasClients) {
-                        _scrollController.animateTo(
-                          0.0,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                        );
-                      }
-                      stt.clear();
-                    });
+              child: ScrollsToTop(
+                onScrollsToTop: (event) async {
+                  if (!mounted || !_scrollController.hasClients) return;
+                  try {
+                    await _scrollController.animateTo(
+                      _scrollController.position.minScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  } catch (e) {
+                    debugPrint("scroll-to-top failed: $e");
                   }
-                  return ScrollsToTop(
-                    onScrollsToTop: (event) async {
-                      if (_scrollController.hasClients) {
-                        _scrollController.animateTo(
-                          0.0,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                        );
-                      }
-                    },
-                    child: child!,
-                  );
                 },
                 child: scrollView,
               ),

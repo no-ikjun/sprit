@@ -21,7 +21,6 @@ import 'package:sprit/screens/analytics/widgets/graph_book_record.dart';
 import 'package:sprit/screens/analytics/widgets/graph_slider.dart';
 import 'package:sprit/screens/analytics/widgets/grass_widget.dart';
 import 'package:sprit/widgets/toggle_button.dart';
-import 'package:sprit/providers/scroll_to_top.dart';
 // import 'package:sprit/screens/analytics/widgets/monthly_count.dart';
 
 Future<List<List<BookRecordHistory>>> getBookRecordHistory(
@@ -41,6 +40,7 @@ class AnalyticsScreen extends StatefulWidget {
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
   CarouselController carouselController = CarouselController();
+  final ScrollController _scrollController = ScrollController();
 
   String toggleValue = 'week';
 
@@ -527,30 +527,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
     return SafeArea(
       maintainBottomViewPadding: true,
-      child: Consumer<ScrollToTopProvider>(
-        builder: (context, stt, child) {
-          if (stt.triggeredIndex == 1) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              final controller = PrimaryScrollController.of(context);
-              controller.animateTo(
-                0.0,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-              stt.clear();
-            });
+      child: ScrollsToTop(
+        onScrollsToTop: (event) async {
+          if (!mounted || !_scrollController.hasClients) return;
+          try {
+            await _scrollController.animateTo(
+              _scrollController.position.minScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          } catch (e) {
+            debugPrint("scroll-to-top failed: $e");
           }
-          return ScrollsToTop(
-            onScrollsToTop: (event) async {
-              final controller = PrimaryScrollController.of(context);
-              controller.animateTo(
-                0.0,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-            },
-            child: child!,
-          );
         },
         child: scrollView,
       ),

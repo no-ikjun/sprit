@@ -33,7 +33,6 @@ import 'package:sprit/widgets/loader.dart';
 import 'package:sprit/widgets/native_ad.dart';
 import 'package:sprit/widgets/scalable_inkwell.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:sprit/providers/scroll_to_top.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 
 //현재 독서 중인 책 정보 불러오기
@@ -856,34 +855,20 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: ScrollConfiguration(
                   behavior: const ScrollBehavior(),
-                  child: Consumer<ScrollToTopProvider>(
-                    builder: (context, stt, child) {
-                      if (stt.triggeredIndex == 0) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (_scrollController.hasClients) {
-                            _scrollController.animateTo(
-                              0.0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
-                            );
-                          }
-                          stt.clear();
-                        });
+                  child: ScrollsToTop(
+                    onScrollsToTop: (event) async {
+                      if (!mounted || !_scrollController.hasClients) return;
+                      try {
+                        await _scrollController.animateTo(
+                          _scrollController.position.minScrollExtent,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                        );
+                      } catch (e) {
+                        debugPrint("scroll-to-top failed: $e");
                       }
-                      return child!;
                     },
-                    child: ScrollsToTop(
-                      onScrollsToTop: (event) async {
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0.0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        }
-                      },
-                      child: scrollView,
-                    ),
+                    child: scrollView,
                   ),
                 ),
               ),

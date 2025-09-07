@@ -17,7 +17,6 @@ import 'package:sprit/common/value/amplitude_events.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/read/record_alert.dart';
 import 'package:sprit/providers/user_info.dart';
-import 'package:sprit/screens/main_screen.dart';
 import 'package:sprit/screens/read/widgets/selected_book_by_info.dart';
 import 'package:sprit/screens/search/search_screen.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
