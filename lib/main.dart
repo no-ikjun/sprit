@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +69,20 @@ void main() async {
   });
 
   KakaoSdk.init(nativeAppKey: '${dotenv.env['KAKAO_NATIVE_APP_KEY']}');
+  await FlutterNaverMap().init(
+      clientId: '${dotenv.env['NAVER_MAP_CLIENT_ID']}',
+      onAuthFailed: (ex) {
+        switch (ex) {
+          case NQuotaExceededException(:final message):
+            print("사용량 초과 (message: $message)");
+            break;
+          case NUnauthorizedClientException() ||
+                NClientUnspecifiedException() ||
+                NAnotherAuthFailedException():
+            print("인증 실패: $ex");
+            break;
+        }
+      });
   await AmplitudeService().init();
   runApp(
     MultiProvider(

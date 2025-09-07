@@ -13,6 +13,7 @@ import 'package:sprit/screens/notification/time_setting_screen.dart';
 import 'package:sprit/screens/quest/my_quest_screen.dart';
 import 'package:sprit/screens/read/read_timer_screen.dart';
 import 'package:sprit/screens/search/search_screen.dart';
+import 'package:sprit/screens/social/location_screen.dart';
 import 'package:sprit/screens/social/search_user_screen.dart';
 import 'package:sprit/screens/splash/splash_screen.dart';
 
@@ -43,6 +44,7 @@ class RouteName {
   static const libraryReportListScreen = "/library/reportList";
   static const userProfileScreen = "/user-profile";
   static const addRecordScreen = "/add-record";
+  static const locationScreen = "/location";
 }
 
 var namedRoutes = <String, WidgetBuilder>{
@@ -62,4 +64,5 @@ var namedRoutes = <String, WidgetBuilder>{
   RouteName.libraryPhraseScreen: (context) => const LibraryPhraseScreen(),
   RouteName.libraryReportListScreen: (context) => const ReportListScreen(),
   RouteName.searchUserScreen: (context) => const SearchUserScreen(),
+  RouteName.locationScreen: (context) => const LocationScreen(),
 };
