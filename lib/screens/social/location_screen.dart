@@ -245,8 +245,9 @@ class _LocationScreenState extends State<LocationScreen> {
                                 } catch (e) {
                                   debugPrint('현재 위치에서 검색 실패: $e');
                                 } finally {
-                                  if (mounted)
+                                  if (mounted) {
                                     setState(() => _isSearching = false);
+                                  }
                                 }
                               },
                         splashColor: Colors.transparent,
