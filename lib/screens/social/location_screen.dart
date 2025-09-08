@@ -1,8 +1,13 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/location.dart';
+import 'package:sprit/common/ui/color_set.dart';
+import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/map_marker.dart';
 
@@ -20,6 +25,7 @@ class _LocationScreenState extends State<LocationScreen> {
   NLatLng? _initialPosition;
   bool _isInitLoading = true;
 
+  final GlobalKey _mapAreaKey = GlobalKey();
   final GlobalKey _bubbleKey = GlobalKey(); // 말풍선 위치 갱신용
   MapMarker? _selected; // 선택된 마커
   bool _bubbleVisible = false;
@@ -47,82 +53,231 @@ class _LocationScreenState extends State<LocationScreen> {
           children: [
             const CustomAppBar(label: '독서 스팟 찾기'),
             Expanded(
-              child: Container(
-                width: Scaler.width(0.85, context),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: List.generate(
-                    1,
-                    (index) => BoxShadow(
-                      color: const Color(0x0D000000).withOpacity(0.05),
-                      offset: const Offset(0, 0),
-                      blurRadius: 3,
-                      spreadRadius: 0,
+              child: Stack(
+                children: [
+                  Center(
+                    child: Container(
+                      key: _mapAreaKey,
+                      width: Scaler.width(0.85, context),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: List.generate(
+                          1,
+                          (index) => BoxShadow(
+                            color: const Color(0x0D000000).withOpacity(0.05),
+                            offset: const Offset(0, 0),
+                            blurRadius: 3,
+                            spreadRadius: 0,
+                          ),
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: (_isInitLoading || _initialPosition == null)
+                            ? const Center(child: CircularProgressIndicator())
+                            : Stack(
+                                children: [
+                                  NaverMap(
+                                    options: NaverMapViewOptions(
+                                      locationButtonEnable: true,
+                                      initialCameraPosition: NCameraPosition(
+                                        target: _initialPosition!,
+                                        zoom: 12,
+                                      ),
+                                    ),
+                                    onMapReady: (controller) async {
+                                      _controller = controller;
+
+                                      final overlay =
+                                          controller.getLocationOverlay();
+                                      overlay.setIsVisible(true);
+
+                                      controller.setLocationTrackingMode(
+                                        NLocationTrackingMode.noFollow,
+                                      );
+
+                                      final pos = _initialPosition!;
+                                      final cam =
+                                          await controller.getCameraPosition();
+                                      final dynamicRadius =
+                                          await _computeViewportRadiusMeters(); // ⬅️ 추가
+                                      final dynamicZoom = cam.zoom.round();
+
+                                      await _loadAndPlotLocations(
+                                        latitude: pos.latitude,
+                                        longitude: pos.longitude,
+                                        radius: dynamicRadius, // ⬅️ 전달
+                                        zoom: dynamicZoom, // ⬅️ 전달
+                                      );
+                                    },
+                                    // ⬇️ 카메라 이동/정지 때 말풍선 위치 재계산
+                                    onCameraChange: (_, __) {
+                                      final st = _bubbleKey.currentState;
+                                      if (st != null) {
+                                        try {
+                                          (st as dynamic).updatePosition();
+                                        } catch (_) {}
+                                      }
+                                    },
+                                    onCameraIdle: () {
+                                      final st = _bubbleKey.currentState;
+                                      if (st != null) {
+                                        try {
+                                          (st as dynamic).updatePosition();
+                                        } catch (_) {}
+                                      }
+                                    },
+                                  ),
+
+                                  // 말풍선 위젯 오버레이 (선택된 마커가 있을 때만)
+                                  if (_controller != null && _selected != null)
+                                    MarkerBubbleOverlay(
+                                      key: _bubbleKey,
+                                      controller: _controller!,
+                                      target: _selected!.position,
+                                      name: _selected!.name,
+                                      address: _selected!.address,
+                                      visible: _bubbleVisible,
+                                    ),
+                                ],
+                              ),
+                      ),
                     ),
                   ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: (_isInitLoading || _initialPosition == null)
-                      ? const Center(child: CircularProgressIndicator())
-                      : Stack(
-                          children: [
-                            NaverMap(
-                              options: NaverMapViewOptions(
-                                locationButtonEnable: true,
-                                initialCameraPosition: NCameraPosition(
-                                  target: _initialPosition!,
-                                  zoom: 12,
-                                ),
-                              ),
-                              onMapReady: (controller) async {
-                                _controller = controller;
+                  // 위치 초기화 버튼
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: Scaler.height(0.05, context),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          if (_controller == null) return;
 
-                                final overlay = controller.getLocationOverlay();
-                                overlay.setIsVisible(true);
+                          try {
+                            // 1) 현재 카메라 중심/줌 가져오기
+                            final cam = await _controller!
+                                .getCameraPosition(); // NCameraPosition
+                            final center = cam.target;
+                            final zoomLevel = cam.zoom.round();
 
-                                controller.setLocationTrackingMode(
-                                  NLocationTrackingMode.noFollow,
-                                );
+                            // 2) 기존과 동일한 파라미터로 재요청 (반경/캡acity 동일, 중심/줌만 현재 카메라 기준)
+                            const int radius = 50000000; // 5km 반경
+                            const int maxCandidates = 200;
 
-                                final pos = _initialPosition!;
-                                await _loadAndPlotLocations(
-                                  latitude: pos.latitude,
-                                  longitude: pos.longitude,
-                                );
-                              },
-                              // ⬇️ 카메라 이동/정지 때 말풍선 위치 재계산
-                              onCameraChange: (_, __) {
-                                final st = _bubbleKey.currentState;
-                                if (st != null) {
-                                  try {
-                                    (st as dynamic).updatePosition();
-                                  } catch (_) {}
-                                }
-                              },
-                              onCameraIdle: () {
-                                final st = _bubbleKey.currentState;
-                                if (st != null) {
-                                  try {
-                                    (st as dynamic).updatePosition();
-                                  } catch (_) {}
-                                }
-                              },
-                            ),
+                            final list = await LocationService.getLocationList(
+                              context,
+                              center.latitude.toString(),
+                              center.longitude.toString(),
+                              radius,
+                              zoomLevel.toInt(),
+                              maxCandidates,
+                            );
 
-                            // ⬇️ 말풍선 위젯 오버레이 (선택된 마커가 있을 때만)
-                            if (_controller != null && _selected != null)
-                              MarkerBubbleOverlay(
-                                key: _bubbleKey,
+                            if (!mounted) return;
+
+                            // 3) 기존 마커/말풍선 초기화
+                            for (final m in _markers) {
+                              await m.remove();
+                            }
+                            _markers.clear();
+                            setState(() {
+                              _selected = null;
+                              _bubbleVisible = false;
+                            });
+
+                            // 4) 새 마커 그리기
+                            if (list.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('현재 화면 기준 근처 위치 정보가 없습니다.')),
+                              );
+                              return;
+                            }
+
+                            for (int i = 0; i < list.length; i++) {
+                              final item = list[i];
+                              final marker = MapMarker(
+                                id: 'loc_$i',
+                                name: item.name,
+                                address: item.address,
+                                position:
+                                    NLatLng(item.latitude, item.longitude),
+                              );
+
+                              await marker.addTo(
                                 controller: _controller!,
-                                target: _selected!.position,
-                                name: _selected!.name,
-                                address: _selected!.address,
-                                visible: _bubbleVisible,
+                                context: context,
+                                onTap: () {
+                                  setState(() {
+                                    if (_selected == marker) {
+                                      _bubbleVisible = !_bubbleVisible;
+                                    } else {
+                                      _selected = marker;
+                                      _bubbleVisible = true;
+                                    }
+                                  });
+
+                                  // 말풍선 위치 즉시 보정
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    final st = _bubbleKey.currentState;
+                                    if (st != null) {
+                                      try {
+                                        (st as dynamic).updatePosition();
+                                      } catch (_) {}
+                                    }
+                                  });
+                                },
+                              );
+
+                              _markers.add(marker);
+                            }
+                          } catch (e) {
+                            debugPrint('현재 위치에서 검색 실패: $e');
+                          }
+                        },
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: ColorSet.white,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(0, 0),
+                                blurRadius: 4,
+                                spreadRadius: 0,
                               ),
-                          ],
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                '현재 위치에서 검색',
+                                style: TextStyles.timerLeaveButtonStyle,
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/location_define_icon.svg',
+                                width: 16,
+                              ),
+                            ],
+                          ),
                         ),
-                ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -154,17 +309,16 @@ class _LocationScreenState extends State<LocationScreen> {
     return true;
   }
 
+  // 지도에 위치 목록을 불러와 마커로 표시
   Future<void> _loadAndPlotLocations({
     required double latitude,
     required double longitude,
+    required int radius,
+    int? zoom,
+    int? maxCandidates,
   }) async {
     if (_isPlotted) return; // 초기 1회만 표시
     try {
-      // API 호출 파라미터 설정
-      const int radius = 50000000; // 1km 반경
-      const int zoom = 15;
-      const int maxCandidates = 200;
-
       final List<LocationInfo> list = await LocationService.getLocationList(
         context,
         latitude.toString(),
@@ -228,6 +382,7 @@ class _LocationScreenState extends State<LocationScreen> {
     }
   }
 
+  // 초기 위치(현재 위치 또는 기본값) 설정
   Future<void> _prepareInitialPosition() async {
     try {
       final ok = await _ensureLocationPermission();
@@ -258,5 +413,26 @@ class _LocationScreenState extends State<LocationScreen> {
         _isInitLoading = false;
       }
     }
+  }
+
+  // 현재 뷰포트 반경(m) 계산
+  Future<int> _computeViewportRadiusMeters() async {
+    if (_controller == null) return 1000; // fallback 1km
+    // 카메라 중심 위도에서 1dp당 몇 m인지 계산
+    final cam = await _controller!.getCameraPosition();
+    final meterPerDp = _controller!.getMeterPerDpAtLatitude(
+      latitude: cam.target.latitude,
+      zoom: cam.zoom,
+    );
+
+    // 지도 위젯의 가로/세로(dp) (논리 픽셀 == dp)
+    final size = _mapAreaKey.currentContext?.size ?? MediaQuery.sizeOf(context);
+    final w = size.width;
+    final h = size.height;
+
+    // 뷰포트 대각선의 절반 ≈ 화면 반경 → m로 변환
+    final halfDiagDp = 0.5 * math.sqrt(w * w + h * h);
+    final radiusMeters = (halfDiagDp * meterPerDp).round();
+    return math.max(1, radiusMeters);
   }
 }
