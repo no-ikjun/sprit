@@ -62,7 +62,9 @@
 	<key>NSUserTrackingUsageDescription</key>
 	<string>사용자 맞춤 광고를 표시하기 위해 사용자의 광고 활동 정보를 수집합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>지도 연동을 위해 위치 접근이 필요합니다.</string>
+	<string>주변 독서 스팟을 찾고 지도를 표시하기 위해 현재 위치가 필요합니다.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>앱 사용 중 및 필요한 경우 정확한 위치로 주변 독서 스팟을 안내하기 위해 위치 접근이 필요합니다.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
