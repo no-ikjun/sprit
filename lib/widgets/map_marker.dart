@@ -1,7 +1,10 @@
 // map_marker.dart
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -163,17 +166,53 @@ class _MarkerBubbleOverlayState extends State<MarkerBubbleOverlay> {
   }
 
   Future<void> _openNaverPlace(String name, String address, NLatLng pos) async {
-    final lat = pos.latitude;
-    final lng = pos.longitude;
-    final title = Uri.encodeComponent(name.isNotEmpty ? name : address);
-    final appUrl = Uri.parse(
-      'nmap://place?lat=$lat&lng=$lng&name=$title&appname=com.ikjunchoi_android.sprit',
-    );
-    final webUrl = Uri.parse('https://map.naver.com/v5/?c=$lng,$lat,17,0,0,0');
+    final rawLabel =
+        (name.isNotEmpty ? name : address).replaceAll('\n', ' ').trim();
+    final label = Uri.encodeComponent(rawLabel);
+    final lat = pos.latitude.toStringAsFixed(7);
+    final lng = pos.longitude.toStringAsFixed(7);
 
-    if (await canLaunchUrl(appUrl)) {
-      await launchUrl(appUrl, mode: LaunchMode.externalApplication);
+    String appName = 'sprit.app';
+    try {
+      appName = (await PackageInfo.fromPlatform()).packageName;
+    } catch (_) {}
+
+    // NAVER 지도 앱 스킴
+    final nmapPlace = Uri.parse(
+        'nmap://place?lat=$lat&lng=$lng&name=$label&appname=$appName');
+    final nmapMap =
+        Uri.parse('nmap://map?lat=$lat&lng=$lng&zoom=17&appname=$appName');
+
+    // 웹 백업: 좌표 중심 + 검색어를 같이 넣어 '서울시청 기본' 이슈 방지
+    final webUrl = Uri.parse(
+        'https://map.naver.com/v5/search/$label?c=$lng,$lat,17,0,0,0');
+
+    if (Platform.isAndroid) {
+      // 권장: Intent 스킴 (미설치 시 자동으로 스토어/웹 핸들링 가능)
+      final intentUrl = Uri.parse(
+          'intent://place?lat=$lat&lng=$lng&name=$label&appname=$appName'
+          '#Intent;scheme=nmap;action=android.intent.action.VIEW;'
+          'category=android.intent.category.BROWSABLE;package=com.nhn.android.nmap;end');
+
+      if (await canLaunchUrl(intentUrl) &&
+          await launchUrl(intentUrl, mode: LaunchMode.externalApplication))
+        return;
+
+      if (await canLaunchUrl(nmapPlace) &&
+          await launchUrl(nmapPlace, mode: LaunchMode.externalApplication))
+        return;
+
+      await launchUrl(webUrl, mode: LaunchMode.externalApplication);
     } else {
+      // iOS: nmap 스킴 (Info.plist에 LSApplicationQueriesSchemes 필요)
+      if (await canLaunchUrl(nmapPlace) &&
+          await launchUrl(nmapPlace, mode: LaunchMode.externalApplication))
+        return;
+
+      if (await canLaunchUrl(nmapMap) &&
+          await launchUrl(nmapMap, mode: LaunchMode.externalApplication))
+        return;
+
       await launchUrl(webUrl, mode: LaunchMode.externalApplication);
     }
   }

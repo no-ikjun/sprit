@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,6 +30,8 @@ class _LocationScreenState extends State<LocationScreen> {
   final GlobalKey _bubbleKey = GlobalKey(); // 말풍선 위치 갱신용
   MapMarker? _selected; // 선택된 마커
   bool _bubbleVisible = false;
+
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -152,92 +155,100 @@ class _LocationScreenState extends State<LocationScreen> {
                         bottom: Scaler.height(0.05, context),
                       ),
                       child: InkWell(
-                        onTap: () async {
-                          if (_controller == null) return;
+                        onTap: _isSearching
+                            ? null
+                            : () async {
+                                if (_controller == null) return;
 
-                          try {
-                            // 1) 현재 카메라 중심/줌 가져오기
-                            final cam = await _controller!
-                                .getCameraPosition(); // NCameraPosition
-                            final center = cam.target;
-                            final zoomLevel = cam.zoom.round();
+                                setState(() => _isSearching = true);
+                                try {
+                                  // 1) 현재 카메라 중심/줌 가져오기
+                                  final cam = await _controller!
+                                      .getCameraPosition(); // NCameraPosition
+                                  final center = cam.target;
+                                  final zoomLevel = cam.zoom.round();
 
-                            // 2) 기존과 동일한 파라미터로 재요청 (반경/캡acity 동일, 중심/줌만 현재 카메라 기준)
-                            const int radius = 50000000; // 5km 반경
-                            const int maxCandidates = 200;
+                                  // 2) 기존과 동일한 파라미터로 재요청 (반경/캡acity 동일, 중심/줌만 현재 카메라 기준)
+                                  const int radius = 50000000; // 5km 반경
+                                  const int maxCandidates = 200;
 
-                            final list = await LocationService.getLocationList(
-                              context,
-                              center.latitude.toString(),
-                              center.longitude.toString(),
-                              radius,
-                              zoomLevel.toInt(),
-                              maxCandidates,
-                            );
+                                  final list =
+                                      await LocationService.getLocationList(
+                                    context,
+                                    center.latitude.toString(),
+                                    center.longitude.toString(),
+                                    radius,
+                                    zoomLevel.toInt(),
+                                    maxCandidates,
+                                  );
 
-                            if (!mounted) return;
+                                  if (!mounted) return;
 
-                            // 3) 기존 마커/말풍선 초기화
-                            for (final m in _markers) {
-                              await m.remove();
-                            }
-                            _markers.clear();
-                            setState(() {
-                              _selected = null;
-                              _bubbleVisible = false;
-                            });
-
-                            // 4) 새 마커 그리기
-                            if (list.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('현재 화면 기준 근처 위치 정보가 없습니다.')),
-                              );
-                              return;
-                            }
-
-                            for (int i = 0; i < list.length; i++) {
-                              final item = list[i];
-                              final marker = MapMarker(
-                                id: 'loc_$i',
-                                name: item.name,
-                                address: item.address,
-                                position:
-                                    NLatLng(item.latitude, item.longitude),
-                              );
-
-                              await marker.addTo(
-                                controller: _controller!,
-                                context: context,
-                                onTap: () {
+                                  // 3) 기존 마커/말풍선 초기화
+                                  for (final m in _markers) {
+                                    await m.remove();
+                                  }
+                                  _markers.clear();
                                   setState(() {
-                                    if (_selected == marker) {
-                                      _bubbleVisible = !_bubbleVisible;
-                                    } else {
-                                      _selected = marker;
-                                      _bubbleVisible = true;
-                                    }
+                                    _selected = null;
+                                    _bubbleVisible = false;
                                   });
 
-                                  // 말풍선 위치 즉시 보정
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    final st = _bubbleKey.currentState;
-                                    if (st != null) {
-                                      try {
-                                        (st as dynamic).updatePosition();
-                                      } catch (_) {}
-                                    }
-                                  });
-                                },
-                              );
+                                  // 4) 새 마커 그리기
+                                  if (list.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('현재 화면 기준 근처 위치 정보가 없습니다.')),
+                                    );
+                                    return;
+                                  }
 
-                              _markers.add(marker);
-                            }
-                          } catch (e) {
-                            debugPrint('현재 위치에서 검색 실패: $e');
-                          }
-                        },
+                                  for (int i = 0; i < list.length; i++) {
+                                    final item = list[i];
+                                    final marker = MapMarker(
+                                      id: 'loc_$i',
+                                      name: item.name,
+                                      address: item.address,
+                                      position: NLatLng(
+                                          item.latitude, item.longitude),
+                                    );
+
+                                    await marker.addTo(
+                                      controller: _controller!,
+                                      context: context,
+                                      onTap: () {
+                                        setState(() {
+                                          if (_selected == marker) {
+                                            _bubbleVisible = !_bubbleVisible;
+                                          } else {
+                                            _selected = marker;
+                                            _bubbleVisible = true;
+                                          }
+                                        });
+
+                                        // 말풍선 위치 즉시 보정
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          final st = _bubbleKey.currentState;
+                                          if (st != null) {
+                                            try {
+                                              (st as dynamic).updatePosition();
+                                            } catch (_) {}
+                                          }
+                                        });
+                                      },
+                                    );
+
+                                    _markers.add(marker);
+                                  }
+                                } catch (e) {
+                                  debugPrint('현재 위치에서 검색 실패: $e');
+                                } finally {
+                                  if (mounted)
+                                    setState(() => _isSearching = false);
+                                }
+                              },
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         child: Container(
@@ -257,22 +268,31 @@ class _LocationScreenState extends State<LocationScreen> {
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                '현재 위치에서 검색',
-                                style: TextStyles.timerLeaveButtonStyle,
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              SvgPicture.asset(
-                                'assets/images/location_define_icon.svg',
-                                width: 16,
-                              ),
-                            ],
-                          ),
+                          child: _isSearching
+                              ? const SizedBox(
+                                  width: 100,
+                                  height: 16,
+                                  child: CupertinoActivityIndicator(
+                                    radius: 8,
+                                    animating: true,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      '현재 위치에서 검색',
+                                      style: TextStyles.timerLeaveButtonStyle,
+                                    ),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    SvgPicture.asset(
+                                      'assets/images/location_define_icon.svg',
+                                      width: 16,
+                                    ),
+                                  ],
+                                ),
                         ),
                       ),
                     ),

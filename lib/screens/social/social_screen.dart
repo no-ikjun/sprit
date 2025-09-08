@@ -236,7 +236,7 @@ class _SocialScreenState extends State<SocialScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '독서 스팟 찾기',
+                                          '독서 스팟 찾기 (Beta)',
                                           style: TextStyles
                                               .socialLocationTitleStyle,
                                         ),
