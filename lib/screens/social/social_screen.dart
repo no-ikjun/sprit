@@ -17,6 +17,7 @@ import 'package:sprit/screens/social/widgets/review_article.dart';
 import 'package:sprit/screens/social/widgets/start_article.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
+import 'package:sprit/widgets/scalable_inkwell.dart';
 
 Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
   return await QuestService.getActiveQuests(context);
@@ -187,6 +188,88 @@ class _SocialScreenState extends State<SocialScreen> {
                   ? Container()
                   : Column(
                       children: [
+                        const SizedBox(height: 20),
+                        ScalableInkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RouteName.locationScreen,
+                            );
+                          },
+                          child: Container(
+                            width: Scaler.width(0.85, context),
+                            decoration: BoxDecoration(
+                              color: Color(0XFFD7FDFF),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: List.generate(
+                                1,
+                                (index) => BoxShadow(
+                                  color:
+                                      const Color(0x0D000000).withOpacity(0.05),
+                                  offset: const Offset(0, 0),
+                                  blurRadius: 3,
+                                  spreadRadius: 0,
+                                ),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 18,
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/images/location_icon.svg',
+                                        width: 30,
+                                      ),
+                                      const SizedBox(width: 14),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: const Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '독서 스팟 찾기 (Beta)',
+                                          style: TextStyles
+                                              .socialLocationTitleStyle,
+                                        ),
+                                        Text(
+                                          '내 주변에 독서하기 좋은 장소는?',
+                                          style: TextStyles
+                                              .socialLocationDescriptionStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorSet.primary,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 8,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        '지도 보기',
+                                        style: TextStyles
+                                            .socialLocationButtonStyle,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         SizedBox(
                           width: Scaler.width(0.85, context),

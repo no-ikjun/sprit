@@ -1036,6 +1036,27 @@ class TextStyles {
     fontFamily: "IBMPlexSans",
   );
 
+  static const TextStyle socialLocationTitleStyle = TextStyle(
+    color: ColorSet.text,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle socialLocationDescriptionStyle = TextStyle(
+    color: ColorSet.darkGrey,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
+  static const TextStyle socialLocationButtonStyle = TextStyle(
+    color: ColorSet.white,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: "IBMPlexSans",
+  );
+
   static const TextStyle articleMentStyle = TextStyle(
     color: ColorSet.text,
     fontSize: 14,

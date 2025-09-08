@@ -65,6 +65,9 @@ dependencies:
   shimmer: ^3.0.0
   carousel_slider: ^5.0.0
   scrolls_to_top: any
+  flutter_naver_map: ^1.4.1+1
+  permission_handler: ^12.0.1
+  geolocator: ^14.0.2
 
 dependency_overrides:
   fading_edge_scrollview: ^4.1.1
