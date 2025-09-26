@@ -282,6 +282,7 @@ class _PhraseArticleState extends State<PhraseArticle> {
                           Text(
                             phraseArticleData?.phrase ?? '',
                             style: TextStyles.bookReviewContentStyle,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),

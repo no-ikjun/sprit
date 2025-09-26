@@ -285,6 +285,8 @@ class _ReviewArticleState extends State<ReviewArticle> {
                           Text(
                             reviewArticleData?.content ?? '',
                             style: TextStyles.bookReviewContentStyle,
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
