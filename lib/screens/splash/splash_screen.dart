@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -18,6 +20,45 @@ import 'package:sprit/providers/selected_book.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/quest/quest_detail_screen.dart';
+
+Future<String?> _getFcmTokenSafely() async {
+  // Firebase가 아직이면 초기화 (플리스트 방식 가정; FlutterFire options 쓰면 그 코드대로)
+  if (Firebase.apps.isEmpty) {
+    try {
+      await Firebase.initializeApp();
+    } catch (_) {}
+  }
+
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+  // iOS는 권한 + APNs 토큰 준비까지 대기
+  if (Platform.isIOS) {
+    await FirebaseMessaging.instance
+        .requestPermission(alert: true, badge: true, sound: true);
+
+    // APNs 토큰 대기 (최대 ~6초)
+    String? apns;
+    for (int i = 0; i < 30; i++) {
+      apns = await FirebaseMessaging.instance.getAPNSToken();
+      if (apns != null) break;
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+    if (apns == null) {
+      // 아직 준비 전이면 null 반환(크래시 방지). 나중에 onTokenRefresh에서 받아도 됨.
+      return null;
+    }
+  }
+
+  try {
+    return await FirebaseMessaging.instance.getToken();
+  } on FirebaseException catch (e) {
+    // 혹시라도 타이밍 이슈로 한 번 더 막히면 안전하게 무시
+    if (e.plugin == 'firebase_messaging' && e.code == 'apns-token-not-set') {
+      return null;
+    }
+    rethrow;
+  }
+}
 
 Future<void> checkTrackingPermission(BuildContext context) async {
   if (await AppTrackingTransparency.trackingAuthorizationStatus ==
@@ -95,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen> {
       final librarySectionOrderState = LibrarySectionOrderState();
       await librarySectionOrderState.loadOrderFromPrefs();
       //fcm token 관련
-      final fcmToken = await FirebaseMessaging.instance.getToken();
+      final fcmToken = await _getFcmTokenSafely();
       debugPrint('token: $fcmToken');
       if (fcmToken != null) {
         context.read<FcmTokenState>().updateFcmToken(fcmToken);

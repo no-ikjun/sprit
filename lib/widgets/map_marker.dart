@@ -195,23 +195,27 @@ class _MarkerBubbleOverlayState extends State<MarkerBubbleOverlay> {
           'category=android.intent.category.BROWSABLE;package=com.nhn.android.nmap;end');
 
       if (await canLaunchUrl(intentUrl) &&
-          await launchUrl(intentUrl, mode: LaunchMode.externalApplication))
+          await launchUrl(intentUrl, mode: LaunchMode.externalApplication)) {
         return;
+      }
 
       if (await canLaunchUrl(nmapPlace) &&
-          await launchUrl(nmapPlace, mode: LaunchMode.externalApplication))
+          await launchUrl(nmapPlace, mode: LaunchMode.externalApplication)) {
         return;
+      }
 
       await launchUrl(webUrl, mode: LaunchMode.externalApplication);
     } else {
       // iOS: nmap 스킴 (Info.plist에 LSApplicationQueriesSchemes 필요)
       if (await canLaunchUrl(nmapPlace) &&
-          await launchUrl(nmapPlace, mode: LaunchMode.externalApplication))
+          await launchUrl(nmapPlace, mode: LaunchMode.externalApplication)) {
         return;
+      }
 
       if (await canLaunchUrl(nmapMap) &&
-          await launchUrl(nmapMap, mode: LaunchMode.externalApplication))
+          await launchUrl(nmapMap, mode: LaunchMode.externalApplication)) {
         return;
+      }
 
       await launchUrl(webUrl, mode: LaunchMode.externalApplication);
     }
