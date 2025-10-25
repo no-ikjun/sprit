@@ -277,19 +277,19 @@ class _ReviewArticleState extends State<ReviewArticle> {
                 height: 12,
               ),
               (reviewArticleData?.content ?? '').isNotEmpty
-                  ? SizedBox(
-                      width: Scaler.width(0.85, context) - 24,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: Scaler.width(0.85, context) - 24,
+                          child: Text(
                             reviewArticleData?.content ?? '',
                             style: TextStyles.bookReviewContentStyle,
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   : Container(),
               const SizedBox(

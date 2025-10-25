@@ -274,18 +274,19 @@ class _PhraseArticleState extends State<PhraseArticle> {
                 height: 12,
               ),
               (phraseArticleData?.phrase ?? '').isNotEmpty
-                  ? SizedBox(
-                      width: Scaler.width(0.85, context) - 24,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: Scaler.width(0.85, context) - 24,
+                          child: Text(
                             phraseArticleData?.phrase ?? '',
                             style: TextStyles.bookReviewContentStyle,
+                            maxLines: 7,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   : Container(),
               const SizedBox(
