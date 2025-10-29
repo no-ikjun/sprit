@@ -1,12 +1,6 @@
 # Sprit
 
-꾸준히 읽는 사람을 위한 읽기 동반자, **Sprit**  
-당신의 하루를 한 페이지 더 깊게 만드는 독서 앱입니다.
-
-> Sprit is a reading companion designed to help you build consistent reading habits,  
-> turning every page into a step toward personal growth.
-
----
+꾸준한 독서를 위해, 스프릿
 
 ## 소개 | Introduction
 
@@ -19,8 +13,6 @@ Sprit은 읽기를 부담이 아닌 즐거움으로, 개인의 여정을 이야�
 > More than just a tracker, Sprit connects your reading journey —  
 > from discovery to reflection — making every moment of reading meaningful.
 
----
-
 ## 주요 기능 | Features
 
 ### 1. 독서 기록 (Reading Tracker)
@@ -31,8 +23,6 @@ Sprit은 읽기를 부담이 아닌 즐거움으로, 개인의 여정을 이야�
 > Log your books, pages, and reflections —  
 > watch your reading habits take shape over time.
 
----
-
 ### 2. AI 도서 추천 (AI Book Recommendation)
 
 AI가 당신의 독서 취향과 관심사를 학습하여  
@@ -42,8 +32,6 @@ AI가 당신의 독서 취향과 관심사를 학습하여
 > Get smart book recommendations powered by AI —  
 > personalized for what truly inspires you.
 
----
-
 ### 3. 챌린지와 퀘스트 (Challenges & Quests)
 
 읽기를 재미있게 만드는 다양한 미션이 준비되어 있습니다.  
@@ -51,8 +39,6 @@ AI가 당신의 독서 취향과 관심사를 학습하여
 
 > Reading doesn’t have to be lonely —  
 > complete missions, collect badges, and stay motivated.
-
----
 
 ### 4. 소셜 피드 (Reading Social)
 
@@ -62,8 +48,6 @@ AI가 당신의 독서 취향과 관심사를 학습하여
 > Connect with others who read.  
 > Share thoughts, discover new books, and grow together.
 
----
-
 ### 5. 나의 서재 (Personal Library)
 
 읽은 책과 감상, 목표가 모두 한곳에 모입니다.  
@@ -71,8 +55,6 @@ AI가 당신의 독서 취향과 관심사를 학습하여
 
 > Build your personal reading library —  
 > a reflection of who you are, one book at a time.
-
----
 
 ## 철학 | Philosophy
 
@@ -82,8 +64,6 @@ Sprit은 **‘읽는 습관이 성장의 시작’**이라는 믿음으로 만�
 
 > We believe that small reading habits lead to lifelong growth.  
 > Sprit exists to make that journey natural, inspiring, and truly yours.
-
----
 
 ## 기술 기반 | Technology
 
@@ -96,8 +76,6 @@ Sprit은 **‘읽는 습관이 성장의 시작’**이라는 믿음으로 만�
 > Built with Flutter for speed, consistency, and scalability —  
 > Sprit is crafted to feel smooth, beautiful, and personal on every device.
 
----
-
 ## 향후 계획 | Roadmap
 
 - 개인 맞춤형 독서 인사이트 리포트
@@ -106,8 +84,6 @@ Sprit은 **‘읽는 습관이 성장의 시작’**이라는 믿음으로 만�
 - 연말 회고 기능 (“My Year in Reading”)
 
 > Future updates will make Sprit more interactive, insightful, and social.
-
----
 
 ## 팀 & 기여 | Contributing
 
@@ -121,10 +97,6 @@ Sprit은 오픈소스로 개발되고 있습니다.
 > Contributions are always welcome.  
 > Fork, branch, and open a PR to make Sprit better together.
 
-자세한 내용은 [`CONTRIBUTING.md`](CONTRIBUTING.md)에서 확인하세요.
-
----
-
 ## 라이선스 | License
 
 이 프로젝트는 [MIT License](LICENSE) 하에 배포됩니다.  
@@ -133,15 +105,13 @@ Sprit은 오픈소스로 개발되고 있습니다.
 > Released under the MIT License.  
 > Feel free to use, modify, and distribute.
 
----
-
 ## 마무리 | Closing Note
 
 책 한 권이 사람을 바꾸고,  
 습관 하나가 삶을 바꿉니다.
 
 Sprit은 당신의 그 변화를 조용히 돕는 동반자입니다.  
-오늘, 한 페이지만 더.
+**꾸준한 독서를 위해, 스프릿**.
 
 > Every page you read brings you closer to who you want to become.  
 > Happy Reading — with Sprit.
