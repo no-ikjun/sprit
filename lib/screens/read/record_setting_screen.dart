@@ -81,16 +81,20 @@ Future<bool> updateBookLibrary(
   String state,
 ) async {
   try {
-    final BookLibraryInfo bookLibraryInfo =
-        await BookLibraryService.findBookLibrary(bookUuid);
-    if (bookLibraryInfo.libraryRegisterUuid == '') {
-      await BookLibraryService.setBookLibrary(bookUuid, state);
-    } else {
-      await BookLibraryService.updateBookLibrary(bookUuid, state);
+    try {
+      final BookLibraryInfo bookLibraryInfo =
+          await BookLibraryService.findBookLibrary(bookUuid);
+      if (bookLibraryInfo.libraryRegisterUuid != '') {
+        await BookLibraryService.updateBookLibrary(bookUuid, state);
+      } else {
+        await BookLibraryService.setBookLibrary(bookUuid, state);
+      }
+    } catch (e) {
+      return await BookLibraryService.setBookLibrary(bookUuid, state);
     }
     return true;
   } catch (e) {
-    return false;
+    rethrow;
   }
 }
 

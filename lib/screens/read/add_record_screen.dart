@@ -867,52 +867,66 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                             false,
                                           );
                                         } else {
-                                          String result = await RecordService
-                                              .addRecordAfterRead(
-                                            bookInfo!.bookUuid,
-                                            goalType,
-                                            (endPage - startPage) * 2,
-                                            startPage,
-                                            endPage,
-                                            selectedDate.add(Duration(
-                                                hours: selectedTime.hour,
-                                                minutes: selectedTime.minute)),
-                                            selectedDate
-                                                .add(Duration(
-                                                    hours: selectedTime.hour,
-                                                    minutes:
-                                                        selectedTime.minute))
-                                                .add(
-                                                  Duration(
-                                                    minutes:
-                                                        (endPage - startPage) *
-                                                            3,
-                                                  ),
-                                                ),
+                                          final startDateTime = DateTime(
+                                            selectedDate.year,
+                                            selectedDate.month,
+                                            selectedDate.day,
+                                            selectedTime.hour,
+                                            selectedTime.minute,
                                           );
-                                          if (result == '') {
+                                          final endDateTime = startDateTime.add(
+                                            Duration(
+                                              minutes:
+                                                  (endPage - startPage) * 3,
+                                            ),
+                                          );
+
+                                          if (endDateTime
+                                              .isAfter(DateTime.now())) {
                                             showModal(
                                               context,
                                               const RecordAlert(
                                                 title: '기록을 시작할 수 없음',
-                                                description: '기록 추가에 실패했어요',
+                                                description:
+                                                    '종료 시간이 현재 시간을 넘을 수 없어요',
                                               ),
                                               false,
                                             );
                                           } else {
-                                            Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              RouteName.home,
-                                              (route) => false,
-                                            );
-                                            showModal(
-                                              context,
-                                              const RecordAlert(
-                                                  title: '기록 추가 완료',
-                                                  description:
-                                                      '정상적으로 추가되었어요.\n기록 탭에서 독서 기록을 확인하세요.'),
-                                              false,
-                                            );
+                                            try {
+                                              await RecordService
+                                                  .addRecordAfterRead(
+                                                bookInfo!.bookUuid,
+                                                goalType,
+                                                (endPage - startPage) * 2,
+                                                startPage,
+                                                endPage,
+                                                startDateTime,
+                                                endDateTime,
+                                              );
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                RouteName.home,
+                                                (route) => false,
+                                              );
+                                              showModal(
+                                                context,
+                                                const RecordAlert(
+                                                    title: '기록 추가 완료',
+                                                    description:
+                                                        '정상적으로 추가되었어요.\n기록 탭에서 독서 기록을 확인하세요.'),
+                                                false,
+                                              );
+                                            } catch (e) {
+                                              showModal(
+                                                context,
+                                                const RecordAlert(
+                                                  title: '기록을 시작할 수 없음',
+                                                  description: '기록 추가에 실패했어요',
+                                                ),
+                                                false,
+                                              );
+                                            }
                                           }
                                         }
                                       } else {
@@ -1178,47 +1192,63 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                             false,
                                           );
                                         } else {
-                                          String result = await RecordService
-                                              .addRecordAfterRead(
-                                            bookInfo!.bookUuid,
-                                            goalType,
-                                            readTime,
-                                            startPage,
-                                            endPage,
-                                            selectedDate.add(Duration(
-                                                hours: selectedTime.hour,
-                                                minutes: selectedTime.minute)),
-                                            selectedDate
-                                                .add(Duration(
-                                                    hours: selectedTime.hour,
-                                                    minutes:
-                                                        selectedTime.minute))
-                                                .add(Duration(
-                                                    minutes: readTime)),
+                                          final startDateTime = DateTime(
+                                            selectedDate.year,
+                                            selectedDate.month,
+                                            selectedDate.day,
+                                            selectedTime.hour,
+                                            selectedTime.minute,
                                           );
-                                          if (result == '') {
+                                          final endDateTime = startDateTime.add(
+                                            Duration(minutes: readTime),
+                                          );
+
+                                          if (endDateTime
+                                              .isAfter(DateTime.now())) {
                                             showModal(
                                               context,
                                               const RecordAlert(
                                                 title: '기록을 시작할 수 없음',
-                                                description: '기록 추가에 실패했어요',
+                                                description:
+                                                    '종료 시간이 현재 시간을 넘을 수 없어요',
                                               ),
                                               false,
                                             );
                                           } else {
-                                            Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              RouteName.home,
-                                              (route) => false,
-                                            );
-                                            showModal(
-                                              context,
-                                              const RecordAlert(
-                                                  title: '기록 추가 완료',
-                                                  description:
-                                                      '정상적으로 추가되었어요.\n기록 탭에서 독서 기록을 확인하세요.'),
-                                              false,
-                                            );
+                                            try {
+                                              await RecordService
+                                                  .addRecordAfterRead(
+                                                bookInfo!.bookUuid,
+                                                goalType,
+                                                readTime,
+                                                startPage,
+                                                endPage,
+                                                startDateTime,
+                                                endDateTime,
+                                              );
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                RouteName.home,
+                                                (route) => false,
+                                              );
+                                              showModal(
+                                                context,
+                                                const RecordAlert(
+                                                    title: '기록 추가 완료',
+                                                    description:
+                                                        '정상적으로 추가되었어요.\n기록 탭에서 독서 기록을 확인하세요.'),
+                                                false,
+                                              );
+                                            } catch (e) {
+                                              showModal(
+                                                context,
+                                                const RecordAlert(
+                                                  title: '기록을 시작할 수 없음',
+                                                  description: '기록 추가에 실패했어요',
+                                                ),
+                                                false,
+                                              );
+                                            }
                                           }
                                         }
                                       } else {

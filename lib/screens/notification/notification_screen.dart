@@ -64,13 +64,15 @@ Future<bool> updateMarketingAgreeInfo(
   String fcmToken,
   bool marketingAgree,
 ) async {
-  await NotificationService.updateMarketingAgree(
-    fcmToken,
-    marketingAgree,
-  ).then((value) {
+  try {
+    await NotificationService.updateMarketingAgree(
+      fcmToken,
+      marketingAgree,
+    );
     return true;
-  });
-  return false;
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<bool> updateTimeAgreeInfo(
@@ -79,15 +81,17 @@ Future<bool> updateTimeAgreeInfo(
   int time01,
   bool agree02,
 ) async {
-  await NotificationService.updateTimeAgree(
-    fcmToken,
-    agree01,
-    time01,
-    agree02,
-  ).then((value) {
+  try {
+    await NotificationService.updateTimeAgree(
+      fcmToken,
+      agree01,
+      time01,
+      agree02,
+    );
     return true;
-  });
-  return false;
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<bool> updateRemindAgreeInfo(
@@ -95,14 +99,16 @@ Future<bool> updateRemindAgreeInfo(
   bool agree01,
   int time01,
 ) async {
-  await NotificationService.updateRemindAgree(
-    fcmToken,
-    agree01,
-    time01,
-  ).then((value) {
+  try {
+    await NotificationService.updateRemindAgree(
+      fcmToken,
+      agree01,
+      time01,
+    );
     return true;
-  });
-  return false;
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<bool> updateQuestAgreeInfo(
@@ -111,15 +117,17 @@ Future<bool> updateQuestAgreeInfo(
   bool agree02,
   bool agree03,
 ) async {
-  await NotificationService.updateQuestAgree(
-    fcmToken,
-    agree01,
-    agree02,
-    agree03,
-  ).then((value) {
+  try {
+    await NotificationService.updateQuestAgree(
+      fcmToken,
+      agree01,
+      agree02,
+      agree03,
+    );
     return true;
-  });
-  return false;
+  } catch (e) {
+    return false;
+  }
 }
 
 class NotificationScreen extends StatefulWidget {

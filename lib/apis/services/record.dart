@@ -135,7 +135,7 @@ class RecordService {
           'page_start': startPage,
         },
       );
-      
+
       if (response.statusCode == 201) {
         return response.data as String;
       } else {
@@ -159,7 +159,7 @@ class RecordService {
           'record_uuid': recordUuid,
         },
       );
-      
+
       if (response.statusCode != 200) {
         throw ServerException.fromResponse(response);
       }
@@ -181,7 +181,7 @@ class RecordService {
           'record_uuid': recordUuid,
         },
       );
-      
+
       if (response.statusCode == 200) {
         return RecordInfo.fromJson(response.data);
       } else {
@@ -211,7 +211,7 @@ class RecordService {
           'total_time': totalTime,
         },
       );
-      
+
       if (response.statusCode != 200) {
         throw ServerException.fromResponse(response);
       }
@@ -237,7 +237,7 @@ class RecordService {
           'goal_achieved': goalAchieved,
         },
       );
-      
+
       if (response.statusCode != 200) {
         throw ServerException.fromResponse(response);
       }
@@ -263,7 +263,7 @@ class RecordService {
           'page_end': pageEnd,
         },
       );
-      
+
       if (response.statusCode != 200) {
         throw ServerException.fromResponse(response);
       }
@@ -280,7 +280,7 @@ class RecordService {
     try {
       final dio = ApiClient.instance.dio;
       final response = await dio.get('/record/notended');
-      
+
       if (response.statusCode == 200) {
         if (response.data == null || response.data == '') {
           return const RecordInfo(
@@ -315,7 +315,7 @@ class RecordService {
     try {
       final dio = ApiClient.instance.dio;
       final response = await dio.get('/record/all');
-      
+
       if (response.statusCode == 200) {
         return (response.data as List)
             .map((record) => RecordInfo.fromJson(record))
@@ -336,7 +336,7 @@ class RecordService {
     try {
       final dio = ApiClient.instance.dio;
       final response = await dio.get('/record/ended');
-      
+
       if (response.statusCode == 200) {
         return (response.data as List)
             .map((record) => RecordInfo.fromJson(record))
@@ -366,7 +366,7 @@ class RecordService {
           'is_before_record': isBeforeRecord,
         },
       );
-      
+
       if (response.statusCode == 200) {
         return int.parse(response.data.toString());
       } else {
@@ -390,7 +390,7 @@ class RecordService {
           'count': count,
         },
       );
-      
+
       if (response.statusCode == 200) {
         return (response.data as List).map<int>((e) => e as int).toList();
       } else {
@@ -418,7 +418,7 @@ class RecordService {
           'date': targetDate.day,
         },
       );
-      
+
       if (response.statusCode == 200) {
         return int.parse(response.data.toString());
       } else {
@@ -448,7 +448,7 @@ class RecordService {
           'kind': kind,
         },
       );
-      
+
       if (response.statusCode == 200) {
         return MonthlyRecordInfo.fromJson(response.data);
       } else {
@@ -465,7 +465,7 @@ class RecordService {
   /// 주별 기록 조회
   static Future<List<List<BookRecordHistory>>> getWeeklyRecord(
     int backWeek, // 몇주 전인지
-    int weekday, // 화요일 6, 일요일 7, 월요일 1
+    int weekday, // 토요일 6, 일요일 7, 월요일 1
   ) async {
     try {
       final dio = ApiClient.instance.dio;
@@ -478,10 +478,10 @@ class RecordService {
           'today': DateTime.now().weekday % 7,
         },
       );
-      
+
       if (response.statusCode == 200) {
-        return (response.data as List)
-            .map<List<BookRecordHistory>>((records) {
+        AppLogger.info('response.data: ${response.data}');
+        return (response.data as List).map<List<BookRecordHistory>>((records) {
           return (records as List)
               .map((record) => BookRecordHistory.fromJson(record))
               .toList();
@@ -521,7 +521,7 @@ class RecordService {
           'end_time': endTime.toIso8601String(),
         },
       );
-      
+
       if (response.statusCode == 201) {
         return response.data as String;
       } else {

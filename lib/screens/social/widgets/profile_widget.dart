@@ -1,49 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/follow.dart';
 import 'package:sprit/apis/services/profile.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/value/router.dart';
+import 'package:sprit/core/util/logger.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/social/widgets/follow_button.dart';
 import 'package:sprit/widgets/scalable_inkwell.dart';
-
-Future<void> followUser(
-  String userUuid,
-  String targetUuid,
-) async {
-  try {
-    await FollowService.follow(userUuid, targetUuid);
-  } catch (e) {
-    // 에러 처리
-    rethrow;
-  }
-}
-
-Future<void> unfollowUser(
-  String userUuid,
-  String targetUuid,
-) async {
-  try {
-    await FollowService.unfollow(userUuid, targetUuid);
-  } catch (e) {
-    // 에러 처리
-    rethrow;
-  }
-}
-
-Future<bool> checkFollowing(
-  String userUuid,
-  String targetUuid,
-) async {
-  try {
-    return await FollowService.checkFollowing(userUuid, targetUuid);
-  } catch (e) {
-    return false;
-  }
-}
 
 class ProfileWidget extends StatefulWidget {
   final ProfileInfo profileInfo;
@@ -58,47 +23,42 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   bool isFollowing = false;
   bool isLoading = true;
 
-  Future<void> follow(BuildContext context) async {
+  Future<void> follow() async {
     try {
-      await followUser(
+      await FollowService.follow(
         context.read<UserInfoState>().userInfo.userUuid,
         widget.profileInfo.userUuid,
       );
-      HapticFeedback.lightImpact();
-      setState(() {
-        isFollowing = true;
-      });
+      await checkIsFollowing();
     } catch (e) {
-      // 에러 처리
+      rethrow;
     }
   }
 
-  Future<void> unfollow(BuildContext context) async {
+  Future<void> unfollow() async {
     try {
-      await unfollowUser(
+      await FollowService.unfollow(
         context.read<UserInfoState>().userInfo.userUuid,
         widget.profileInfo.userUuid,
       );
-      HapticFeedback.lightImpact();
-      setState(() {
-        isFollowing = false;
-      });
+      await checkIsFollowing();
     } catch (e) {
-      // 에러 처리
+      rethrow;
     }
   }
 
-  Future<void> checkIsFollowing(BuildContext context) async {
+  Future<void> checkIsFollowing() async {
     setState(() {
       isLoading = true;
     });
     try {
-      bool isFollowing = await checkFollowing(
+      bool isFollowingResult = await FollowService.checkFollowing(
         context.read<UserInfoState>().userInfo.userUuid,
         widget.profileInfo.userUuid,
       );
+      AppLogger.info('isFollowingResult: $isFollowingResult');
       setState(() {
-        this.isFollowing = isFollowing;
+        isFollowing = isFollowingResult;
         isLoading = false;
       });
     } catch (e) {
@@ -111,7 +71,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   void initState() {
     super.initState();
-    checkIsFollowing(context);
+    checkIsFollowing();
   }
 
   @override
@@ -180,9 +140,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           isFollowing: isFollowing,
                           onPressed: () async {
                             if (isFollowing) {
-                              await unfollow(context);
+                              await unfollow();
                             } else {
-                              await follow(context);
+                              await follow();
                             }
                           },
                         ),

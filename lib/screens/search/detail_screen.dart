@@ -28,8 +28,7 @@ Future<bool> setBookLibrary(
   String state,
 ) async {
   try {
-    await BookLibraryService.setBookLibrary(bookUuid, state);
-    return true;
+    return await BookLibraryService.setBookLibrary(bookUuid, state);
   } catch (e) {
     return false;
   }

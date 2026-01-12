@@ -24,10 +24,12 @@ Future<TimeAgreeInfo> getTimeAgreeInfo(String fcmToken) async {
 }
 
 Future<bool> updateOnlyTime(String fcmToken, int time) async {
-  await NotificationService.updateOnlyTime(fcmToken, time).then((value) {
+  try {
+    await NotificationService.updateOnlyTime(fcmToken, time);
     return true;
-  });
-  return false;
+  } catch (e) {
+    return false;
+  }
 }
 
 class TimeSettingScreen extends StatefulWidget {
