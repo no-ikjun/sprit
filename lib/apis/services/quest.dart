@@ -259,6 +259,19 @@ class QuestService {
       );
       
       if (response.statusCode == 200) {
+        // 응답이 빈 문자열이거나 null인 경우 빈 QuestApplyInfo 반환
+        if (response.data == null ||
+            response.data == '' ||
+            response.data is! Map<String, dynamic>) {
+          return const QuestApplyInfo(
+            applyUuid: '',
+            questUuid: '',
+            userUuid: '',
+            state: '',
+            phoneNumber: '',
+            createdAt: '',
+          );
+        }
         return QuestApplyInfo.fromJson(response.data);
       } else {
         throw ServerException.fromResponse(response);
