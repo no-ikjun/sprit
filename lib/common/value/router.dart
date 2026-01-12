@@ -24,8 +24,8 @@ class RouteName {
   static const signUp = "/signUp";
   static const search = "/search";
   static const notification = "/notification";
-  static const timeSetting = "/notifiction/timeSetting";
-  static const mentSetting = "/notifiction/mentSetting";
+  static const timeSetting = "/notification/timeSetting";
+  static const mentSetting = "/notification/mentSetting";
   static const bookDetail = "/bookDetail";
   static const review = "/review";
   static const recordSetting = "/recordSetting";
