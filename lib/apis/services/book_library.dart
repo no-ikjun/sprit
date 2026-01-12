@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:sprit/apis/auth_dio.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 import 'package:sprit/providers/library_book_state.dart';
 
 class BookMarkCallback {
@@ -137,11 +140,10 @@ class BookMarkResponse {
 
 class BookLibraryService {
   static Future<bool> setBookLibrary(
-    BuildContext context,
     String bookUuid,
     String state,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.post(
         '/book-library/register',
@@ -156,14 +158,15 @@ class BookLibraryService {
         debugPrint('도서 정보 등록 실패');
         return false;
       }
-    } catch (e) {
-      debugPrint('도서 정보 등록 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 정보 등록 실패', e, stackTrace);
+      rethrow;
     }
   }
 
   static Future<BookLibraryInfo> findBookLibrary(
-    BuildContext context,
     String bookUuid,
   ) async {
     BookLibraryInfo bookLibraryInfo = const BookLibraryInfo(
@@ -174,7 +177,7 @@ class BookLibraryService {
       createdAt: '',
       updatedAt: '',
     );
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.get(
         '/book-library/find',
@@ -188,18 +191,20 @@ class BookLibraryService {
       } else {
         debugPrint('도서 등록 정보 조회 실패');
       }
-    } catch (e) {
-      debugPrint('도서 등록 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 등록 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
     return bookLibraryInfo;
   }
 
   static Future<List<BookInfo>> getBookLibrary(
-    BuildContext context,
     String state,
   ) async {
     List<BookInfo> beforeBookLibrary = [];
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     String stateUrl = 'before';
     if (state == 'BEFORE') {
       stateUrl = 'before';
@@ -220,17 +225,19 @@ class BookLibraryService {
       } else {
         debugPrint('$state 도서 등록 정보 조회 실패 (상태별)');
       }
-    } catch (e) {
-      debugPrint('$state 도서 등록 정보 조회 실패 (상태별) $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('$state 도서 등록 정보 조회 실패 (상태별)', e, stackTrace);
+      rethrow;
     }
     return beforeBookLibrary;
   }
 
   static Future<bool> deleteBookLibrary(
-    BuildContext context,
     String bookUuid,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.delete(
         '/book-library/delete',
@@ -244,18 +251,19 @@ class BookLibraryService {
         debugPrint('도서 정보 삭제 실패');
         return false;
       }
-    } catch (e) {
-      debugPrint('도서 정보 삭제 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 정보 삭제 실패', e, stackTrace);
+      rethrow;
     }
   }
 
   static Future<bool> updateBookLibrary(
-    BuildContext context,
     String bookUuid,
     String state,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.patch(
         '/book-library/update',
@@ -270,19 +278,20 @@ class BookLibraryService {
         debugPrint('도서 정보 수정 실패');
         return false;
       }
-    } catch (e) {
-      debugPrint('도서 정보 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 정보 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
   static Future<BookMarkCallback> getBookMark(
-    BuildContext context,
     int page,
   ) async {
     List<BookMarkInfo> bookMarkInfoList = [];
     bool moreAvailable = false;
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.get(
         '/book-library/bookmark',
@@ -299,8 +308,11 @@ class BookLibraryService {
       } else {
         debugPrint('북마크 조회 실패');
       }
-    } catch (e) {
-      debugPrint('북마크 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('북마크 조회 실패', e, stackTrace);
+      rethrow;
     }
     return BookMarkCallback(
       bookMarkInfoList: bookMarkInfoList,
@@ -309,7 +321,6 @@ class BookLibraryService {
   }
 
   static Future<BookLibraryByStateListCallback> getBookLibraryByState(
-    BuildContext context,
     List<LibraryBookState> stateList,
     int page,
   ) async {
@@ -325,7 +336,7 @@ class BookLibraryService {
         stateData.add("AFTER");
       }
     }
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.get(
         '/book-library/state-list',
@@ -344,8 +355,11 @@ class BookLibraryService {
       } else {
         debugPrint('도서 등록 정보 조회 실패 (상태별)');
       }
-    } catch (e) {
-      debugPrint('도서 등록 정보 조회 실패 (상태별) $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 등록 정보 조회 실패 (상태별)', e, stackTrace);
+      rethrow;
     }
     return BookLibraryByStateListCallback(
       bookLibraryByStateList: bookLibraryByStateListResult,

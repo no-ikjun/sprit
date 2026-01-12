@@ -198,7 +198,6 @@ class _QuestApplyPhoneState extends State<QuestApplyPhone> {
                             },
                           );
                           await QuestService.applyQuest(
-                            context,
                             widget.questUuid,
                             phoneNumber,
                           ).then((value) async {

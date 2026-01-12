@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:sprit/core/network/api_client.dart';
 
 class AppleService {
   static Future<String> appleLogin(
-    BuildContext context,
     AuthorizationCredentialAppleID appleCredential,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.post('/auth/login/apple', data: {
         'user_identifier': appleCredential.userIdentifier,

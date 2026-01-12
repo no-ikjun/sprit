@@ -38,14 +38,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   bool isBookSelected = false;
   BookInfo? bookInfo;
 
-  Future<void> selectBook(BuildContext context, String bookUuid) async {
+  Future<void> selectBook(String bookUuid) async {
     setState(() {
       isBookInfoLoading = true;
     });
-    BookInfo result = await BookInfoService.getBookInfoByUuid(
-      context,
-      bookUuid,
-    );
+    BookInfo result = await BookInfoService.getBookInfoByUuid(bookUuid);
     setState(() {
       bookInfo = result;
       isBookSelected = true;
@@ -71,17 +68,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   @override
   void initState() {
     super.initState();
-    BookLibraryService.getBookLibrary(
-      context,
-      state,
-    ).then((value) {
+    BookLibraryService.getBookLibrary(state).then((value) {
       setState(() {
         bookInfoList = value;
         isBookInfoLoading = false;
       });
     });
     if (widget.bookUuid != '') {
-      selectBook(context, widget.bookUuid);
+      selectBook(widget.bookUuid);
     }
   }
 
@@ -150,10 +144,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                                 isBookInfoLoading = true;
                                               });
                                               await BookLibraryService
-                                                  .getBookLibrary(
-                                                context,
-                                                state,
-                                              ).then((value) {
+                                                      .getBookLibrary(state)
+                                                  .then((value) {
                                                 setState(() {
                                                   bookInfoList = value;
                                                   isBookInfoLoading = false;
@@ -212,10 +204,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                                 isBookInfoLoading = true;
                                               });
                                               await BookLibraryService
-                                                  .getBookLibrary(
-                                                context,
-                                                state,
-                                              ).then((value) {
+                                                      .getBookLibrary(state)
+                                                  .then((value) {
                                                 setState(() {
                                                   bookInfoList = value;
                                                   isBookInfoLoading = false;
@@ -274,10 +264,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                                 isBookInfoLoading = true;
                                               });
                                               await BookLibraryService
-                                                  .getBookLibrary(
-                                                context,
-                                                state,
-                                              ).then((value) {
+                                                      .getBookLibrary(state)
+                                                  .then((value) {
                                                 setState(() {
                                                   bookInfoList = value;
                                                   isBookInfoLoading = false;
@@ -408,10 +396,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                                           isBookSelected = true;
                                                         });
                                                         await selectBook(
-                                                          context,
-                                                          bookInfoList[index]
-                                                              .bookUuid,
-                                                        );
+                                                            bookInfoList[index]
+                                                                .bookUuid);
                                                       },
                                                       splashColor:
                                                           Colors.transparent,
@@ -883,7 +869,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                         } else {
                                           String result = await RecordService
                                               .addRecordAfterRead(
-                                            context,
                                             bookInfo!.bookUuid,
                                             goalType,
                                             (endPage - startPage) * 2,
@@ -1195,7 +1180,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                         } else {
                                           String result = await RecordService
                                               .addRecordAfterRead(
-                                            context,
                                             bookInfo!.bookUuid,
                                             goalType,
                                             readTime,

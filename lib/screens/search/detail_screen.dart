@@ -20,15 +20,19 @@ Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
   String uuid,
 ) async {
-  return await BookInfoService.getBookInfoByUuid(context, uuid);
+  return await BookInfoService.getBookInfoByUuid(uuid);
 }
 
 Future<bool> setBookLibrary(
-  BuildContext context,
   String bookUuid,
   String state,
 ) async {
-  return await BookLibraryService.setBookLibrary(context, bookUuid, state);
+  try {
+    await BookLibraryService.setBookLibrary(bookUuid, state);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 class BookDetailScreen extends StatefulWidget {
@@ -207,7 +211,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           onPressed: () async {
                                             final response =
                                                 await setBookLibrary(
-                                              context,
                                               bookInfo.bookUuid,
                                               'BEFORE',
                                             );
@@ -239,7 +242,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                           onPressed: () async {
                                             final response =
                                                 await setBookLibrary(
-                                              context,
                                               bookInfo.bookUuid,
                                               'AFTER',
                                             );

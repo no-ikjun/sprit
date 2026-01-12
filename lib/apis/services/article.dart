@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class ArticleInfo {
   final String articleUuid;
@@ -34,135 +36,149 @@ class ArticleInfo {
 }
 
 class ArticleService {
+  /// 게시글 목록 조회
   static Future<List<ArticleInfo>> getArticleList(
-    BuildContext context,
     String userUuid,
     int page,
   ) async {
-    List<ArticleInfo> articleInfo = [];
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/article/list', queryParameters: {
         'user_uuid': userUuid,
         'page': page,
       });
+
       if (response.statusCode == 200) {
-        articleInfo = (response.data as List)
+        return (response.data as List)
             .map((e) => ArticleInfo.fromJson(e))
             .toList();
       } else {
-        debugPrint('게시글 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('게시글 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('게시글 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return articleInfo;
   }
 
+  /// 사용자 게시글 목록 조회
   static Future<List<ArticleInfo>> getUserArticleList(
-    BuildContext context,
     String userUuid,
     int page,
   ) async {
-    List<ArticleInfo> articleInfo = [];
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/article/user', queryParameters: {
         'user_uuid': userUuid,
         'page': page,
       });
+
       if (response.statusCode == 200) {
-        articleInfo = (response.data as List)
+        return (response.data as List)
             .map((e) => ArticleInfo.fromJson(e))
             .toList();
       } else {
-        debugPrint('사용자 게시글 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('사용자 게시글 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('사용자 게시글 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return articleInfo;
   }
 
-  static Future<int> getLikeCount(
-    BuildContext context,
-    String articleUuid,
-  ) async {
-    int likeCount = 0;
-    final dio = await authDio(context);
+  /// 좋아요 수 조회
+  static Future<int> getLikeCount(String articleUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/article/like-count', queryParameters: {
         'article_uuid': articleUuid,
       });
+
       if (response.statusCode == 200) {
-        likeCount = int.parse(response.data);
+        return int.parse(response.data.toString());
       } else {
-        debugPrint('좋아요 수 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('좋아요 수 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('좋아요 수 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return likeCount;
   }
 
+  /// 좋아요 여부 확인
   static Future<bool> checkLike(
-    BuildContext context,
     String articleUuid,
     String userUuid,
   ) async {
-    bool isLike = false;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/article/is-liked', queryParameters: {
         'article_uuid': articleUuid,
         'user_uuid': userUuid,
       });
+
       if (response.statusCode == 200) {
-        isLike = response.data.toString() == 'true';
+        return response.data.toString() == 'true';
       } else {
-        debugPrint('좋아요 여부 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('좋아요 여부 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('좋아요 여부 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return isLike;
   }
 
+  /// 게시글 좋아요
   static Future<void> likeArticle(
-    BuildContext context,
     String articleUuid,
     String userUuid,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post('/article/like', queryParameters: {
         'article_uuid': articleUuid,
         'user_uuid': userUuid,
       });
+
       if (response.statusCode != 201) {
-        debugPrint('게시글 좋아요 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('게시글 좋아요 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('게시글 좋아요 실패', e, stackTrace);
+      rethrow;
     }
   }
 
+  /// 게시글 좋아요 취소
   static Future<void> unlikeArticle(
-    BuildContext context,
     String articleUuid,
     String userUuid,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post('/article/unlike', queryParameters: {
         'article_uuid': articleUuid,
         'user_uuid': userUuid,
       });
+
       if (response.statusCode != 201) {
-        debugPrint('게시글 좋아요 취소 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('게시글 좋아요 취소 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('게시글 좋아요 취소 실패', e, stackTrace);
+      rethrow;
     }
   }
 }

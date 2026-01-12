@@ -6,8 +6,8 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/screens/library/widgets/report_card_widget.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
-Future<List<BookReportInfo>> getReportList(BuildContext context) async {
-  return BookReportService.getBookReportByUserUuid(context);
+Future<List<BookReportInfo>> getReportList() async {
+  return BookReportService.getBookReportByUserUuid();
 }
 
 class ReportListScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
     setState(() {
       isLoading = true;
     });
-    await getReportList(context).then((value) {
+    await getReportList().then((value) {
       setState(() {
         bookReportList = value;
         isLoading = false;

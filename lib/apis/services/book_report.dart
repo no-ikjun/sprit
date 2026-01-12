@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class BookReportInfo {
   final String bookReportUuid;
@@ -38,11 +41,10 @@ class BookReportInfo {
 
 class BookReportService {
   static Future<bool> setNewBookReport(
-    BuildContext context,
     String bookUuid,
     String report,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.post(
         '/book-report',
@@ -57,40 +59,37 @@ class BookReportService {
         debugPrint('독후감 생성 실패');
         return false;
       }
-    } catch (e) {
-      debugPrint('독후감 생성 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('독후감 생성 실패', e, stackTrace);
       rethrow;
     }
   }
 
-  static Future<List<BookReportInfo>> getBookReportByUserUuid(
-    BuildContext context,
-  ) async {
-    List<BookReportInfo> bookReportList = [];
-    final dio = await authDio(context);
+  static Future<List<BookReportInfo>> getBookReportByUserUuid() async {
+    final dio = ApiClient.instance.dio;
     try {
-      final response = await dio.get(
-        '/book-report/user',
-      );
+      final response = await dio.get('/book-report/user');
       if (response.statusCode == 200) {
-        var result = response.data;
-        for (var bookReport in result) {
-          bookReportList.add(BookReportInfo.fromJson(bookReport));
-        }
+        return (response.data as List)
+            .map((e) => BookReportInfo.fromJson(e))
+            .toList();
       } else {
-        debugPrint('독후감 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('독후감 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('독후감 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return bookReportList;
   }
 
   static Future<BookReportInfo> getBookReportByBookReportUuid(
-    BuildContext context,
     String bookReportUuid,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.get(
         '/book-report/uuid',
@@ -112,62 +111,43 @@ class BookReportService {
           createdAt: '',
         );
       }
-    } catch (e) {
-      debugPrint('독후감 조회 실패 $e');
-      return const BookReportInfo(
-        bookReportUuid: '',
-        bookUuid: '',
-        userUuid: '',
-        report: '',
-        createdAt: '',
-      );
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('독후감 조회 실패', e, stackTrace);
+      rethrow;
     }
   }
 
   static Future<BookReportInfo> getBookReportByUserUuidAndBookUuid(
-    BuildContext context,
     String bookUuid,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
-      final response = await dio.get(
-        '/book-report/user/book',
-        queryParameters: {
-          'book_uuid': bookUuid,
-        },
-      );
+      final response =
+          await dio.get('/book-report/user/book', queryParameters: {
+        'book_uuid': bookUuid,
+      });
       if (response.statusCode == 200) {
         final Map<String, dynamic> bookReport =
             response.data as Map<String, dynamic>;
         return BookReportInfo.fromJson(bookReport);
       } else {
-        debugPrint('독후감 조회 실패');
-        return const BookReportInfo(
-          bookReportUuid: '',
-          bookUuid: '',
-          userUuid: '',
-          report: '',
-          createdAt: '',
-        );
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('독후감 조회 실패 $e');
-      return const BookReportInfo(
-        bookReportUuid: '',
-        bookUuid: '',
-        userUuid: '',
-        report: '',
-        createdAt: '',
-      );
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('독후감 조회 실패', e, stackTrace);
+      rethrow;
     }
   }
 
   static Future<bool> updateBookReport(
-    BuildContext context,
     String bookReportUuid,
     String report,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.patch(
         '/book-report',
@@ -182,17 +162,18 @@ class BookReportService {
         debugPrint('독후감 수정 실패');
         return false;
       }
-    } catch (e) {
-      debugPrint('독후감 수정 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('독후감 수정 실패', e, stackTrace);
       rethrow;
     }
   }
 
   static Future<bool> deleteBookReport(
-    BuildContext context,
     String bookReportUuid,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.delete(
         '/book-report',
@@ -206,8 +187,10 @@ class BookReportService {
         debugPrint('독후감 삭제 실패');
         return false;
       }
-    } catch (e) {
-      debugPrint('독후감 삭제 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('독후감 삭제 실패', e, stackTrace);
       rethrow;
     }
   }

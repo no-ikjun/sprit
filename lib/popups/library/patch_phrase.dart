@@ -126,7 +126,6 @@ class _PatchPhraseState extends State<PatchPhrase> {
                     return;
                   }
                   await PhraseService.updateOnlyPhrase(
-                    context,
                     widget.phraseUuid,
                     _controller.text,
                   );

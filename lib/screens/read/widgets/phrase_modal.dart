@@ -13,7 +13,6 @@ import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/switch_button.dart';
 
 Future<String> setPhrase(
-  BuildContext context,
   String bookUuid,
   String phrase,
   int page,
@@ -21,7 +20,6 @@ Future<String> setPhrase(
   bool share,
 ) async {
   return await PhraseService.setNewPhrase(
-    context,
     bookUuid,
     phrase,
     page,
@@ -65,7 +63,6 @@ class _PhraseModalState extends State<PhraseModal> {
       isLoading = true;
     });
     setPhrase(
-      context,
       widget.bookUuid,
       phrase,
       pageInt,

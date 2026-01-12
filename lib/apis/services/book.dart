@@ -1,7 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class PopularbookResponse {
   final List<dynamic> books;
@@ -88,135 +90,106 @@ class BookInfo {
 }
 
 class BookInfoService {
-  static Future<BookInfo> getBookInfoByISBN(
-    BuildContext context,
-    String isbn,
-  ) async {
-    BookInfo bookInfo = const BookInfo(
-      bookUuid: '',
-      isbn: '',
-      title: '',
-      authors: [],
-      publisher: '',
-      translators: [],
-      searchUrl: '',
-      thumbnail: '',
-      content: '',
-      publishedAt: '',
-      updatedAt: '',
-      score: 0,
-      star: 0,
-      starCount: 0,
-    );
-    final dio = await authDio(context);
+  /// ISBN으로 도서 정보 조회
+  static Future<BookInfo> getBookInfoByISBN(String isbn) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/book/find/isbn',
         queryParameters: {
           'isbn': isbn,
         },
       );
+
       if (response.statusCode == 200) {
-        bookInfo = BookInfo.fromJson(response.data);
+        return BookInfo.fromJson(response.data);
       } else {
-        debugPrint('도서 정보 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('도서 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return bookInfo;
   }
 
-  static Future<BookInfo> getBookInfoByUuid(
-    BuildContext context,
-    String uuid,
-  ) async {
-    BookInfo bookInfo = const BookInfo(
-      bookUuid: '',
-      isbn: '',
-      title: '',
-      authors: [],
-      publisher: '',
-      translators: [],
-      searchUrl: '',
-      thumbnail: '',
-      content: '',
-      publishedAt: '',
-      updatedAt: '',
-      score: 0,
-      star: 0,
-      starCount: 0,
-    );
-    final dio = await authDio(context);
+  /// UUID로 도서 정보 조회
+  static Future<BookInfo> getBookInfoByUuid(String uuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/book/find/uuid',
         queryParameters: {
           'book_uuid': uuid,
         },
       );
+
       if (response.statusCode == 200) {
-        bookInfo = BookInfo.fromJson(response.data);
+        return BookInfo.fromJson(response.data);
       } else {
-        debugPrint('도서 정보 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('도서 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return bookInfo;
   }
 
-  static Future<void> registerBook(
-    BuildContext context,
-    String isbn,
-  ) async {
-    final dio = await authDio(context);
+  /// 도서 등록
+  static Future<void> registerBook(String isbn) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/book/register',
         queryParameters: {
           'isbn': isbn,
         },
       );
-      if (response.statusCode == 201) {
-        debugPrint('도서 등록 성공');
-      } else {
-        debugPrint('도서 등록 실패');
+
+      if (response.statusCode != 201) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('도서 등록 실패 $e');
+      AppLogger.info('도서 등록 성공');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 등록 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<Map<String, dynamic>> getPopularBook(
-    BuildContext context,
-    int page,
-  ) async {
-    List<BookInfo> bookInfoList = [];
-    bool moreAvailable = false;
-    final dio = await authDio(context);
+  /// 인기 도서 조회
+  static Future<Map<String, dynamic>> getPopularBook(int page) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/book/popular',
         queryParameters: {
           'page': page,
         },
       );
+
       if (response.statusCode == 200) {
-        var result = PopularbookResponse.fromJson(response.data);
-        moreAvailable = result.moreAvailable;
+        final result = PopularbookResponse.fromJson(response.data);
+        final List<BookInfo> bookInfoList = [];
         for (var book in result.books) {
           bookInfoList.add(BookInfo.fromJson(book));
         }
+        return {
+          'books': bookInfoList,
+          'more_available': result.moreAvailable,
+        };
       } else {
-        debugPrint('도서 검색 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('도서 검색 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 검색 실패', e, stackTrace);
+      rethrow;
     }
-    return {
-      'books': bookInfoList,
-      'more_available': moreAvailable,
-    };
   }
 }

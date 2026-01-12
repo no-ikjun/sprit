@@ -25,17 +25,20 @@ class _FollowScreenState extends State<FollowScreen> {
 
   Future<void> fetchData() async {
     String userUuid = context.read<UserInfoState>().userInfo.userUuid;
-    if (widget.type == 'follower') {
-      final followers = await FollowService.getFollowerList(context, userUuid);
-      setState(() {
-        profileList = followers;
-      });
-    } else {
-      final followings =
-          await FollowService.getFollowingList(context, userUuid);
-      setState(() {
-        profileList = followings;
-      });
+    try {
+      if (widget.type == 'follower') {
+        final followers = await FollowService.getFollowerList(userUuid);
+        setState(() {
+          profileList = followers;
+        });
+      } else {
+        final followings = await FollowService.getFollowingList(userUuid);
+        setState(() {
+          profileList = followings;
+        });
+      }
+    } catch (e) {
+      // 에러 처리
     }
     setState(() {
       isLoading = false;

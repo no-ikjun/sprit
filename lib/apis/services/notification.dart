@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import 'package:sprit/apis/auth_dio.dart';
-import 'package:sprit/providers/fcm_token.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class TimeAgreeInfo {
   final String agreeUuid;
@@ -72,117 +72,95 @@ class QuestAgreeInfo {
 }
 
 class NotificationService {
-  static Future<void> registerFcmToken(
-    BuildContext context,
-    String fcmToken,
-  ) async {
-    final dio = await authDio(context);
+  /// FCM 토큰 등록
+  static Future<void> registerFcmToken(String fcmToken) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/notification/register',
         queryParameters: {
           'fcm_token': fcmToken,
         },
       );
-      if (response.statusCode == 201) {
-      } else {
-        debugPrint('FCM 토큰 등록 실패');
+
+      if (response.statusCode != 201) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('FCM 토큰 등록 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('FCM 토큰 등록 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<void> deleteFcmToken(
-    BuildContext context,
-    String fcmToken,
-  ) async {
-    final dio = await authDio(context);
+  /// FCM 토큰 삭제
+  static Future<void> deleteFcmToken(String fcmToken) async {
     try {
-      final response = await dio.delete(
-        '/notification/delete',
-        queryParameters: {
-          'fcm_token': fcmToken,
-        },
-      );
-      if (response.statusCode == 200) {
-      } else {
-        debugPrint('FCM 토큰 삭제 실패');
-      }
-    } catch (e) {
-      debugPrint('FCM 토큰 삭제 실패 $e');
+      final dio = ApiClient.instance.dio;
+      await dio.delete('/notification/delete', queryParameters: {
+        'fcm_token': fcmToken,
+      });
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('FCM 토큰 삭제 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<TimeAgreeInfo> getTimeAgreeInfo(
-    BuildContext context,
-  ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    TimeAgreeInfo timeAgreeInfo = const TimeAgreeInfo(
-      agreeUuid: '',
-      agree01: false,
-      time01: 0,
-      agree02: false,
-    );
-    final dio = await authDio(context);
+  /// 시간 알림 동의 정보 조회
+  static Future<TimeAgreeInfo> getTimeAgreeInfo(String fcmToken) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/notification/agree/time',
         queryParameters: {
           'fcm_token': fcmToken,
         },
       );
+
       if (response.statusCode == 200) {
-        timeAgreeInfo = TimeAgreeInfo.fromJson(response.data);
+        return TimeAgreeInfo.fromJson(response.data);
       } else {
-        debugPrint('시간 알림 동의 정보 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('시간 알림 동의 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('시간 알림 동의 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return timeAgreeInfo;
   }
 
-  static Future<RemindAgreeInfo> getRemindAgreeInfo(
-    BuildContext context,
-  ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    RemindAgreeInfo remindAgreeInfo = const RemindAgreeInfo(
-      agreeUuid: '',
-      agree01: false,
-      time01: 0,
-    );
-    final dio = await authDio(context);
+  /// 리마인드 알림 동의 정보 조회
+  static Future<RemindAgreeInfo> getRemindAgreeInfo(String fcmToken) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/notification/agree/remind',
         queryParameters: {
           'fcm_token': fcmToken,
         },
       );
+
       if (response.statusCode == 200) {
-        remindAgreeInfo = RemindAgreeInfo.fromJson(response.data);
+        return RemindAgreeInfo.fromJson(response.data);
       } else {
-        debugPrint('리마인드 알림 동의 정보 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('리마인드 알림 동의 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('리마인드 알림 동의 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return remindAgreeInfo;
   }
 
-  static Future<QuestAgreeInfo> getQuestAgreeInfo(
-    BuildContext context,
-  ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    QuestAgreeInfo questAgreeInfo = const QuestAgreeInfo(
-      agreeUuid: '',
-      agree01: false,
-      agree02: false,
-      agree03: false,
-    );
-    final dio = await authDio(context);
+  /// 퀘스트 알림 동의 정보 조회
+  static Future<QuestAgreeInfo> getQuestAgreeInfo(String fcmToken) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/notification/agree/quest',
         queryParameters: {
@@ -191,25 +169,27 @@ class NotificationService {
       );
 
       if (response.statusCode == 200) {
-        questAgreeInfo = QuestAgreeInfo.fromJson(response.data);
+        return QuestAgreeInfo.fromJson(response.data);
       } else {
-        debugPrint('퀘스트 알림 동의 정보 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 알림 동의 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 알림 동의 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return questAgreeInfo;
   }
 
-  static Future<bool> updateTimeAgree(
-    BuildContext context,
+  /// 시간 알림 동의 정보 수정
+  static Future<void> updateTimeAgree(
+    String fcmToken,
     bool agree01,
     int time01,
     bool agree02,
   ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/notification/agree/time',
         queryParameters: {
@@ -219,25 +199,22 @@ class NotificationService {
           'agree_02': agree02,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('시간 알림 동의 정보 수정 실패');
-        return false;
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('시간 알림 동의 정보 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('시간 알림 동의 정보 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> updateOnlyTime(
-    BuildContext context,
-    int time,
-  ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    final dio = await authDio(context);
+  /// 시간만 수정
+  static Future<void> updateOnlyTime(String fcmToken, int time) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/notification/agree/time/only',
         queryParameters: {
@@ -245,26 +222,26 @@ class NotificationService {
           'time_01': time,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('시간 알림 동의 정보 수정 실패');
-        return false;
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('시간 알림 동의 정보 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('시간 알림 동의 정보 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> updateRemindAgree(
-    BuildContext context,
+  /// 리마인드 알림 동의 정보 수정
+  static Future<void> updateRemindAgree(
+    String fcmToken,
     bool agree01,
     int time01,
   ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/notification/agree/remind',
         queryParameters: {
@@ -273,27 +250,27 @@ class NotificationService {
           'time_01': time01,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('리마인드 알림 동의 정보 수정 실패');
-        return false;
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('리마인드 알림 동의 정보 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('리마인드 알림 동의 정보 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> updateQuestAgree(
-    BuildContext context,
+  /// 퀘스트 알림 동의 정보 수정
+  static Future<void> updateQuestAgree(
+    String fcmToken,
     bool agree01,
     bool agree02,
     bool agree03,
   ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/notification/agree/quest',
         queryParameters: {
@@ -303,49 +280,49 @@ class NotificationService {
           'agree_03': agree03,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('퀘스트 알림 동의 정보 수정 실패');
-        return false;
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 알림 동의 정보 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 알림 동의 정보 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> getMarketingAgree(
-    BuildContext context,
-  ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    final dio = await authDio(context);
+  /// 마케팅 알림 동의 정보 조회
+  static Future<bool> getMarketingAgree(String fcmToken) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/notification/agree/marketing',
         queryParameters: {
           'fcm_token': fcmToken,
         },
       );
+
       if (response.statusCode == 200) {
         return response.data.toString() == 'true';
       } else {
-        debugPrint('마케팅 알림 동의 정보 조회 실패');
-        return false;
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('마케팅 알림 동의 정보 조회 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('마케팅 알림 동의 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> updateMarketingAgree(
-    BuildContext context,
+  /// 마케팅 알림 동의 정보 수정
+  static Future<void> updateMarketingAgree(
+    String fcmToken,
     bool marketingAgree,
   ) async {
-    final fcmToken = context.read<FcmTokenState>().fcmToken;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/notification/agree/marketing',
         queryParameters: {
@@ -353,15 +330,15 @@ class NotificationService {
           'marketing_agree': marketingAgree,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('마케팅 알림 동의 정보 수정 실패');
-        return false;
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('마케팅 알림 동의 정보 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('마케팅 알림 동의 정보 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 }

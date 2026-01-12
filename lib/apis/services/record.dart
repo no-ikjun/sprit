@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class RecordInfo {
   final String recordUuid;
@@ -115,15 +117,15 @@ class BookRecordHistory {
 }
 
 class RecordService {
+  /// 새 기록 생성
   static Future<String> setNewRecord(
-    BuildContext context,
     String bookUuid,
     String goalType,
     int goalScale,
     int startPage,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/record',
         data: {
@@ -133,84 +135,74 @@ class RecordService {
           'page_start': startPage,
         },
       );
+      
       if (response.statusCode == 201) {
         return response.data as String;
       } else {
-        debugPrint('기록 생성 실패');
-        return '';
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('기록 생성 실패: $e');
-      return '';
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('기록 생성 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<void> deleteRecord(
-    BuildContext context,
-    String recordUuid,
-  ) async {
-    final dio = await authDio(context);
+  /// 기록 삭제
+  static Future<void> deleteRecord(String recordUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.delete(
         '/record',
         queryParameters: {
           'record_uuid': recordUuid,
         },
       );
-      if (response.statusCode == 200) {
-      } else {
-        debugPrint('기록 삭제 실패');
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('기록 삭제 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('기록 삭제 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<RecordInfo> getRecordByRecordUuid(
-    BuildContext context,
-    String recordUuid,
-  ) async {
-    final dio = await authDio(context);
-    RecordInfo recordInfo = const RecordInfo(
-      recordUuid: '',
-      bookUuid: '',
-      userUuid: '',
-      goalType: '',
-      goalScale: 0,
-      pageStart: 0,
-      pageEnd: 0,
-      totalTime: 0,
-      start: '',
-      end: '',
-      goalAchieved: false,
-      createdAt: '',
-    );
+  /// 기록 UUID로 조회
+  static Future<RecordInfo> getRecordByRecordUuid(String recordUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/record',
         queryParameters: {
           'record_uuid': recordUuid,
         },
       );
+      
       if (response.statusCode == 200) {
-        recordInfo = RecordInfo.fromJson(response.data);
+        return RecordInfo.fromJson(response.data);
       } else {
-        debugPrint('기록 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('기록 불러오기 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('기록 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return recordInfo;
   }
 
-  static Future<bool> stopRecord(
-    BuildContext context,
+  /// 기록 종료
+  static Future<void> stopRecord(
     String recordUuid,
     int pageEnd,
     int totalTime,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/record/stop',
         queryParameters: {
@@ -219,25 +211,25 @@ class RecordService {
           'total_time': totalTime,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('기록 종료 실패');
-        return false;
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('기록 종료 실패: $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('기록 종료 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> updateGoalAchieved(
-    BuildContext context,
+  /// 목표 달성 여부 업데이트
+  static Future<void> updateGoalAchieved(
     String recordUuid,
     bool goalAchieved,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/record/goal-achieved',
         queryParameters: {
@@ -245,25 +237,25 @@ class RecordService {
           'goal_achieved': goalAchieved,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('목표 달성 여부 업데이트 실패');
-        return false;
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('목표 달성 여부 업데이트 실패: $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('목표 달성 여부 업데이트 실패', e, stackTrace);
+      rethrow;
     }
   }
 
+  /// 마지막 페이지 업데이트
   static Future<void> updatePageEnd(
-    BuildContext context,
     String recordUuid,
     int pageEnd,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/record/page-end',
         queryParameters: {
@@ -271,90 +263,102 @@ class RecordService {
           'page_end': pageEnd,
         },
       );
-      if (response.statusCode == 200) {
-      } else {
-        debugPrint('마지막 페이지 업데이트 실패');
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('마지막 페이지 업데이트 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('마지막 페이지 업데이트 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<RecordInfo> getNotEndedRecord(BuildContext context) async {
-    final dio = await authDio(context);
-    RecordInfo recordInfo = const RecordInfo(
-      recordUuid: '',
-      bookUuid: '',
-      userUuid: '',
-      goalType: '',
-      goalScale: 0,
-      pageStart: 0,
-      pageEnd: 0,
-      totalTime: 0,
-      start: '',
-      end: '',
-      goalAchieved: false,
-      createdAt: '',
-    );
+  /// 진행 중인 기록 조회
+  static Future<RecordInfo> getNotEndedRecord() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/record/notended');
+      
       if (response.statusCode == 200) {
         if (response.data == null || response.data == '') {
-          return recordInfo;
+          return const RecordInfo(
+            recordUuid: '',
+            bookUuid: '',
+            userUuid: '',
+            goalType: '',
+            goalScale: 0,
+            pageStart: 0,
+            pageEnd: 0,
+            totalTime: 0,
+            start: '',
+            end: null,
+            goalAchieved: false,
+            createdAt: '',
+          );
         }
-        recordInfo = RecordInfo.fromJson(response.data);
+        return RecordInfo.fromJson(response.data);
       } else {
-        debugPrint('진행 중인 기록 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('진행 중인 기록 불러오기 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('진행 중인 기록 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return recordInfo;
   }
 
-  static Future<List<RecordInfo>> getAllRecord(BuildContext context) async {
-    final dio = await authDio(context);
-    List<RecordInfo> records = [];
+  /// 모든 기록 조회
+  static Future<List<RecordInfo>> getAllRecord() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/record/all');
+      
       if (response.statusCode == 200) {
-        for (var record in response.data) {
-          records.add(RecordInfo.fromJson(record));
-        }
+        return (response.data as List)
+            .map((record) => RecordInfo.fromJson(record))
+            .toList();
       } else {
-        debugPrint('모든 기록 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('모든 기록 불러오기 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('모든 기록 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return records;
   }
 
-  static Future<List<RecordInfo>> getEndedRecord(BuildContext context) async {
-    final dio = await authDio(context);
-    List<RecordInfo> records = [];
+  /// 종료된 기록 조회
+  static Future<List<RecordInfo>> getEndedRecord() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/record/ended');
+      
       if (response.statusCode == 200) {
-        for (var record in response.data) {
-          records.add(RecordInfo.fromJson(record));
-        }
+        return (response.data as List)
+            .map((record) => RecordInfo.fromJson(record))
+            .toList();
       } else {
-        debugPrint('지난 기록 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('지난 기록 불러오기 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('지난 기록 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return records;
   }
 
+  /// 마지막 페이지 조회
   static Future<int> getLastPage(
-    BuildContext context,
     String bookUuid,
     bool isBeforeRecord,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/record/last-page',
         queryParameters: {
@@ -362,50 +366,50 @@ class RecordService {
           'is_before_record': isBeforeRecord,
         },
       );
+      
       if (response.statusCode == 200) {
-        return int.parse(response.data);
+        return int.parse(response.data.toString());
       } else {
-        debugPrint('마지막 페이지 불러오기 실패');
-        return 0;
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('마지막 페이지 불러오기 실패: $e');
-      return 0;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('마지막 페이지 불러오기 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<List<int>> getRecordCount(
-    BuildContext context,
-    int count,
-  ) async {
-    List<int> result = [];
-    final dio = await authDio(context);
+  /// 기록 수 조회
+  static Future<List<int>> getRecordCount(int count) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/record/record-count',
         queryParameters: {
           'count': count,
         },
       );
+      
       if (response.statusCode == 200) {
-        result = response.data.map<int>((e) => e as int).toList();
+        return (response.data as List).map<int>((e) => e as int).toList();
       } else {
-        debugPrint('기록 수 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('기록 수 불러오기 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('기록 수 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return result;
   }
 
-  static Future<int> getDailyTotalTime(
-    BuildContext context,
-    int backDate,
-  ) async {
-    final dio = await authDio(context);
-    DateTime now = DateTime.now();
-    DateTime targetDate = now.subtract(Duration(days: backDate));
+  /// 일일 총 시간 조회
+  static Future<int> getDailyTotalTime(int backDate) async {
     try {
+      final dio = ApiClient.instance.dio;
+      final now = DateTime.now();
+      final targetDate = now.subtract(Duration(days: backDate));
       final response = await dio.get(
         '/record/daily-record',
         queryParameters: {
@@ -414,30 +418,28 @@ class RecordService {
           'date': targetDate.day,
         },
       );
+      
       if (response.statusCode == 200) {
-        return int.parse(response.data);
+        return int.parse(response.data.toString());
       } else {
-        debugPrint('일일 총 시간 불러오기 실패');
-        return 0;
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('일일 총 시간 불러오기 실패: $e');
-      return 0;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('일일 총 시간 불러오기 실패', e, stackTrace);
+      rethrow;
     }
   }
 
+  /// 월별 기록 조회
   static Future<MonthlyRecordInfo> getMonthlyRecord(
-    BuildContext context,
     int year,
     int month,
     String kind,
   ) async {
-    MonthlyRecordInfo result = const MonthlyRecordInfo(
-      presentMonth: 0,
-      pastMonth: 0,
-    );
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/record/monthly-count',
         queryParameters: {
@@ -446,26 +448,28 @@ class RecordService {
           'kind': kind,
         },
       );
+      
       if (response.statusCode == 200) {
-        result = MonthlyRecordInfo.fromJson(response.data);
+        return MonthlyRecordInfo.fromJson(response.data);
       } else {
-        debugPrint('월별 기록 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('월별 기록 불러오기 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('월별 기록 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return result;
   }
 
+  /// 주별 기록 조회
   static Future<List<List<BookRecordHistory>>> getWeeklyRecord(
-    BuildContext context,
-    int backWeek, //몇주 전인지
-    int weekday, //툐요일 6, 일요일 7, 월요일 1
+    int backWeek, // 몇주 전인지
+    int weekday, // 화요일 6, 일요일 7, 월요일 1
   ) async {
-    List<List<BookRecordHistory>> result = [];
-    int count = weekday == 7 ? 1 : weekday + 1;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
+      final count = weekday == 7 ? 1 : weekday + 1;
       final response = await dio.get(
         '/record/weekly-record',
         queryParameters: {
@@ -474,25 +478,27 @@ class RecordService {
           'today': DateTime.now().weekday % 7,
         },
       );
+      
       if (response.statusCode == 200) {
-        for (var records in response.data) {
-          List<BookRecordHistory> bookRecords = [];
-          for (var record in records) {
-            bookRecords.add(BookRecordHistory.fromJson(record));
-          }
-          result.add(bookRecords);
-        }
+        return (response.data as List)
+            .map<List<BookRecordHistory>>((records) {
+          return (records as List)
+              .map((record) => BookRecordHistory.fromJson(record))
+              .toList();
+        }).toList();
       } else {
-        debugPrint('주별 기록 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('주별 기록 불러오기 실패: $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('주별 기록 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return result;
   }
 
+  /// 읽기 완료 후 기록 추가
   static Future<String> addRecordAfterRead(
-    BuildContext context,
     String bookUuid,
     String goalType,
     int readTime,
@@ -501,8 +507,8 @@ class RecordService {
     DateTime startTime,
     DateTime endTime,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/record/add',
         data: {
@@ -515,15 +521,17 @@ class RecordService {
           'end_time': endTime.toIso8601String(),
         },
       );
+      
       if (response.statusCode == 201) {
         return response.data as String;
       } else {
-        debugPrint('기록 생성 실패');
-        return '';
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('기록 생성 실패: $e');
-      return '';
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('기록 생성 실패', e, stackTrace);
+      rethrow;
     }
   }
 }

@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class PhraseLibraryListCallback {
   final List<PhraseLibraryType> phraseLibraryList;
@@ -105,16 +107,16 @@ class PhraseInfo {
 }
 
 class PhraseService {
+  /// 새 문구 등록
   static Future<String> setNewPhrase(
-    BuildContext context,
     String bookUuid,
     String phrase,
     int page,
     bool remind,
     bool share,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/phrase',
         data: {
@@ -125,25 +127,27 @@ class PhraseService {
           'share': share,
         },
       );
+      
       if (response.statusCode == 201) {
         return response.data as String;
       } else {
-        debugPrint('문구 등록 실패');
-        return '';
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('문구 등록 실패 $e');
-      return '';
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('문구 등록 실패', e, stackTrace);
+      rethrow;
     }
   }
 
+  /// 문구만 수정
   static Future<void> updateOnlyPhrase(
-    BuildContext context,
     String phraseUuid,
     String phrase,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/phrase',
         queryParameters: {
@@ -151,87 +155,70 @@ class PhraseService {
           'phrase': phrase,
         },
       );
-      if (response.statusCode == 200) {
-        return;
-      } else {
-        debugPrint('문구 수정 실패');
-        return;
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('문구 수정 실패 $e');
-      return;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('문구 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<List<PhraseInfo>> getAllPhrase(
-    BuildContext context,
-  ) async {
-    final dio = await authDio(context);
+  /// 모든 문구 조회
+  static Future<List<PhraseInfo>> getAllPhrase() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/phrase/all');
+      
       if (response.statusCode == 200) {
-        final List<PhraseInfo> phraseList = [];
-        for (final phrase in response.data) {
-          phraseList.add(PhraseInfo.fromJson(phrase));
-        }
-        return phraseList;
+        return (response.data as List)
+            .map((phrase) => PhraseInfo.fromJson(phrase))
+            .toList();
       } else {
-        debugPrint('문구 불러오기 실패');
-        return [];
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('문구 불러오기 실패 $e');
-      return [];
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('문구 불러오기 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<PhraseInfo> findOnePhrase(
-    BuildContext context,
-    String phraseUuid,
-  ) async {
-    final dio = await authDio(context);
+  /// 문구 UUID로 조회
+  static Future<PhraseInfo> findOnePhrase(String phraseUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/phrase/find',
         queryParameters: {
           'phrase_uuid': phraseUuid,
         },
       );
+      
       if (response.statusCode == 200) {
         return PhraseInfo.fromJson(response.data);
       } else {
-        debugPrint('문구 불러오기 실패');
-        return const PhraseInfo(
-          phraseUuid: '',
-          bookUuid: '',
-          userUuid: '',
-          phrase: '',
-          page: 0,
-          remind: false,
-          createdAt: '',
-        );
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('문구 불러오기 실패 $e');
-      return const PhraseInfo(
-        phraseUuid: '',
-        bookUuid: '',
-        userUuid: '',
-        phrase: '',
-        page: 0,
-        remind: false,
-        createdAt: '',
-      );
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('문구 불러오기 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> updatePhraseRemind(
-    BuildContext context,
+  /// 문구 리마인드 설정 수정
+  static Future<void> updatePhraseRemind(
     String phraseUuid,
     bool remind,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/phrase/remind',
         queryParameters: {
@@ -239,92 +226,93 @@ class PhraseService {
           'remind': remind,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('문구 수정 실패');
-        return false;
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('문구 수정 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('문구 수정 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<bool> deletePhrase(
-    BuildContext context,
-    String phraseUuid,
-  ) async {
-    final dio = await authDio(context);
+  /// 문구 삭제
+  static Future<void> deletePhrase(String phraseUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.delete(
         '/phrase',
         queryParameters: {
           'phrase_uuid': phraseUuid,
         },
       );
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('문구 삭제 실패');
-        return false;
+      
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('문구 삭제 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('문구 삭제 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<PhraseLibraryListCallback> getPhraseForLibraryScreen(
-    BuildContext context,
-  ) async {
-    List<PhraseLibraryType> phraseLibraryList = [];
-    final dio = await authDio(context);
-    bool moreAvailable = false;
+  /// 서재 화면용 문구 목록 조회
+  static Future<PhraseLibraryListCallback> getPhraseForLibraryScreen() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/phrase/library/screen');
+      
       if (response.statusCode == 200) {
+        final List<PhraseLibraryType> phraseLibraryList = [];
         for (final phraseLibrary in response.data['library_phrase_list']) {
           phraseLibraryList.add(PhraseLibraryType.fromJson(phraseLibrary));
         }
-        moreAvailable = response.data['more_available'] as bool;
+        final moreAvailable = response.data['more_available'] as bool;
+        return PhraseLibraryListCallback(
+          phraseLibraryList: phraseLibraryList,
+          moreAvailable: moreAvailable,
+        );
       } else {
-        debugPrint('내 서재 문구 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('내 서재 문구 불러오기 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('내 서재 문구 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return PhraseLibraryListCallback(
-      phraseLibraryList: phraseLibraryList,
-      moreAvailable: moreAvailable,
-    );
   }
 
-  static Future<PhraseLibraryListCallback> getPhraseForPhraseScreen(
-    BuildContext context,
-    int page,
-  ) async {
-    List<PhraseLibraryType> phraseLibraryList = [];
-    final dio = await authDio(context);
-    bool moreAvailable = false;
+  /// 문구 화면용 문구 목록 조회
+  static Future<PhraseLibraryListCallback> getPhraseForPhraseScreen(int page) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/phrase/library/all', queryParameters: {
         'page': page,
       });
+      
       if (response.statusCode == 200) {
+        final List<PhraseLibraryType> phraseLibraryList = [];
         for (final phraseLibrary in response.data['library_phrase_list']) {
           phraseLibraryList.add(PhraseLibraryType.fromJson(phraseLibrary));
         }
-        moreAvailable = response.data['more_available'] as bool;
+        final moreAvailable = response.data['more_available'] as bool;
+        return PhraseLibraryListCallback(
+          phraseLibraryList: phraseLibraryList,
+          moreAvailable: moreAvailable,
+        );
       } else {
-        debugPrint('내 서재 문구 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('내 서재 문구 불러오기 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('내 서재 문구 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return PhraseLibraryListCallback(
-      phraseLibraryList: phraseLibraryList,
-      moreAvailable: moreAvailable,
-    );
   }
 }

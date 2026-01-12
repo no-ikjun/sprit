@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class NoticeInfo {
   final String noticeUuid;
@@ -37,67 +39,69 @@ class NoticeInfo {
 }
 
 class NoticeService {
-  static Future<List<NoticeInfo>> getNoticeList(BuildContext context) async {
-    final dio = await authDio(context);
-    List<NoticeInfo> noticeList = [];
+  /// 공지사항 목록 조회
+  static Future<List<NoticeInfo>> getNoticeList() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/notice/all');
+
       if (response.statusCode == 200) {
+        final List<NoticeInfo> noticeList = [];
         for (final json in response.data) {
           noticeList.add(NoticeInfo.fromJson(json));
         }
+        return noticeList;
       } else {
-        debugPrint('공지사항 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('공지사항 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('공지사항 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return noticeList;
   }
 
-  static Future<NoticeInfo> getNoticeInfo(
-    BuildContext context,
-    String noticeUuid,
-  ) async {
-    final dio = await authDio(context);
-    NoticeInfo noticeInfo = const NoticeInfo(
-      noticeUuid: '',
-      title: '',
-      body: '',
-      type: '',
-      createdAt: '',
-    );
+  /// 공지사항 상세 조회
+  static Future<NoticeInfo> getNoticeInfo(String noticeUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/notice/uuid',
         queryParameters: {
           'notice_uuid': noticeUuid,
         },
       );
+
       if (response.statusCode == 200) {
-        noticeInfo = NoticeInfo.fromJson(response.data);
+        return NoticeInfo.fromJson(response.data);
       } else {
-        debugPrint('공지사항 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('공지사항 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('공지사항 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return noticeInfo;
   }
 
-  static Future<String> getlatestNoticeUuid(BuildContext context) async {
-    final dio = await authDio(context);
-    String noticeUuid = '';
+  /// 최신 공지사항 UUID 조회
+  static Future<String> getlatestNoticeUuid() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/notice/latest');
+
       if (response.statusCode == 200) {
-        noticeUuid = response.data as String;
+        return response.data as String;
       } else {
-        debugPrint('최신 공지사항 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('최신 공지사항 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('최신 공지사항 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return noticeUuid;
   }
 }

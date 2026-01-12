@@ -10,35 +10,42 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<bool> stopRecord(
-  BuildContext context,
+Future<void> stopRecord(
   String recordUuid,
   int endPage,
   int totalTime,
 ) async {
-  return await RecordService.stopRecord(
-    context,
-    recordUuid,
-    endPage,
-    totalTime,
-  );
+  try {
+    await RecordService.stopRecord(
+      recordUuid,
+      endPage,
+      totalTime,
+    );
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
-Future<bool> updateGoalAchieved(
-  BuildContext context,
+Future<void> updateGoalAchieved(
   String recordUuid,
   bool isAchieved,
 ) async {
-  return await RecordService.updateGoalAchieved(
-    context,
-    recordUuid,
-    isAchieved,
-  );
+  try {
+    await RecordService.updateGoalAchieved(
+      recordUuid,
+      isAchieved,
+    );
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
-Future<int> getLastPage(
-    BuildContext context, String bookUuid, bool isBeforeRecord) async {
-  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
+Future<int> getLastPage(String bookUuid, bool isBeforeRecord) async {
+  try {
+    return await RecordService.getLastPage(bookUuid, isBeforeRecord);
+  } catch (e) {
+    return 0;
+  }
 }
 
 class EndPage extends StatefulWidget {
@@ -68,33 +75,30 @@ class _EndPageState extends State<EndPage> {
     if (goalScale <= endPage - startPage + 1) {
       isAchieved = true;
     }
-    await RecordService.updateGoalAchieved(
-      context,
-      recordUuid,
-      isAchieved,
-    ).then((value) {
-      if (value) {
-        stopRecord(
-          context,
-          context
-              .read<SelectedRecordInfoState>()
-              .getSelectedRecordInfo
-              .recordUuid,
-          endPage,
-          widget.time,
-        );
-        debugPrint(isAchieved.toString());
-        context.read<SelectedRecordInfoState>().updateEndPage(endPage);
-        context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
-      }
-    });
+    try {
+      await RecordService.updateGoalAchieved(
+        recordUuid,
+        isAchieved,
+      );
+      await stopRecord(
+        context
+            .read<SelectedRecordInfoState>()
+            .getSelectedRecordInfo
+            .recordUuid,
+        endPage,
+        widget.time,
+      );
+      context.read<SelectedRecordInfoState>().updateEndPage(endPage);
+      context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
+    } catch (e) {
+      // 에러 처리
+    }
   }
 
   @override
   void initState() {
     super.initState();
     getLastPage(
-      context,
       context.read<SelectedRecordInfoState>().getSelectedRecordInfo.bookUuid,
       false,
     ).then((value) {

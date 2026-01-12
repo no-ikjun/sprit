@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class VersionInfo {
   final String versionUuid;
@@ -41,28 +43,22 @@ class VersionInfo {
 }
 
 class VersionService {
-  static Future<VersionInfo> getLatestVersion(BuildContext context) async {
-    final dio = await authDio(context);
-    VersionInfo versionInfo = const VersionInfo(
-      versionUuid: '',
-      versionNumber: '',
-      buildNumber: '',
-      updateRequired: false,
-      description: '',
-      createdAt: '',
-    );
+  /// 최신 버전 정보 조회
+  static Future<VersionInfo> getLatestVersion() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/version');
+      
       if (response.statusCode == 200) {
-        versionInfo = VersionInfo.fromJson(response.data);
-        return versionInfo;
+        return VersionInfo.fromJson(response.data);
       } else {
-        debugPrint('버전 정보 불러오기 실패');
-        return versionInfo;
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('버전 정보 불러오기 실패 $e');
-      return versionInfo;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('버전 정보 불러오기 실패', e, stackTrace);
+      throw UnknownException.fromError(e);
     }
   }
 }

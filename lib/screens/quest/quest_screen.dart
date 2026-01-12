@@ -14,17 +14,16 @@ import 'package:sprit/screens/quest/widgets/ended_quest.dart';
 import 'package:sprit/screens/quest/widgets/my_quest.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
-Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
-  return await QuestService.getActiveQuests(context);
+Future<List<QuestInfo>> getActiveQuests() async {
+  return await QuestService.getActiveQuests();
 }
 
-Future<List<AppliedQuestResponse>> getMyActiveQuests(
-    BuildContext context) async {
-  return await QuestService.getMyActiveQuests(context);
+Future<List<AppliedQuestResponse>> getMyActiveQuests() async {
+  return await QuestService.getMyActiveQuests();
 }
 
-Future<List<QuestInfo>> getEndedQuest(BuildContext context) async {
-  return await QuestService.getEndedQuest(context);
+Future<List<QuestInfo>> getEndedQuest() async {
+  return await QuestService.getEndedQuest();
 }
 
 class QuestScreen extends StatefulWidget {
@@ -44,9 +43,9 @@ class _QuestScreenState extends State<QuestScreen> {
 
   Future<void> _fetchQuests() async {
     final results = await Future.wait([
-      getActiveQuests(context),
-      getMyActiveQuests(context),
-      getEndedQuest(context),
+      getActiveQuests(),
+      getMyActiveQuests(),
+      getEndedQuest(),
     ]);
     setState(() {
       activeQuests = results[0] as List<QuestInfo>;

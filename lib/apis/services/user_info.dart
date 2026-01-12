@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class UserInfoAll {
   final String userUuid;
@@ -54,95 +56,85 @@ class UserInfo {
 }
 
 class UserInfoService {
-  static Future<UserInfo?> getUserInfo(BuildContext context) async {
-    UserInfo? userInfo;
-    final dio = await authDio(context);
+  /// 유저 정보 조회
+  static Future<UserInfo?> getUserInfo() async {
     try {
-      final response = await dio.get(
-        '/user/info',
-      );
+      final dio = ApiClient.instance.dio;
+      final response = await dio.get('/user/info');
+
       if (response.statusCode == 200) {
-        userInfo = UserInfo.fromJson(response.data);
+        return UserInfo.fromJson(response.data);
       } else {
-        debugPrint('유저 정보 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('유저 정보 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('유저 정보 조회 실패', e, stackTrace);
+      throw UnknownException.fromError(e);
     }
-    return userInfo;
   }
 
-  static Future<UserInfoAll> getUserInfoAll(BuildContext context) async {
-    UserInfoAll userInfoAll;
-    final dio = await authDio(context);
+  /// 유저 전체 정보 조회
+  static Future<UserInfoAll> getUserInfoAll() async {
     try {
-      final response = await dio.get(
-        '/user/find',
-      );
+      final dio = ApiClient.instance.dio;
+      final response = await dio.get('/user/find');
+
       if (response.statusCode == 200) {
-        userInfoAll = UserInfoAll.fromJson(response.data);
+        return UserInfoAll.fromJson(response.data);
       } else {
-        debugPrint('유저 정보 조회 실패');
-        userInfoAll = const UserInfoAll(
-          userUuid: '',
-          userNickame: '',
-          userId: '',
-          registerType: '',
-          registeredAt: '',
-        );
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('유저 정보 조회 실패 $e');
-      userInfoAll = const UserInfoAll(
-        userUuid: '',
-        userNickame: '',
-        userId: '',
-        registerType: '',
-        registeredAt: '',
-      );
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('유저 정보 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return userInfoAll;
   }
 
-  static Future<void> changeNickname(
-    BuildContext context,
-    String nickname,
-  ) async {
-    final dio = await authDio(context);
+  /// 닉네임 변경
+  static Future<void> changeNickname(String nickname) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/user/nickname',
         queryParameters: {
           'nickname': nickname,
         },
       );
-      if (response.statusCode == 200) {
-      } else {
-        debugPrint('닉네임 변경 실패');
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('닉네임 변경 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('닉네임 변경 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<void> changePassword(
-    BuildContext context,
-    String password,
-  ) async {
-    final dio = await authDio(context);
+  /// 비밀번호 변경
+  static Future<void> changePassword(String password) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.patch(
         '/user/password',
         queryParameters: {
           'password': password,
         },
       );
-      if (response.statusCode == 200) {
-      } else {
-        debugPrint('비밀번호 변경 실패');
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('비밀번호 변경 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('비밀번호 변경 실패', e, stackTrace);
+      rethrow;
     }
   }
 }

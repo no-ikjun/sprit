@@ -24,7 +24,11 @@ Future<void> updateBookLibraryState(
   String bookUuid,
   String state,
 ) async {
-  await BookLibraryService.updateBookLibrary(context, bookUuid, state);
+  try {
+    await BookLibraryService.updateBookLibrary(bookUuid, state);
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
 class ReadCompleteScreen extends StatefulWidget {

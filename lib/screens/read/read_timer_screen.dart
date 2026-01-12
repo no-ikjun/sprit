@@ -22,11 +22,12 @@ import 'package:sprit/screens/read/widgets/selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
-Future<void> deleteRecordByUuid(
-  BuildContext context,
-  String recordUuid,
-) async {
-  return await RecordService.deleteRecord(context, recordUuid);
+Future<void> deleteRecordByUuid(String recordUuid) async {
+  try {
+    await RecordService.deleteRecord(recordUuid);
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
 class ReadTimerScreen extends StatefulWidget {
@@ -159,13 +160,11 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
       final now = DateTime.now().toUtc();
       final elapsedSeconds = now.difference(recordCreated).inSeconds;
       if (elapsedSeconds >= 24 * 60 * 60) {
-        await deleteRecordByUuid(
-          context,
-          context
-              .read<SelectedRecordInfoState>()
-              .getSelectedRecordInfo
-              .recordUuid,
-        ).then((value) {
+        await deleteRecordByUuid(context
+                .read<SelectedRecordInfoState>()
+                .getSelectedRecordInfo
+                .recordUuid)
+            .then((value) {
           context.read<SelectedRecordInfoState>().removeSelectedRecord();
           _stopTimer();
           _resetTimer();
@@ -450,7 +449,6 @@ class _ReadTimerScreenState extends State<ReadTimerScreen>
                                   Navigator.pop(context);
                                 }, onRightPressed: () async {
                                   await deleteRecordByUuid(
-                                    context,
                                     selectedRecordInfo.recordUuid,
                                   );
                                   context

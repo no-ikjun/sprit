@@ -19,11 +19,12 @@ import 'package:sprit/screens/splash/splash_screen.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/text_input.dart';
 
-Future<String> localLogin(
-  BuildContext context,
-  LoginUserInfo loginUserInfo,
-) async {
-  return await LocalAuthService.localLogin(context, loginUserInfo);
+Future<String> localLogin(LoginUserInfo loginUserInfo) async {
+  try {
+    return await LocalAuthService.localLogin(loginUserInfo);
+  } catch (e) {
+    return '';
+  }
 }
 
 Future<void> loginWithKaKao(BuildContext context) async {
@@ -31,7 +32,7 @@ Future<void> loginWithKaKao(BuildContext context) async {
     context,
   );
   if (token != null) {
-    final loginResult = await KakaoService.kakaoLogin(context, token);
+    final loginResult = await KakaoService.kakaoLogin(token);
     if (loginResult != '') {
       const storage = FlutterSecureStorage();
       await storage.write(
@@ -44,7 +45,7 @@ Future<void> loginWithKaKao(BuildContext context) async {
         (route) => false,
       );
       final fcmToken = await FirebaseMessaging.instance.getToken();
-      await registerFcmToken(context, fcmToken ?? '');
+      await registerFcmToken(fcmToken ?? '');
       context.read<FcmTokenState>().updateFcmToken(fcmToken ?? '');
     } else {
       debugPrint('카카오 로그인 실패');
@@ -79,7 +80,7 @@ Future<void> loginWithApple(
   AuthorizationCredentialAppleID appleCredential,
 ) async {
   try {
-    final loginResult = await AppleService.appleLogin(context, appleCredential);
+    final loginResult = await AppleService.appleLogin(appleCredential);
     if (loginResult != '') {
       const storage = FlutterSecureStorage();
       await storage.write(
@@ -92,7 +93,7 @@ Future<void> loginWithApple(
         (route) => false,
       );
       final fcmToken = await FirebaseMessaging.instance.getToken();
-      await registerFcmToken(context, fcmToken ?? '');
+      await registerFcmToken(fcmToken ?? '');
       context.read<FcmTokenState>().updateFcmToken(fcmToken ?? '');
     } else {
       debugPrint('애플 로그인 실패');
@@ -229,7 +230,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             validation = true;
                           });
                           final loginResult = await localLogin(
-                            context,
                             LoginUserInfo(
                               userId: _userId,
                               userPassword: _userPassword,
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             final fcmToken =
                                 await FirebaseMessaging.instance.getToken();
-                            await registerFcmToken(context, fcmToken ?? '');
+                            await registerFcmToken(fcmToken ?? '');
                             context
                                 .read<FcmTokenState>()
                                 .updateFcmToken(fcmToken ?? '');

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/notification.dart';
 import 'package:sprit/common/ui/color_set.dart';
@@ -9,77 +10,116 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/common/value/router.dart';
 import 'package:sprit/popups/notification/notification_confirm.dart';
+import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/screens/notification/widgets/control_menu.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
-Future<TimeAgreeInfo> getTimeAgreeInfo(
-  BuildContext context,
-) async {
-  return await NotificationService.getTimeAgreeInfo(context);
+Future<TimeAgreeInfo> getTimeAgreeInfo(String fcmToken) async {
+  try {
+    return await NotificationService.getTimeAgreeInfo(fcmToken);
+  } catch (e) {
+    return const TimeAgreeInfo(
+      agreeUuid: '',
+      agree01: false,
+      time01: 0,
+      agree02: false,
+    );
+  }
 }
 
-Future<RemindAgreeInfo> getRemindAgreeInfo(
-  BuildContext context,
-) async {
-  return await NotificationService.getRemindAgreeInfo(context);
+Future<RemindAgreeInfo> getRemindAgreeInfo(String fcmToken) async {
+  try {
+    return await NotificationService.getRemindAgreeInfo(fcmToken);
+  } catch (e) {
+    return const RemindAgreeInfo(
+      agreeUuid: '',
+      agree01: false,
+      time01: 0,
+    );
+  }
 }
 
-Future<QuestAgreeInfo> getQuestAgreeInfo(
-  BuildContext context,
-) async {
-  return await NotificationService.getQuestAgreeInfo(context);
+Future<QuestAgreeInfo> getQuestAgreeInfo(String fcmToken) async {
+  try {
+    return await NotificationService.getQuestAgreeInfo(fcmToken);
+  } catch (e) {
+    return const QuestAgreeInfo(
+      agreeUuid: '',
+      agree01: false,
+      agree02: false,
+      agree03: false,
+    );
+  }
 }
 
-Future<bool> getMarketingAgreeInfo(
-  BuildContext context,
-) async {
-  return await NotificationService.getMarketingAgree(context);
+Future<bool> getMarketingAgreeInfo(String fcmToken) async {
+  try {
+    return await NotificationService.getMarketingAgree(fcmToken);
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<bool> updateMarketingAgreeInfo(
-  BuildContext context,
+  String fcmToken,
   bool marketingAgree,
 ) async {
-  return await NotificationService.updateMarketingAgree(
-    context,
+  await NotificationService.updateMarketingAgree(
+    fcmToken,
     marketingAgree,
-  );
+  ).then((value) {
+    return true;
+  });
+  return false;
 }
 
 Future<bool> updateTimeAgreeInfo(
-    BuildContext context, bool agree01, int time01, bool agree02) async {
-  return await NotificationService.updateTimeAgree(
-    context,
+  String fcmToken,
+  bool agree01,
+  int time01,
+  bool agree02,
+) async {
+  await NotificationService.updateTimeAgree(
+    fcmToken,
     agree01,
     time01,
     agree02,
-  );
+  ).then((value) {
+    return true;
+  });
+  return false;
 }
 
 Future<bool> updateRemindAgreeInfo(
-  BuildContext context,
+  String fcmToken,
   bool agree01,
   int time01,
 ) async {
-  return await NotificationService.updateRemindAgree(
-    context,
+  await NotificationService.updateRemindAgree(
+    fcmToken,
     agree01,
     time01,
-  );
+  ).then((value) {
+    return true;
+  });
+  return false;
 }
 
 Future<bool> updateQuestAgreeInfo(
-  BuildContext context,
+  String fcmToken,
   bool agree01,
   bool agree02,
   bool agree03,
 ) async {
-  return await NotificationService.updateQuestAgree(
-    context,
+  await NotificationService.updateQuestAgree(
+    fcmToken,
     agree01,
     agree02,
     agree03,
-  );
+  ).then((value) {
+    return true;
+  });
+  return false;
 }
 
 class NotificationScreen extends StatefulWidget {
@@ -106,11 +146,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
     setState(() {
       isLoading = true;
     });
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
     final result = await Future.wait([
-      getTimeAgreeInfo(context),
-      getRemindAgreeInfo(context),
-      getQuestAgreeInfo(context),
-      getMarketingAgreeInfo(context),
+      getTimeAgreeInfo(fcmToken),
+      getRemindAgreeInfo(fcmToken),
+      getQuestAgreeInfo(fcmToken),
+      getMarketingAgreeInfo(fcmToken),
     ]);
     setState(() {
       TimeAgreeInfo timeAgreeInfo = result[0] as TimeAgreeInfo;
@@ -193,9 +234,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isWeeklyReportNotificationOn =
                                               !isWeeklyReportNotificationOn;
                                         });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateTimeAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           isReadingTimeNotificationOn,
                                           readingTime,
                                           isWeeklyReportNotificationOn,
@@ -225,9 +269,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isReadingTimeNotificationOn =
                                               !isReadingTimeNotificationOn;
                                         });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateTimeAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           isReadingTimeNotificationOn,
                                           readingTime,
                                           isWeeklyReportNotificationOn,
@@ -295,9 +342,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isReminderNotificationOn =
                                               !isReminderNotificationOn;
                                         });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateRemindAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           isReminderNotificationOn,
                                           reminderTime,
                                         );
@@ -365,9 +415,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isNewQuestNotificationOn =
                                               !isNewQuestNotificationOn;
                                         });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateQuestAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           isNewQuestNotificationOn,
                                           isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
@@ -395,9 +448,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isQuestEndNotificationOn =
                                               !isQuestEndNotificationOn;
                                         });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateQuestAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           isNewQuestNotificationOn,
                                           isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
@@ -426,9 +482,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           isQuestTimeNotificationOn =
                                               !isQuestTimeNotificationOn;
                                         });
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateQuestAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           isNewQuestNotificationOn,
                                           isQuestEndNotificationOn,
                                           isQuestTimeNotificationOn,
@@ -472,9 +531,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       switchValue: isMarketingNotificationOn,
                                       onClick: () async {
                                         HapticFeedback.lightImpact();
+                                        final fcmToken = context
+                                            .read<FcmTokenState>()
+                                            .fcmToken;
                                         final result =
                                             await updateMarketingAgreeInfo(
-                                          context,
+                                          fcmToken,
                                           !isMarketingNotificationOn,
                                         );
                                         if (result == true) {

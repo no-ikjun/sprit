@@ -80,7 +80,6 @@ class DeleteUser extends StatelessWidget {
                   prefs.clear();
                   //fcm token 삭제
                   await NotificationService.deleteFcmToken(
-                    context,
                     context.read<FcmTokenState>().fcmToken,
                   );
                   //로그인 화면으로 이동

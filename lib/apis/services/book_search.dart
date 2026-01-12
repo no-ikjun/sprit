@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class BookSearchResponse {
   final List<dynamic> books;
@@ -78,15 +80,13 @@ class BookSearchInfo {
 }
 
 class BookSearchService {
+  /// 도서 검색
   static Future<Map<String, dynamic>> searchBook(
-    BuildContext context,
     String query,
     int page,
   ) async {
-    List<BookSearchInfo> bookSearchInfoList = [];
-    bool isEnd = false;
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/book/search',
         queryParameters: {
@@ -94,21 +94,25 @@ class BookSearchService {
           'page': page.toString(),
         },
       );
+
       if (response.statusCode == 200) {
-        var result = BookSearchResponse.fromJson(response.data);
-        isEnd = result.isEnd;
+        final result = BookSearchResponse.fromJson(response.data);
+        final List<BookSearchInfo> bookSearchInfoList = [];
         for (var book in result.books) {
           bookSearchInfoList.add(BookSearchInfo.fromJson(book));
         }
+        return {
+          'search_list': bookSearchInfoList,
+          'is_end': result.isEnd,
+        };
       } else {
-        debugPrint('도서 검색 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('도서 검색 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('도서 검색 실패', e, stackTrace);
+      rethrow;
     }
-    return {
-      'search_list': bookSearchInfoList,
-      'is_end': isEnd,
-    };
   }
 }

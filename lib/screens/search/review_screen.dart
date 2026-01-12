@@ -10,17 +10,15 @@ import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/star_row.dart';
 
 Future<BookInfo> getBookInfoByUuid(
-  BuildContext context,
   String uuid,
 ) async {
-  return await BookInfoService.getBookInfoByUuid(context, uuid);
+  return await BookInfoService.getBookInfoByUuid(uuid);
 }
 
 Future<List<ReviewInfo>> getReviewByBookUuid(
-  BuildContext context,
   String bookUuid,
 ) async {
-  return await ReviewService().getReviewByBookUuid(context, bookUuid);
+  return await ReviewService.getReviewByBookUuid(bookUuid);
 }
 
 class ReviewScreen extends StatefulWidget {
@@ -56,11 +54,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
     setState(() {
       isLoading = true;
     });
-    await getBookInfoByUuid(context, bookUuid).then((value) {
+    await getBookInfoByUuid(bookUuid).then((value) {
       setState(() {
         bookInfo = value;
       });
-      getReviewByBookUuid(context, bookUuid).then((value) {
+      getReviewByBookUuid(bookUuid).then((value) {
         setState(() {
           reviews = value;
           isLoading = false;

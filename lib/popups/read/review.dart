@@ -12,13 +12,17 @@ import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/book_thumbnail.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<bool> setReview(
-  BuildContext context,
+Future<void> setReview(
   int score,
   String bookUuid,
   String content,
 ) async {
-  return await ReviewService.setReview(context, score, bookUuid, content);
+  try {
+    await ReviewService.setReview(score, bookUuid, content);
+  } catch (e) {
+    // 에러 처리
+    rethrow;
+  }
 }
 
 class ReviewModal extends StatefulWidget {
@@ -262,7 +266,6 @@ class _ReviewModalState extends State<ReviewModal> {
               },
             );
             await setReview(
-              context,
               score,
               context
                   .read<SelectedBookInfoState>()

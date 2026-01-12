@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class BannerInfo {
   final String bannerUuid;
@@ -26,20 +28,24 @@ class BannerInfo {
 }
 
 class BannerInfoService {
-  static Future<List<BannerInfo>> getBannerInfo(BuildContext context) async {
-    List<BannerInfo> bannerInfo = [];
-    final dio = await authDio(context);
+  /// 배너 정보 조회
+  static Future<List<BannerInfo>> getBannerInfo() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/banner');
+
       if (response.statusCode == 200) {
-        bannerInfo =
+        final List<BannerInfo> bannerInfo =
             (response.data as List).map((e) => BannerInfo.fromJson(e)).toList();
+        return bannerInfo;
       } else {
-        debugPrint('배너 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('배너 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('배너 조회 실패', e, stackTrace);
+      throw UnknownException.fromError(e);
     }
-    return bannerInfo;
   }
 }

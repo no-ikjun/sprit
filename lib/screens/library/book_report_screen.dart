@@ -15,11 +15,9 @@ import 'package:sprit/screens/library/widgets/report_selected_book.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
 Future<BookReportInfo> getBookReportByUuid(
-  BuildContext context,
   String reportUuid,
 ) async {
   return await BookReportService.getBookReportByBookReportUuid(
-    context,
     reportUuid,
   );
 }
@@ -71,7 +69,7 @@ class _BookReportScreenState extends State<BookReportScreen> {
   void initState() {
     super.initState();
     isLoading = true;
-    getBookReportByUuid(context, widget.reportUuid).then((value) {
+    getBookReportByUuid(widget.reportUuid).then((value) {
       setState(() {
         bookReportInfo = value;
         isLoading = false;
@@ -165,8 +163,7 @@ class _BookReportScreenState extends State<BookReportScreen> {
                             bookReportInfo.report,
                             bookReportInfo.bookReportUuid,
                             () {
-                              getBookReportByUuid(context, widget.reportUuid)
-                                  .then(
+                              getBookReportByUuid(widget.reportUuid).then(
                                 (value) {
                                   setState(() {
                                     bookReportInfo = value;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sprit/apis/auth_dio.dart';
+import 'package:sprit/core/network/api_client.dart';
 
 class CreateUserInfo {
   final String userId;
@@ -23,10 +24,9 @@ class LoginUserInfo {
 
 class LocalAuthService {
   static Future<String> localLogin(
-    BuildContext context,
     LoginUserInfo loginUserInfo,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.post(
         '/auth/login',

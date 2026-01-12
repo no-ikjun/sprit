@@ -11,12 +11,35 @@ import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
-Future<List<PhraseInfo>> getPhraseList(BuildContext context) async {
-  return await PhraseService.getAllPhrase(context);
+Future<List<PhraseInfo>> getPhraseList() async {
+  try {
+    return await PhraseService.getAllPhrase();
+  } catch (e) {
+    return [];
+  }
 }
 
-Future<BookInfo> getBookInfo(BuildContext context, String bookUuid) async {
-  return await BookInfoService.getBookInfoByUuid(context, bookUuid);
+Future<BookInfo> getBookInfo(String bookUuid) async {
+  try {
+    return await BookInfoService.getBookInfoByUuid(bookUuid);
+  } catch (e) {
+    return const BookInfo(
+      bookUuid: '',
+      isbn: '',
+      title: '',
+      authors: [],
+      publisher: '',
+      translators: [],
+      searchUrl: '',
+      thumbnail: '',
+      content: '',
+      publishedAt: '',
+      updatedAt: '',
+      score: 0,
+      star: 0,
+      starCount: 0,
+    );
+  }
 }
 
 class MentSettingScreen extends StatefulWidget {
@@ -36,9 +59,9 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
     setState(() {
       isLoading = true;
     });
-    await getPhraseList(context).then((value) async {
+    await getPhraseList().then((value) async {
       for (var element in value) {
-        await getBookInfo(context, element.bookUuid).then((value) {
+        await getBookInfo(element.bookUuid).then((value) {
           bookInfoList.add(value);
           setState(() {
             switchValueList.add(element.remind);
@@ -194,7 +217,6 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                         i < phraseList.length;
                                         i++) {
                                       await PhraseService.updatePhraseRemind(
-                                        context,
                                         phraseList[i].phraseUuid,
                                         switchValueList[i],
                                       );
@@ -226,7 +248,6 @@ class _MentSettingScreenState extends State<MentSettingScreen> {
                                         i < phraseList.length;
                                         i++) {
                                       await PhraseService.updatePhraseRemind(
-                                        context,
                                         phraseList[i].phraseUuid,
                                         switchValueList[i],
                                       );

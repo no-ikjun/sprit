@@ -15,7 +15,11 @@ import 'package:sprit/providers/user_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<String> getLatestNoticeUuid(BuildContext context) async {
-  return await NoticeService.getlatestNoticeUuid(context);
+  try {
+    return await NoticeService.getlatestNoticeUuid();
+  } catch (e) {
+    return '';
+  }
 }
 
 class NavDrawer extends StatelessWidget {

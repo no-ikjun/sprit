@@ -8,11 +8,18 @@ import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
-Future<NoticeInfo> getNoticeInfo(
-  BuildContext context,
-  String recordUuid,
-) async {
-  return await NoticeService.getNoticeInfo(context, recordUuid);
+Future<NoticeInfo> getNoticeInfo(String recordUuid) async {
+  try {
+    return await NoticeService.getNoticeInfo(recordUuid);
+  } catch (e) {
+    return const NoticeInfo(
+      noticeUuid: '',
+      title: '',
+      body: '',
+      type: '',
+      createdAt: '',
+    );
+  }
 }
 
 class NoticeDetailScreen extends StatefulWidget {
@@ -27,7 +34,7 @@ class _NoticeDetailScreenState extends State<NoticeDetailScreen> {
   NoticeInfo? noticeInfo;
 
   void _getNoticeInfo() async {
-    final info = await getNoticeInfo(context, widget.recordUuid);
+    final info = await getNoticeInfo(widget.recordUuid);
     if (mounted) {
       setState(() {
         noticeInfo = info;

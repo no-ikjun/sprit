@@ -11,11 +11,13 @@ import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 Future<bool> setBookReport(
-  BuildContext context,
   String bookUuid,
   String report,
 ) async {
-  return await BookReportService.setNewBookReport(context, bookUuid, report);
+  await BookReportService.setNewBookReport(bookUuid, report).then((value) {
+    return true;
+  });
+  return false;
 }
 
 class BookReportModal extends StatefulWidget {
@@ -53,7 +55,7 @@ class _BookReportModalState extends State<BookReportModal> {
       isSubmitted = true;
       isLoading = true;
     });
-    setBookReport(context, widget.bookUuid, bookReport).then((value) {
+    setBookReport(widget.bookUuid, bookReport).then((value) {
       if (value != false) {
         setState(() {
           isLoading = false;

@@ -5,11 +5,8 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<void> deletePhrase(
-  BuildContext context,
-  String phraseUuid,
-) async {
-  await PhraseService.deletePhrase(context, phraseUuid);
+Future<void> deletePhrase(String phraseUuid) async {
+  await PhraseService.deletePhrase(phraseUuid);
 }
 
 class DeletePhrase extends StatelessWidget {
@@ -75,9 +72,9 @@ class DeletePhrase extends StatelessWidget {
                 color: ColorSet.red.withOpacity(0.7),
                 borderColor: ColorSet.red.withOpacity(0.2),
                 onPressed: () async {
-                  await deletePhrase(context, phraseUuid);
-                  Navigator.pop(context);
+                  await deletePhrase(phraseUuid);
                   callback();
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   '문구 삭제',

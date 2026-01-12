@@ -95,7 +95,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     });
                     return;
                   } else {
-                    await UserInfoService.changePassword(context, newPassword);
+                    await UserInfoService.changePassword(newPassword);
                     setState(() {
                       isChanged = true;
                     });

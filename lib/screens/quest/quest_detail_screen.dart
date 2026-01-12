@@ -40,7 +40,7 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
     setState(() {
       isLoading = true;
     });
-    QuestService.findQuestByUuid(context, widget.questUuid).then((value) {
+    QuestService.findQuestByUuid(widget.questUuid).then((value) {
       setState(() {
         questInfo = value;
         isLoading = false;

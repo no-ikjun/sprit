@@ -7,12 +7,20 @@ import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
 import 'package:sprit/common/util/functions.dart';
 
-Future<List<int>> getRecordCount(BuildContext context, int count) async {
-  return await RecordService.getRecordCount(context, count);
+Future<List<int>> getRecordCount(int count) async {
+  try {
+    return await RecordService.getRecordCount(count);
+  } catch (e) {
+    return [];
+  }
 }
 
-Future<int> getDailyTotalTime(BuildContext context, int backDate) async {
-  return await RecordService.getDailyTotalTime(context, backDate);
+Future<int> getDailyTotalTime(int backDate) async {
+  try {
+    return await RecordService.getDailyTotalTime(backDate);
+  } catch (e) {
+    return 0;
+  }
 }
 
 class GrassWidget extends StatefulWidget {
@@ -40,7 +48,7 @@ class _GrassWidgetState extends State<GrassWidget> {
 
   Future<void> _getData() async {
     final results = await Future.wait([
-      getRecordCount(context, _recordDays),
+      getRecordCount(_recordDays),
     ]);
     setState(() {
       _recordCount.addAll(results[0]);
@@ -61,8 +69,8 @@ class _GrassWidgetState extends State<GrassWidget> {
       int minBackDate = _recordDays -
           1 -
           _recordCount.indexWhere((element) => element == _maxAndMin[1]);
-      int maxTotalTime = await getDailyTotalTime(context, maxBackDate);
-      int minTotalTime = await getDailyTotalTime(context, minBackDate);
+      int maxTotalTime = await getDailyTotalTime(maxBackDate);
+      int minTotalTime = await getDailyTotalTime(minBackDate);
       setState(() {
         _dailyTotalTime[0] = maxTotalTime;
         _dailyTotalTime[1] = minTotalTime;

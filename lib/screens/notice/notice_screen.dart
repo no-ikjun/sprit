@@ -23,7 +23,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
   List<NoticeInfo> noticeList = [];
 
   void _getNoticeList() async {
-    final list = await NoticeService.getNoticeList(context);
+    final list = await NoticeService.getNoticeList();
     context.read<NewNoticeState>().updateNewNotice(false);
     if (mounted) {
       setState(() {

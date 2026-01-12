@@ -10,7 +10,14 @@ Future<PhraseLibraryListCallback> getPhraseLibraryList(
   BuildContext context,
   int page,
 ) async {
-  return await PhraseService.getPhraseForPhraseScreen(context, page);
+  try {
+    return await PhraseService.getPhraseForPhraseScreen(page);
+  } catch (e) {
+    return PhraseLibraryListCallback(
+      phraseLibraryList: [],
+      moreAvailable: false,
+    );
+  }
 }
 
 class LibraryPhraseScreen extends StatefulWidget {

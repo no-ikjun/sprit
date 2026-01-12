@@ -48,7 +48,7 @@ class _GraphBookRecordState extends State<GraphBookRecord> {
     setState(() {
       isLoading = true;
     });
-    BookInfoService.getBookInfoByUuid(context, widget.bookUuid).then((value) {
+    BookInfoService.getBookInfoByUuid(widget.bookUuid).then((value) {
       setState(() {
         bookInfo = value;
         isLoading = false;

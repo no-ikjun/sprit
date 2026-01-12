@@ -27,14 +27,12 @@ import 'package:sprit/widgets/remove_glow.dart';
 import 'package:sprit/widgets/toggle_button.dart';
 
 Future<String> setRecord(
-  BuildContext context,
   String bookUuid,
   String goalType,
   int goalScale,
   int startPage,
 ) async {
   return await RecordService.setNewRecord(
-    context,
     bookUuid,
     goalType,
     goalScale,
@@ -42,43 +40,69 @@ Future<String> setRecord(
   );
 }
 
-Future<RecordInfo> getRecordInfoByUuid(
-  BuildContext context,
-  String recordUuid,
-) async {
-  return await RecordService.getRecordByRecordUuid(context, recordUuid);
+Future<RecordInfo> getRecordInfoByUuid(String recordUuid) async {
+  try {
+    return await RecordService.getRecordByRecordUuid(recordUuid);
+  } catch (e) {
+    return const RecordInfo(
+      recordUuid: '',
+      bookUuid: '',
+      userUuid: '',
+      goalType: '',
+      goalScale: 0,
+      pageStart: 0,
+      pageEnd: 0,
+      totalTime: 0,
+      start: '',
+      end: null,
+      goalAchieved: false,
+      createdAt: '',
+    );
+  }
 }
 
 Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
   String uuid,
 ) async {
-  return await BookInfoService.getBookInfoByUuid(context, uuid);
+  return await BookInfoService.getBookInfoByUuid(uuid);
 }
 
 Future<List<BookInfo>> getBookList(BuildContext context, String state) async {
-  return await BookLibraryService.getBookLibrary(context, state);
+  try {
+    return await BookLibraryService.getBookLibrary(state);
+  } catch (e) {
+    return [];
+  }
 }
 
 Future<bool> updateBookLibrary(
-  BuildContext context,
   String bookUuid,
   String state,
 ) async {
-  final BookLibraryInfo bookLibraryInfo =
-      await BookLibraryService.findBookLibrary(context, bookUuid);
-  if (bookLibraryInfo.libraryRegisterUuid == '') {
-    return await BookLibraryService.setBookLibrary(context, bookUuid, state);
+  try {
+    final BookLibraryInfo bookLibraryInfo =
+        await BookLibraryService.findBookLibrary(bookUuid);
+    if (bookLibraryInfo.libraryRegisterUuid == '') {
+      await BookLibraryService.setBookLibrary(bookUuid, state);
+    } else {
+      await BookLibraryService.updateBookLibrary(bookUuid, state);
+    }
+    return true;
+  } catch (e) {
+    return false;
   }
-  return await BookLibraryService.updateBookLibrary(context, bookUuid, state);
 }
 
 Future<int> getLastPage(
-  BuildContext context,
   String bookUuid,
   bool isBeforeRecord,
 ) async {
-  return await RecordService.getLastPage(context, bookUuid, isBeforeRecord);
+  try {
+    return await RecordService.getLastPage(bookUuid, isBeforeRecord);
+  } catch (e) {
+    return 0;
+  }
 }
 
 class RecordSettingScreen extends StatefulWidget {
@@ -129,7 +153,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
         isBookSelected = true;
       });
       selectBook(context, widget.bookUuid);
-      getLastPage(context, widget.bookUuid, true).then((value) {
+      getLastPage(widget.bookUuid, true).then((value) {
         setState(() {
           lastPage = value;
         });
@@ -420,7 +444,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                                       index],
                                                                 );
                                                             getLastPage(
-                                                              context,
                                                               bookInfoList[
                                                                       index]
                                                                   .bookUuid,
@@ -836,7 +859,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                 startingRecord = true;
                                               });
                                               await setRecord(
-                                                context,
                                                 context
                                                     .read<
                                                         SelectedBookInfoState>()
@@ -848,8 +870,8 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               ).then((value) async {
                                                 if (value != '') {
                                                   await getRecordInfoByUuid(
-                                                          context, value)
-                                                      .then(
+                                                    value,
+                                                  ).then(
                                                     (value) {
                                                       context
                                                           .read<
@@ -861,7 +883,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                         RouteName.readTimer,
                                                       );
                                                       updateBookLibrary(
-                                                        context,
                                                         context
                                                             .read<
                                                                 SelectedBookInfoState>()
@@ -1178,7 +1199,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                 startingRecord = true;
                                               });
                                               await setRecord(
-                                                context,
                                                 context
                                                     .read<
                                                         SelectedBookInfoState>()
@@ -1190,7 +1210,7 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                               ).then((value) async {
                                                 if (value != '') {
                                                   await getRecordInfoByUuid(
-                                                          context, value)
+                                                          value)
                                                       .then(
                                                     (value) {
                                                       context
@@ -1203,7 +1223,6 @@ class _RecordSettingScreenState extends State<RecordSettingScreen> {
                                                         RouteName.readTimer,
                                                       );
                                                       updateBookLibrary(
-                                                        context,
                                                         context
                                                             .read<
                                                                 SelectedBookInfoState>()

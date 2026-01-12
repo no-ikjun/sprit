@@ -13,10 +13,8 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/library_phrase_widget.dart';
 
-Future<PhraseLibraryListCallback> getPhraseForLibraryScreen(
-  BuildContext context,
-) async {
-  return await PhraseService.getPhraseForLibraryScreen(context);
+Future<PhraseLibraryListCallback> getPhraseForLibraryScreen() async {
+  return await PhraseService.getPhraseForLibraryScreen();
 }
 
 class MyPhraseComponent extends StatefulWidget {
@@ -30,7 +28,7 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
   List<PhraseLibraryType> phraseInfoList = [];
 
   void _initialize() async {
-    await getPhraseForLibraryScreen(context).then((value) {
+    await getPhraseForLibraryScreen().then((value) {
       setState(() {
         phraseInfoList = value.phraseLibraryList;
       });
@@ -115,9 +113,7 @@ class _MyPhraseComponentState extends State<MyPhraseComponent> {
                             setState(() {
                               phraseInfoList = [];
                             });
-                            await getPhraseForLibraryScreen(
-                              context,
-                            ).then((value) {
+                            await getPhraseForLibraryScreen().then((value) {
                               setState(() {
                                 phraseInfoList = value.phraseLibraryList;
                               });

@@ -86,7 +86,7 @@ class _ChangeNicknameState extends State<ChangeNickname> {
                     });
                     return;
                   } else {
-                    await UserInfoService.changeNickname(context, _nickname);
+                    await UserInfoService.changeNickname(_nickname);
                     setState(() {
                       isChanged = true;
                     });

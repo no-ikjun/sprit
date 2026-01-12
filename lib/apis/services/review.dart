@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
 import 'package:sprit/apis/services/book.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class ReviewInfo {
   final String reviewUuid;
@@ -36,14 +38,14 @@ class ReviewInfo {
 }
 
 class ReviewService {
+  /// 리뷰 생성
   static Future<bool> setReview(
-    BuildContext context,
     int score,
     String bookUuid,
     String content,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/review',
         data: {
@@ -52,38 +54,43 @@ class ReviewService {
           'content': content,
         },
       );
+      
       if (response.statusCode == 201) {
         return true;
       } else {
-        debugPrint('리뷰 생성 실패');
-        return false;
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('리뷰 생성 실패 $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('리뷰 생성 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  Future<List<ReviewInfo>> getReviewByBookUuid(
-      BuildContext context, String bookUuid) async {
-    List<ReviewInfo> reviews = [];
-    final dio = await authDio(context);
+  /// 도서 UUID로 리뷰 목록 조회
+  static Future<List<ReviewInfo>> getReviewByBookUuid(String bookUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/review',
         queryParameters: {
           'book_uuid': bookUuid,
         },
       );
+      
       if (response.statusCode == 200) {
-        reviews =
-            (response.data as List).map((e) => ReviewInfo.fromJson(e)).toList();
+        return (response.data as List)
+            .map((e) => ReviewInfo.fromJson(e))
+            .toList();
       } else {
-        debugPrint('리뷰 불러오기 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('리뷰 불러오기 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('리뷰 불러오기 실패', e, stackTrace);
+      rethrow;
     }
-    return reviews;
   }
 }

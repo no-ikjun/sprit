@@ -1,19 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:scaler/scaler.dart';
 import 'package:sprit/apis/services/notification.dart';
 import 'package:sprit/common/ui/color_set.dart';
 import 'package:sprit/common/ui/text_styles.dart';
+import 'package:sprit/providers/fcm_token.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<TimeAgreeInfo> getTimeAgreeInfo(BuildContext context) async {
-  return await NotificationService.getTimeAgreeInfo(context);
+Future<TimeAgreeInfo> getTimeAgreeInfo(String fcmToken) async {
+  try {
+    return await NotificationService.getTimeAgreeInfo(fcmToken);
+  } catch (e) {
+    return const TimeAgreeInfo(
+      agreeUuid: '',
+      agree01: false,
+      time01: 0,
+      agree02: false,
+    );
+  }
 }
 
-Future<bool> updateOnlyTime(BuildContext context, int time) async {
-  return await NotificationService.updateOnlyTime(context, time);
+Future<bool> updateOnlyTime(String fcmToken, int time) async {
+  await NotificationService.updateOnlyTime(fcmToken, time).then((value) {
+    return true;
+  });
+  return false;
 }
 
 class TimeSettingScreen extends StatefulWidget {
@@ -34,7 +48,8 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
     setState(() {
       isLoading = true;
     });
-    getTimeAgreeInfo(context).then((value) {
+    final fcmToken = context.read<FcmTokenState>().fcmToken;
+    getTimeAgreeInfo(fcmToken).then((value) {
       setState(() {
         if (value.time01 > 12) {
           setState(() {
@@ -196,7 +211,9 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                                   isLoading = true;
                                 });
                                 const time = 20;
-                                await updateOnlyTime(context, time)
+                                final fcmToken =
+                                    context.read<FcmTokenState>().fcmToken;
+                                await updateOnlyTime(fcmToken, time)
                                     .then((value) async {
                                   if (value) {
                                     setState(() {
@@ -229,7 +246,9 @@ class _TimeSettingScreenState extends State<TimeSettingScreen> {
                                 final time = _selectedSectionIndex == 0
                                     ? _selectedTimeIndex + 1
                                     : _selectedTimeIndex + 13;
-                                await updateOnlyTime(context, time)
+                                final fcmToken =
+                                    context.read<FcmTokenState>().fcmToken;
+                                await updateOnlyTime(fcmToken, time)
                                     .then((value) async {
                                   if (value) {
                                     setState(() {

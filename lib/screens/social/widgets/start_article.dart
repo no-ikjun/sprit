@@ -47,10 +47,10 @@ class _StartArticleState extends State<StartArticle> {
     });
     final String myUserUuid = context.read<UserInfoState>().userInfo.userUuid;
     final results = await Future.wait([
-      ProfileService.getProfileInfo(context, widget.userUuid),
-      BookInfoService.getBookInfoByUuid(context, widget.bookUuid),
-      ArticleService.getLikeCount(context, widget.articleUuid),
-      ArticleService.checkLike(context, widget.articleUuid, myUserUuid),
+      ProfileService.getProfileInfo(widget.userUuid),
+      BookInfoService.getBookInfoByUuid(widget.bookUuid),
+      ArticleService.getLikeCount(widget.articleUuid),
+      ArticleService.checkLike(widget.articleUuid, myUserUuid),
     ]);
     setState(() {
       profileInfo = results[0] as ProfileInfo;
@@ -284,13 +284,11 @@ class _StartArticleState extends State<StartArticle> {
                             context.read<UserInfoState>().userInfo.userUuid;
                         if (isLiked) {
                           await ArticleService.unlikeArticle(
-                            context,
                             widget.articleUuid,
                             myUserUuid,
                           );
                         } else {
                           await ArticleService.likeArticle(
-                            context,
                             widget.articleUuid,
                             myUserUuid,
                           );

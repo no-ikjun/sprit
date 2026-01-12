@@ -21,7 +21,6 @@ Future<BookLibraryByStateListCallback> getBookLibraryByState(
   int page,
 ) async {
   return await BookLibraryService.getBookLibraryByState(
-    context,
     stateList,
     page,
   );

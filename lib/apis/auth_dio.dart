@@ -7,6 +7,10 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:sprit/screens/login/login_screen.dart";
 
+/// @deprecated Use ApiClient.instance.dio instead
+/// This function will be removed in a future version.
+/// Migrate to: ApiClient.instance.dio
+@Deprecated('Use ApiClient.instance.dio instead')
 Future<Dio> authDio(BuildContext context, {String? contentType}) async {
   var dio = Dio();
   dio.options.baseUrl = (kReleaseMode)

@@ -154,18 +154,21 @@ class _SavePageState extends State<SavePage> {
                 height: 50,
                 onPressed: () async {
                   if (endPage != 0) {
-                    await RecordService.updatePageEnd(
-                      context,
-                      widget.recordUuid,
-                      endPage,
-                    );
-                    Navigator.pop(context);
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RouteName.readComplete,
-                      (route) => false,
-                      arguments: widget.timeArgument,
-                    );
+                    try {
+                      await RecordService.updatePageEnd(
+                        widget.recordUuid,
+                        endPage,
+                      );
+                      Navigator.pop(context);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RouteName.readComplete,
+                        (route) => false,
+                        arguments: widget.timeArgument,
+                      );
+                    } catch (e) {
+                      // 에러 처리
+                    }
                   }
                 },
                 child: const Text('확인', style: TextStyles.buttonLabelStyle),

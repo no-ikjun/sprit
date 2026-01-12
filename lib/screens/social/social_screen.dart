@@ -19,16 +19,19 @@ import 'package:sprit/widgets/remove_glow.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:sprit/widgets/scalable_inkwell.dart';
 
-Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
-  return await QuestService.getActiveQuests(context);
+Future<List<QuestInfo>> getActiveQuests() async {
+  return await QuestService.getActiveQuests();
 }
 
 Future<List<ArticleInfo>> getArticleList(
-  BuildContext context,
   String userUuid,
   int page,
 ) async {
-  return await ArticleService.getArticleList(context, userUuid, page);
+  try {
+    return await ArticleService.getArticleList(userUuid, page);
+  } catch (e) {
+    return [];
+  }
 }
 
 class SocialScreen extends StatefulWidget {
@@ -62,8 +65,8 @@ class _SocialScreenState extends State<SocialScreen> {
       final int pageToLoad = refresh ? 1 : currentPage;
 
       final results = await Future.wait([
-        getActiveQuests(context),
-        getArticleList(context, userUuid, pageToLoad),
+        getActiveQuests(),
+        getArticleList(userUuid, pageToLoad),
       ]);
 
       final fetchedQuests = results[0] as List<QuestInfo>;

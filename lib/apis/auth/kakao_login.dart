@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_talk/kakao_flutter_sdk_talk.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:sprit/core/network/api_client.dart';
 
 class KakaoAuthTokenInfo {
   final String accessToken;
@@ -62,10 +62,9 @@ class KakaoService {
   }
 
   static Future<String> kakaoLogin(
-    BuildContext context,
     OAuthToken authToken,
   ) async {
-    final dio = await authDio(context);
+    final dio = ApiClient.instance.dio;
     try {
       final response = await dio.post('/auth/login/kakao', data: {
         'access_token': authToken.accessToken,

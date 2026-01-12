@@ -37,23 +37,43 @@ import 'package:scrolls_to_top/scrolls_to_top.dart';
 
 //현재 독서 중인 책 정보 불러오기
 Future<List<BookInfo>> getReadingBookInfo(BuildContext context) async {
-  return await BookLibraryService.getBookLibrary(context, 'READING');
+  try {
+    return await BookLibraryService.getBookLibrary('READING');
+  } catch (e) {
+    return [];
+  }
 }
 
 //읽고있는 책 정보 삭제
 Future<bool> deleteBook(BuildContext context, String bookUuid) async {
-  return await BookLibraryService.deleteBookLibrary(context, bookUuid);
+  try {
+    await BookLibraryService.deleteBookLibrary(bookUuid);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 //유저 정보 context 업데이트
 void updateUserInfo(BuildContext context) async {
-  final userInfo = await UserInfoService.getUserInfo(context);
-  context.read<UserInfoState>().updateUserInfo(userInfo!);
+  try {
+    final userInfo = await UserInfoService.getUserInfo();
+    if (userInfo != null) {
+      context.read<UserInfoState>().updateUserInfo(userInfo);
+    }
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
 //배너 정보 불러오기
 Future<List<BannerInfo>> getBannerInfo(BuildContext context) async {
-  return await BannerInfoService.getBannerInfo(context);
+  try {
+    return await BannerInfoService.getBannerInfo();
+  } catch (e) {
+    // 에러 처리 - 빈 리스트 반환
+    return [];
+  }
 }
 
 //요즘 인기있는 책 정보 불러오기
@@ -61,32 +81,43 @@ Future<Map<String, dynamic>> getPopularBook(
   BuildContext context,
   int page,
 ) async {
-  return await BookInfoService.getPopularBook(context, page);
+  try {
+    return await BookInfoService.getPopularBook(page);
+  } catch (e) {
+    return {'books': [], 'more_available': false};
+  }
 }
 
 //가장 최근에 올라온 공지사항 uuid 불러오기
 Future<String> getLatestNoticeUuid(BuildContext context) async {
-  return await NoticeService.getlatestNoticeUuid(context);
+  try {
+    return await NoticeService.getlatestNoticeUuid();
+  } catch (e) {
+    return '';
+  }
 }
 
 //최신 앱 버전 정보 불러오기
 Future<void> getLatestVersion(BuildContext context) async {
-  final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  final VersionInfo versionInfo =
-      await VersionService.getLatestVersion(context);
-  if (packageInfo.version == versionInfo.versionNumber &&
-      packageInfo.buildNumber.toString() == versionInfo.buildNumber) {
-    return;
-  } else {
-    if (versionInfo.updateRequired) {
-      showModal(
-        context,
-        VersionCheck(
-          functions: versionInfo.description.split('&&'),
-        ),
-        false,
-      );
+  try {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final VersionInfo versionInfo = await VersionService.getLatestVersion();
+    if (packageInfo.version == versionInfo.versionNumber &&
+        packageInfo.buildNumber.toString() == versionInfo.buildNumber) {
+      return;
+    } else {
+      if (versionInfo.updateRequired) {
+        showModal(
+          context,
+          VersionCheck(
+            functions: versionInfo.description.split('&&'),
+          ),
+          false,
+        );
+      }
     }
+  } catch (e) {
+    // 에러 발생 시 버전 체크 스킵
   }
 }
 
@@ -116,7 +147,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _onRefresh() async {
     final results = await Future.wait([
       getReadingBookInfo(context),
-      UserInfoService.getUserInfo(context),
+      UserInfoService.getUserInfo(),
       getBannerInfo(context),
       getPopularBook(context, 1),
       getLatestNoticeUuid(context),

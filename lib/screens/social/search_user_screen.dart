@@ -13,22 +13,24 @@ import 'package:sprit/screens/social/widgets/profile_widget.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
 Future<List<ProfileInfo>> getProfileList(
-  BuildContext context,
   String userUuid,
 ) async {
-  return await ProfileService.getRecommendProfile(context, userUuid);
+  try {
+    return await ProfileService.getRecommendProfile(userUuid);
+  } catch (e) {
+    return [];
+  }
 }
 
 Future<List<ProfileInfo>> searchProfile(
-  BuildContext context,
   String searchValue,
   String userUuid,
 ) async {
-  return await ProfileService.searchProfile(
-    context,
-    searchValue,
-    userUuid,
-  );
+  try {
+    return await ProfileService.searchProfile(searchValue, userUuid);
+  } catch (e) {
+    return [];
+  }
 }
 
 class SearchUserScreen extends StatefulWidget {
@@ -70,9 +72,9 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
     List<ProfileInfo> result = [];
 
     if (searchValue.isEmpty) {
-      result = await getProfileList(context, userUuid);
+      result = await getProfileList(userUuid);
     } else {
-      result = await searchProfile(context, searchValue, userUuid);
+      result = await searchProfile(searchValue, userUuid);
     }
 
     if (mounted) {

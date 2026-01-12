@@ -1,137 +1,147 @@
-import 'package:flutter/material.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
 import 'package:sprit/apis/services/profile.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class FollowService {
+  /// 팔로우
   static Future<void> follow(
-    BuildContext context,
-    String follwerUuid,
+    String followerUuid,
     String followeeUuid,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post('/follow', data: {
-        'follower_uuid': follwerUuid,
+        'follower_uuid': followerUuid,
         'followee_uuid': followeeUuid,
       });
-      if (response.statusCode == 201) {
-        debugPrint('팔로우 성공');
-      } else {
-        debugPrint('팔로우 실패');
+
+      if (response.statusCode != 201) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('팔로우 실패 : $e');
+      AppLogger.info('팔로우 성공');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('팔로우 실패', e, stackTrace);
+      rethrow;
     }
   }
 
+  /// 언팔로우
   static Future<void> unfollow(
-    BuildContext context,
-    String follwerUuid,
+    String followerUuid,
     String followeeUuid,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.delete('/follow', data: {
-        'follower_uuid': follwerUuid,
+        'follower_uuid': followerUuid,
         'followee_uuid': followeeUuid,
       });
-      if (response.statusCode == 200) {
-        debugPrint('언팔로우 성공');
-      } else {
-        debugPrint('언팔로우 실패');
+
+      if (response.statusCode != 200) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('언팔로우 실패 : $e');
+      AppLogger.info('언팔로우 성공');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('언팔로우 실패', e, stackTrace);
+      rethrow;
     }
   }
 
+  /// 팔로우 상태 확인
   static Future<bool> checkFollowing(
-    BuildContext context,
-    String follwerUuid,
+    String followerUuid,
     String followeeUuid,
   ) async {
-    final dio = await authDio(context);
     try {
-      final response = await dio.get('/follow/check', data: {
-        'follower_uuid': follwerUuid,
+      final dio = ApiClient.instance.dio;
+      final response = await dio.get('/follow/check', queryParameters: {
+        'follower_uuid': followerUuid,
         'followee_uuid': followeeUuid,
       });
+
       if (response.statusCode == 200) {
         return response.data.toString() == 'true';
       } else {
-        debugPrint('팔로우 상태 확인 실패');
-        return false;
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('팔로우 상태 확인 실패 : $e');
-      return false;
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('팔로우 상태 확인 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<List<ProfileInfo>> getFollowerList(
-    BuildContext context,
-    String userUuid,
-  ) async {
-    final dio = await authDio(context);
+  /// 팔로워 목록 조회
+  static Future<List<ProfileInfo>> getFollowerList(String userUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/follow/followers', queryParameters: {
         'user_uuid': userUuid,
       });
+
       if (response.statusCode == 200) {
         return List<ProfileInfo>.from(
           response.data.map((x) => ProfileInfo.fromJson(x)),
         );
       } else {
-        debugPrint('팔로워 목록 조회 실패');
-        return [];
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('팔로워 목록 조회 실패 : $e');
-      return [];
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('팔로워 목록 조회 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<List<ProfileInfo>> getFollowingList(
-    BuildContext context,
-    String userUuid,
-  ) async {
-    final dio = await authDio(context);
+  /// 팔로잉 목록 조회
+  static Future<List<ProfileInfo>> getFollowingList(String userUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/follow/followings', queryParameters: {
         'user_uuid': userUuid,
       });
+
       if (response.statusCode == 200) {
         return List<ProfileInfo>.from(
           response.data.map((x) => ProfileInfo.fromJson(x)),
         );
       } else {
-        debugPrint('팔로잉 목록 조회 실패');
-        return [];
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('팔로잉 목록 조회 실패 : $e');
-      return [];
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('팔로잉 목록 조회 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<List<int>> getFollowerCount(
-    BuildContext context,
-    String userUuid,
-  ) async {
-    final dio = await authDio(context);
+  /// 팔로워 수 조회
+  static Future<List<int>> getFollowerCount(String userUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/follow/count', queryParameters: {
         'user_uuid': userUuid,
       });
+
       if (response.statusCode == 200) {
         return List<int>.from(response.data);
       } else {
-        debugPrint('팔로워 수 조회 실패');
-        return [0, 0];
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('팔로워 수 조회 실패 : $e');
-      return [0, 0];
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('팔로워 수 조회 실패', e, stackTrace);
+      rethrow;
     }
   }
 }

@@ -10,7 +10,7 @@ Future<BookInfo> getBookInfoByUuid(
   BuildContext context,
   String bookUuid,
 ) async {
-  return await BookInfoService.getBookInfoByUuid(context, bookUuid);
+  return await BookInfoService.getBookInfoByUuid(bookUuid);
 }
 
 class ReportSelectedBook extends StatefulWidget {

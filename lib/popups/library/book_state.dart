@@ -168,7 +168,6 @@ class _BookStateChangeState extends State<BookStateChange> {
         CustomButton(
           onPressed: () async {
             await BookLibraryService.updateBookLibrary(
-              context,
               widget.bookUuid,
               selectedState,
             );

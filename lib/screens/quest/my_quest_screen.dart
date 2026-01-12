@@ -22,7 +22,7 @@ class _MyQuestScreenState extends State<MyQuestScreen> {
     setState(() {
       isLoading = true;
     });
-    await QuestService.getMyAllQuests(context).then((value) {
+    await QuestService.getMyAllQuests().then((value) {
       setState(() {
         myQuests = value;
         isLoading = false;

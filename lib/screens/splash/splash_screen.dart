@@ -70,8 +70,12 @@ Future<void> checkTrackingPermission(BuildContext context) async {
   }
 }
 
-Future<void> registerFcmToken(BuildContext context, String fcmToken) async {
-  await NotificationService.registerFcmToken(context, fcmToken);
+Future<void> registerFcmToken(String fcmToken) async {
+  try {
+    await NotificationService.registerFcmToken(fcmToken);
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
 class SplashScreen extends StatefulWidget {
@@ -147,25 +151,35 @@ class _SplashScreenState extends State<SplashScreen> {
       debugPrint(accessToken);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       if (accessToken != null) {
-        final userInfo = await UserInfoService.getUserInfo(context);
-        context.read<UserInfoState>().updateUserInfo(userInfo!);
-        await registerFcmToken(context, fcmToken ?? '');
-        RecordInfo ongoingRecord =
-            await RecordService.getNotEndedRecord(context);
+        try {
+          final userInfo = await UserInfoService.getUserInfo();
+          if (userInfo != null) {
+            context.read<UserInfoState>().updateUserInfo(userInfo);
+          }
+        } catch (e) {
+          // 에러 처리 - 로그인 화면으로 이동
+          Navigator.pushReplacementNamed(context, RouteName.login);
+          return;
+        }
+        await registerFcmToken(fcmToken ?? '');
+        RecordInfo ongoingRecord = await RecordService.getNotEndedRecord();
         if (ongoingRecord.recordUuid != '') {
           DateTime createdAt = DateTime.parse(ongoingRecord.createdAt);
           DateTime now = DateTime.now();
           if (now.difference(createdAt).inHours >= 24) {
             prefs.remove('elapsedTime');
             prefs.remove('isRunning');
-            await RecordService.deleteRecord(context, ongoingRecord.recordUuid);
+            try {
+              await RecordService.deleteRecord(ongoingRecord.recordUuid);
+            } catch (e) {
+              // 에러 처리
+            }
           } else {
             context
                 .read<SelectedRecordInfoState>()
                 .updateSelectedRecord(ongoingRecord);
             await prefs.setString('recordCreated', ongoingRecord.createdAt);
             BookInfo bookInfo = await BookInfoService.getBookInfoByUuid(
-              context,
               ongoingRecord.bookUuid,
             );
             context

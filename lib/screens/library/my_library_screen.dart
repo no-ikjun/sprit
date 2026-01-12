@@ -41,7 +41,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
     bool result = false;
     if (image != null) {
       try {
-        result = await ProfileService.uploadProfileImage(context, image);
+        result = await ProfileService.uploadProfileImage(image);
         if (!result) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -94,16 +94,22 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
     }
     String userUuid = context.read<UserInfoState>().userInfo.userUuid;
 
-    final profile = await ProfileService.getProfileInfo(context, userUuid);
-    final followers = await FollowService.getFollowerList(context, userUuid);
-    final following = await FollowService.getFollowingList(context, userUuid);
+    try {
+      final profile = await ProfileService.getProfileInfo(userUuid);
+      final followers = await FollowService.getFollowerList(userUuid);
+      final following = await FollowService.getFollowingList(userUuid);
 
-    setState(() {
-      profileInfo = profile;
-      followerCount = followers.length;
-      followingCount = following.length;
-      isLoading = false;
-    });
+      setState(() {
+        profileInfo = profile;
+        followerCount = followers.length;
+        followingCount = following.length;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override

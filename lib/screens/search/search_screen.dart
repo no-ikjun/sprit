@@ -14,25 +14,51 @@ import 'package:sprit/widgets/native_ad.dart';
 import 'package:sprit/widgets/remove_glow.dart';
 
 Future<Map<String, dynamic>> searchBook(
-  BuildContext context,
   String query,
   int page,
 ) async {
-  return await BookSearchService.searchBook(context, query, page);
+  try {
+    return await BookSearchService.searchBook(query, page);
+  } catch (e) {
+    return {'search_list': [], 'is_end': true};
+  }
 }
 
 Future<BookInfo> getBookInfoByISBN(
   BuildContext context,
   String isbn,
 ) async {
-  return await BookInfoService.getBookInfoByISBN(context, isbn);
+  try {
+    return await BookInfoService.getBookInfoByISBN(isbn);
+  } catch (e) {
+    return const BookInfo(
+      bookUuid: '',
+      isbn: '',
+      title: '',
+      authors: [],
+      publisher: '',
+      translators: [],
+      searchUrl: '',
+      thumbnail: '',
+      content: '',
+      publishedAt: '',
+      updatedAt: '',
+      score: 0,
+      star: 0,
+      starCount: 0,
+    );
+  }
 }
 
 Future<void> registerBook(
   BuildContext context,
   String isbn,
 ) async {
-  return await BookInfoService.registerBook(context, isbn);
+  try {
+    await BookInfoService.registerBook(isbn);
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
 Future<void> showBookInfo(
@@ -84,7 +110,7 @@ Future<void> showBookInfo(
     } else {
       Navigator.pushNamed(
         context,
-        '/bookDetail',
+        RouteName.bookDetail,
         arguments: bookInfo.bookUuid,
       );
     }
@@ -136,8 +162,7 @@ class _SearchScreenState extends State<SearchScreen>
     setState(() {
       isSearchDataLoading = true;
     });
-    Map<String, dynamic> response =
-        await searchBook(context, query, currentPage);
+    Map<String, dynamic> response = await searchBook(query, currentPage);
     setState(() {
       searchResult.addAll(response['search_list']);
       isEnd = response['is_end'];
@@ -193,7 +218,7 @@ class _SearchScreenState extends State<SearchScreen>
                                 isLoading = true;
                               });
                               Map<String, dynamic> response =
-                                  await searchBook(context, value, 1);
+                                  await searchBook(value, 1);
                               setState(() {
                                 searchResult = response['search_list'];
                                 isEnd = response['is_end'];
@@ -240,7 +265,6 @@ class _SearchScreenState extends State<SearchScreen>
                                     value.type != ResultType.Error) {
                                   Map<String, dynamic> response =
                                       await searchBook(
-                                    context,
                                     value.rawContent,
                                     1,
                                   );

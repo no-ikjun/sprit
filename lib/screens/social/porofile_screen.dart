@@ -13,26 +13,37 @@ import 'package:sprit/screens/social/widgets/review_article.dart';
 import 'package:sprit/screens/social/widgets/start_article.dart';
 import 'package:sprit/widgets/custom_app_bar.dart';
 
-Future<ProfileInfo> getProfileInfo(
-  BuildContext context,
-  String profileUuid,
-) async {
-  return await ProfileService.getProfileInfo(context, profileUuid);
+Future<ProfileInfo> getProfileInfo(String profileUuid) async {
+  try {
+    return await ProfileService.getProfileInfo(profileUuid);
+  } catch (e) {
+    return const ProfileInfo(
+      userUuid: '',
+      nickname: '',
+      image: '',
+      description: '',
+      recommendList: [],
+    );
+  }
 }
 
 Future<List<ArticleInfo>> getUserArticleList(
-  BuildContext context,
   String profileUuid,
   int page,
 ) async {
-  return await ArticleService.getUserArticleList(context, profileUuid, page);
+  try {
+    return await ArticleService.getUserArticleList(profileUuid, page);
+  } catch (e) {
+    return [];
+  }
 }
 
-Future<List<int>> getFollowCount(
-  BuildContext context,
-  String profileUuid,
-) async {
-  return await FollowService.getFollowerCount(context, profileUuid);
+Future<List<int>> getFollowCount(String profileUuid) async {
+  try {
+    return await FollowService.getFollowerCount(profileUuid);
+  } catch (e) {
+    return [0, 0];
+  }
 }
 
 class UserProfileScreen extends StatefulWidget {
@@ -60,13 +71,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     page = 1;
     hasMore = true;
     try {
-      final newProfileInfo = await getProfileInfo(context, widget.profileUuid);
+      final newProfileInfo = await getProfileInfo(widget.profileUuid);
       final newArticles = await getUserArticleList(
-        context,
         widget.profileUuid,
         page,
       );
-      final followCounts = await getFollowCount(context, widget.profileUuid);
+      final followCounts = await getFollowCount(widget.profileUuid);
 
       profileInfo = newProfileInfo;
       followerCount = followCounts[0];
@@ -97,11 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
     try {
       debugPrint("page: $page");
-      final newArticles = await getUserArticleList(
-        context,
-        widget.profileUuid,
-        page,
-      );
+      final newArticles = await getUserArticleList(widget.profileUuid, page);
 
       if (newArticles.isEmpty) {
         hasMore = false;

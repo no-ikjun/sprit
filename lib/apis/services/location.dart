@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class LocationInfo {
   final double latitude;
@@ -35,24 +37,24 @@ class LocationInfo {
 }
 
 class LocationService {
+  /// 주변 위치 목록 조회
   static Future<List<LocationInfo>> getLocationList(
-    BuildContext context,
     String latitude,
     String longitude,
     int radius,
     int? zoom,
     int? maxCandidates,
   ) async {
-    List<LocationInfo> locationInfo = [];
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/locations/near', queryParameters: {
         'lat': latitude,
         'lng': longitude,
         'radius': radius,
-        'zoom': zoom,
-        'maxCandidates': maxCandidates,
+        if (zoom != null) 'zoom': zoom,
+        if (maxCandidates != null) 'maxCandidates': maxCandidates,
       });
+
       if (response.statusCode == 200) {
         final data = response.data;
         List<dynamic> rawList = [];
@@ -60,7 +62,14 @@ class LocationService {
         if (data is List) {
           rawList = data;
         } else if (data is Map<String, dynamic>) {
-          const keys = ['data', 'items', 'list', 'locations', 'results', 'content'];
+          const keys = [
+            'data',
+            'items',
+            'list',
+            'locations',
+            'results',
+            'content'
+          ];
           for (final k in keys) {
             final v = data[k];
             if (v is List) {
@@ -77,16 +86,18 @@ class LocationService {
           }
         }
 
-        locationInfo = rawList
+        return rawList
             .whereType<Map<String, dynamic>>()
             .map((e) => LocationInfo.fromJson(e))
             .toList();
       } else {
-        debugPrint('위치 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('위치 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('위치 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return locationInfo;
   }
 }

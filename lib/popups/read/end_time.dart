@@ -10,24 +10,26 @@ import 'package:sprit/popups/read/save_page.dart';
 import 'package:sprit/providers/selected_record.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
-Future<bool> stopRecord(
-  BuildContext context,
+Future<void> stopRecord(
   String recordUuid,
   int totalTime,
 ) async {
-  return await RecordService.stopRecord(context, recordUuid, 0, totalTime);
+  try {
+    await RecordService.stopRecord(recordUuid, 0, totalTime);
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
-Future<bool> updateGoalAchieved(
-  BuildContext context,
+Future<void> updateGoalAchieved(
   String recordUuid,
   bool isAchieved,
 ) async {
-  return await RecordService.updateGoalAchieved(
-    context,
-    recordUuid,
-    isAchieved,
-  );
+  try {
+    await RecordService.updateGoalAchieved(recordUuid, isAchieved);
+  } catch (e) {
+    // 에러 처리
+  }
 }
 
 String formatTime(int second, double ratio) {
@@ -73,16 +75,13 @@ class _EndTimeState extends State<EndTime> {
     if (time ~/ 60 >= goalScale) {
       isAchieved = true;
     }
-    await RecordService.updateGoalAchieved(
-      context,
-      recordUuid,
-      isAchieved,
-    ).then((value) {
-      if (value) {
-        stopRecord(context, recordUuid, time);
-        context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
-      }
-    });
+    try {
+      await RecordService.updateGoalAchieved(recordUuid, isAchieved);
+      await stopRecord(recordUuid, time);
+      context.read<SelectedRecordInfoState>().updateIsAchieved(isAchieved);
+    } catch (e) {
+      // 에러 처리
+    }
   }
 
   double _value = 1;

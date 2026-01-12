@@ -18,7 +18,17 @@ import 'package:sprit/widgets/custom_app_bar.dart';
 import 'package:sprit/widgets/custom_button.dart';
 
 Future<UserInfoAll> getUserInfoAll(BuildContext context) async {
-  return await UserInfoService.getUserInfoAll(context);
+  try {
+    return await UserInfoService.getUserInfoAll();
+  } catch (e) {
+    return const UserInfoAll(
+      userUuid: '',
+      userNickame: '',
+      userId: '',
+      registerType: '',
+      registeredAt: '',
+    );
+  }
 }
 
 class ProfileScreen extends StatefulWidget {

@@ -126,7 +126,6 @@ class _BookReportEditState extends State<BookReportEdit> {
                           return;
                         }
                         await BookReportService.updateBookReport(
-                          context,
                           widget.reportUuid,
                           _controller.text,
                         );

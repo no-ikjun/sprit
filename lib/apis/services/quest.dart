@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:sprit/apis/auth_dio.dart';
+import 'package:dio/dio.dart';
+import 'package:sprit/core/network/api_client.dart';
+import 'package:sprit/core/network/api_exception.dart';
+import 'package:sprit/core/util/logger.dart';
 
 class QuestInfo {
   final String questUuid;
@@ -110,125 +112,121 @@ class AppliedQuestResponse {
 }
 
 class QuestService {
-  static Future<List<QuestInfo>> getActiveQuests(BuildContext context) async {
-    List<QuestInfo> quests = [];
-    final dio = await authDio(context);
+  /// 활성 퀘스트 목록 조회
+  static Future<List<QuestInfo>> getActiveQuests() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/quest/active');
+      
       if (response.statusCode == 200) {
-        for (final json in response.data) {
-          quests.add(QuestInfo.fromJson(json));
-        }
+        return (response.data as List)
+            .map((json) => QuestInfo.fromJson(json))
+            .toList();
       } else {
-        debugPrint('퀘스트 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return quests;
   }
 
-  static Future<List<QuestInfo>> getEndedQuest(BuildContext context) async {
-    List<QuestInfo> quests = [];
-    final dio = await authDio(context);
+  /// 종료된 퀘스트 목록 조회
+  static Future<List<QuestInfo>> getEndedQuest() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/quest/ended');
+      
       if (response.statusCode == 200) {
-        for (final json in response.data) {
-          quests.add(QuestInfo.fromJson(json));
-        }
+        return (response.data as List)
+            .map((json) => QuestInfo.fromJson(json))
+            .toList();
       } else {
-        debugPrint('퀘스트 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return quests;
   }
 
-  static Future<List<AppliedQuestResponse>> getMyActiveQuests(
-      BuildContext context) async {
-    List<AppliedQuestResponse> quests = [];
-    final dio = await authDio(context);
+  /// 내 활성 퀘스트 목록 조회
+  static Future<List<AppliedQuestResponse>> getMyActiveQuests() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/quest/my/active');
+      
       if (response.statusCode == 200) {
-        for (final json in response.data) {
-          quests.add(AppliedQuestResponse.fromJson(json));
-        }
+        return (response.data as List)
+            .map((json) => AppliedQuestResponse.fromJson(json))
+            .toList();
       } else {
-        debugPrint('퀘스트 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return quests;
   }
 
-  static Future<List<AppliedQuestResponse>> getMyAllQuests(
-      BuildContext context) async {
-    List<AppliedQuestResponse> quests = [];
-    final dio = await authDio(context);
+  /// 내 모든 퀘스트 목록 조회
+  static Future<List<AppliedQuestResponse>> getMyAllQuests() async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get('/quest/my/all');
+      
       if (response.statusCode == 200) {
-        for (final json in response.data) {
-          quests.add(AppliedQuestResponse.fromJson(json));
-        }
+        return (response.data as List)
+            .map((json) => AppliedQuestResponse.fromJson(json))
+            .toList();
       } else {
-        debugPrint('퀘스트 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return quests;
   }
 
-  static Future<QuestInfo> findQuestByUuid(
-    BuildContext context,
-    String questUuid,
-  ) async {
-    final dio = await authDio(context);
-    QuestInfo questInfo = const QuestInfo(
-      questUuid: '',
-      title: '',
-      shortDescription: '',
-      longDescription: '',
-      mission: '',
-      iconUrl: '',
-      thumbnailUrl: '',
-      startDate: '',
-      endDate: '',
-      limit: 0,
-      applyCount: 0,
-      isEnded: false,
-      createdAt: '',
-    );
+  /// 퀘스트 UUID로 조회
+  static Future<QuestInfo> findQuestByUuid(String questUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/quest/find',
         queryParameters: {
           'quest_uuid': questUuid,
         },
       );
+      
       if (response.statusCode == 200) {
-        questInfo = QuestInfo.fromJson(response.data);
+        return QuestInfo.fromJson(response.data);
       } else {
-        debugPrint('퀘스트 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return questInfo;
   }
 
+  /// 퀘스트 신청
   static Future<void> applyQuest(
-    BuildContext context,
     String questUuid,
     String phoneNumber,
   ) async {
-    final dio = await authDio(context);
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.post(
         '/quest/apply',
         queryParameters: {
@@ -236,44 +234,40 @@ class QuestService {
           'phone_number': phoneNumber,
         },
       );
-      if (response.statusCode == 201) {
-        debugPrint('퀘스트 신청 성공');
-      } else {
-        debugPrint('퀘스트 신청 실패');
+      
+      if (response.statusCode != 201) {
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 신청 실패 $e');
+      AppLogger.info('퀘스트 신청 성공');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 신청 실패', e, stackTrace);
+      rethrow;
     }
   }
 
-  static Future<QuestApplyInfo> findQuestApply(
-    BuildContext context,
-    String questUuid,
-  ) async {
-    final dio = await authDio(context);
-    QuestApplyInfo questApplyInfo = const QuestApplyInfo(
-      applyUuid: '',
-      questUuid: '',
-      userUuid: '',
-      state: '',
-      phoneNumber: '',
-      createdAt: '',
-    );
+  /// 퀘스트 신청 정보 조회
+  static Future<QuestApplyInfo> findQuestApply(String questUuid) async {
     try {
+      final dio = ApiClient.instance.dio;
       final response = await dio.get(
         '/quest/find/apply',
         queryParameters: {
           'quest_uuid': questUuid,
         },
       );
+      
       if (response.statusCode == 200) {
-        questApplyInfo = QuestApplyInfo.fromJson(response.data);
+        return QuestApplyInfo.fromJson(response.data);
       } else {
-        debugPrint('퀘스트 신청 조회 실패');
+        throw ServerException.fromResponse(response);
       }
-    } catch (e) {
-      debugPrint('퀘스트 신청 조회 실패 $e');
+    } on DioException catch (e) {
+      throw handleDioException(e);
+    } catch (e, stackTrace) {
+      AppLogger.error('퀘스트 신청 조회 실패', e, stackTrace);
+      rethrow;
     }
-    return questApplyInfo;
   }
 }

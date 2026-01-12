@@ -28,7 +28,11 @@ Future<List<List<BookRecordHistory>>> getBookRecordHistory(
   int backWeek,
   int weekday,
 ) async {
-  return await RecordService.getWeeklyRecord(context, backWeek, weekday);
+  try {
+    return await RecordService.getWeeklyRecord(backWeek, weekday);
+  } catch (e) {
+    return [];
+  }
 }
 
 class AnalyticsScreen extends StatefulWidget {

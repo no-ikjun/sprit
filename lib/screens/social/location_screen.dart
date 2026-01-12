@@ -174,7 +174,6 @@ class _LocationScreenState extends State<LocationScreen> {
 
                                   final list =
                                       await LocationService.getLocationList(
-                                    context,
                                     center.latitude.toString(),
                                     center.longitude.toString(),
                                     radius,
@@ -341,7 +340,6 @@ class _LocationScreenState extends State<LocationScreen> {
     if (_isPlotted) return; // 초기 1회만 표시
     try {
       final List<LocationInfo> list = await LocationService.getLocationList(
-        context,
         latitude.toString(),
         longitude.toString(),
         radius,

@@ -127,7 +127,6 @@ class _EditDescState extends State<EditDesc> {
                     return;
                   }
                   await ProfileService.updateProfileDesc(
-                    context,
                     userUuid,
                     _controller.text,
                   );

@@ -12,8 +12,15 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/book_mark_widget.dart';
 
-Future<BookMarkCallback> getBookMark(BuildContext context, int page) async {
-  return await BookLibraryService.getBookMark(context, page);
+Future<BookMarkCallback> getBookMark(int page) async {
+  try {
+    return await BookLibraryService.getBookMark(page);
+  } catch (e) {
+    return BookMarkCallback(
+      bookMarkInfoList: [],
+      moreAvailable: false,
+    );
+  }
 }
 
 class BookMarkComponent extends StatefulWidget {
@@ -29,7 +36,7 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
   int bookMarkCurrentPage = 1;
 
   void _initialize() async {
-    await getBookMark(context, bookMarkCurrentPage).then((value) {
+    await getBookMark(bookMarkCurrentPage).then((value) {
       setState(() {
         bookMarkInfoList = value.bookMarkInfoList;
         bookMarkMoreAvailable = value.moreAvailable;
@@ -180,7 +187,6 @@ class _BookMarkComponentState extends State<BookMarkComponent> {
                         },
                       );
                       await getBookMark(
-                        context,
                         bookMarkCurrentPage + 1,
                       ).then((value) {
                         setState(() {

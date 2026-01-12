@@ -74,7 +74,14 @@ Future<MonthlyRecordInfo> getMonthlyRecord(
   int month,
   String kind,
 ) async {
-  return await RecordService.getMonthlyRecord(context, year, month, kind);
+  try {
+    return await RecordService.getMonthlyRecord(year, month, kind);
+  } catch (e) {
+    return const MonthlyRecordInfo(
+      presentMonth: 0,
+      pastMonth: 0,
+    );
+  }
 }
 
 class MonthlyCount extends StatefulWidget {

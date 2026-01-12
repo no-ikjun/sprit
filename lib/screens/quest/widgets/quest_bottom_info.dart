@@ -157,9 +157,10 @@ class _QuestBottomInfoState extends State<QuestBottomInfo> {
           ),
           CustomButton(
             onPressed: () async {
-              QuestApplyInfo applyInfo =
-                  await QuestService.findQuestApply(context, widget.questUuid);
-              if (applyInfo.applyUuid == '') {
+              try {
+                QuestApplyInfo applyInfo =
+                    await QuestService.findQuestApply(widget.questUuid);
+                if (applyInfo.applyUuid == '') {
                 AmplitudeService().logEvent(
                   AmplitudeEvent.questApplyButton,
                   properties: {
@@ -184,6 +185,9 @@ class _QuestBottomInfoState extends State<QuestBottomInfo> {
                   const AlreadyAppliedQuest(),
                   false,
                 );
+                }
+              } catch (e) {
+                // 에러 처리
               }
             },
             width: Scaler.width(0.85, context),

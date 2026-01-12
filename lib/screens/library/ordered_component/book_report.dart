@@ -12,10 +12,8 @@ import 'package:sprit/common/value/router.dart';
 import 'package:sprit/providers/user_info.dart';
 import 'package:sprit/screens/library/widgets/report_card_widget.dart';
 
-Future<List<BookReportInfo>> getBookReportByUserUuid(
-  BuildContext context,
-) async {
-  return BookReportService.getBookReportByUserUuid(context);
+Future<List<BookReportInfo>> getBookReportByUserUuid() async {
+  return BookReportService.getBookReportByUserUuid();
 }
 
 class MyBookReportComponent extends StatefulWidget {
@@ -30,7 +28,7 @@ class _MyBookReportComponentState extends State<MyBookReportComponent> {
   int reportCurrent = 0;
 
   void _initialize() async {
-    await getBookReportByUserUuid(context).then((value) {
+    await getBookReportByUserUuid().then((value) {
       setState(() {
         bookReportInfoList = value;
       });
