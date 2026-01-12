@@ -29,9 +29,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         context.read<UserInfoState>().userInfo.userUuid,
         widget.profileInfo.userUuid,
       );
-      await checkIsFollowing();
+      setState(() {
+        isFollowing = true;
+      });
     } catch (e) {
-      rethrow;
+      AppLogger.error('팔로우 실패', e);
     }
   }
 
@@ -41,9 +43,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         context.read<UserInfoState>().userInfo.userUuid,
         widget.profileInfo.userUuid,
       );
-      await checkIsFollowing();
+      setState(() {
+        isFollowing = false;
+      });
     } catch (e) {
-      rethrow;
+      AppLogger.error('언팔로우 실패', e);
     }
   }
 

@@ -60,7 +60,7 @@ class FollowService {
   ) async {
     try {
       final dio = ApiClient.instance.dio;
-      final response = await dio.get('/follow/check', queryParameters: {
+      final response = await dio.get('/follow/check', data: {
         'follower_uuid': followerUuid,
         'followee_uuid': followeeUuid,
       });
