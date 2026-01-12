@@ -14,10 +14,11 @@ Future<bool> setBookReport(
   String bookUuid,
   String report,
 ) async {
-  await BookReportService.setNewBookReport(bookUuid, report).then((value) {
-    return true;
-  });
-  return false;
+  try {
+    return await BookReportService.setNewBookReport(bookUuid, report);
+  } catch (e) {
+    return false;
+  }
 }
 
 class BookReportModal extends StatefulWidget {
@@ -55,15 +56,12 @@ class _BookReportModalState extends State<BookReportModal> {
       isSubmitted = true;
       isLoading = true;
     });
-    setBookReport(widget.bookUuid, bookReport).then((value) {
-      if (value != false) {
-        setState(() {
-          isLoading = false;
-        });
-        Future.delayed(const Duration(milliseconds: 800), () {
-          Navigator.pop(context);
-        });
-      }
+    await setBookReport(widget.bookUuid, bookReport);
+    setState(() {
+      isLoading = false;
+    });
+    Future.delayed(const Duration(milliseconds: 800), () {
+      Navigator.pop(context);
     });
   }
 

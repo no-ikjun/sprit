@@ -125,12 +125,17 @@ class _BookReportEditState extends State<BookReportEdit> {
                         if (_controller.text.isEmpty) {
                           return;
                         }
-                        await BookReportService.updateBookReport(
-                          widget.reportUuid,
-                          _controller.text,
-                        );
-                        widget.callback();
-                        Navigator.pop(context);
+                        try {
+                          await BookReportService.updateBookReport(
+                            widget.reportUuid,
+                            _controller.text,
+                          );
+                          widget.callback();
+                          Navigator.pop(context);
+                        } catch (e) {
+                          // 에러 처리
+                          debugPrint('독후감 수정 실패: $e');
+                        }
                       },
                       child: const Text(
                         '수정하기',
